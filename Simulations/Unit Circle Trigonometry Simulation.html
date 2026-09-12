@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Circle Interactive Simulation | Inam Alvi</title>
+    <!-- p5.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161920;
+            --border-color: #242936;
+            --text-white: #ffffff;
+            --text-secondary: #94a3b8;
+            --heading-yellow: #ffd000;
+            --subheading-blue: #00aeef;
+            --accent-pink: #ff2a6d;
+            --accent-green: #10b981;
+            --button-hover: #e6bb00;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-white: #0f172a;
+            --text-secondary: #475569;
+            --heading-yellow: #d97706;
+            --subheading-blue: #0284c7;
+            --accent-pink: #e11d48;
+            --accent-green: #059669;
+            --button-hover: #b45309;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1050px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--heading-yellow);
+        }
+
+        .header-title h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--subheading-blue);
+            margin-top: 4px;
+        }
+
+        .header-title p {
+            font-size: 0.9rem;
+            color: var(--text-white);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1050px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .canvas-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-card h3 {
+            font-size: 1rem;
+            color: var(--subheading-blue);
+            margin-bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .p5-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: crosshair;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .metric-item {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-item .label {
+            color: var(--text-secondary);
+        }
+
+        .metric-val {
+            font-weight: 700;
+            color: var(--heading-yellow);
+        }
+
+        .metric-val.sin-val { color: var(--accent-pink); }
+        .metric-val.cos-val { color: var(--subheading-blue); }
+        .metric-val.tan-val { color: var(--accent-green); }
+
+        .controls-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .slider-header span.val {
+            color: var(--heading-yellow);
+            font-weight: 700;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--heading-yellow);
+            cursor: pointer;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--heading-yellow);
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--heading-yellow);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 174, 239, 0.1);
+            transform: scale(1.02);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 42, 109, 0.1);
+            transform: scale(1.02);
+        }
+
+        .legend-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .quadrant-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .quadrant-card h3 {
+            font-size: 1.1rem;
+            color: var(--heading-yellow);
+            margin-bottom: 12px;
+        }
+
+        .quadrant-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .quad-box {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .quad-box.active {
+            border-color: var(--heading-yellow);
+            background: rgba(255, 208, 0, 0.08);
+            color: var(--heading-yellow);
+            font-weight: 700;
+        }
+
+        .quad-box .quad-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .quad-box .signs {
+            font-size: 0.75rem;
+        }
+
+        footer {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: var(--subheading-blue);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .header-title h1 { font-size: 1.5rem; }
+            .header-title h2 { font-size: 0.9rem; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .quadrant-grid { grid-template-columns: 1fr 1fr; }
+            .controls-row { flex-direction: column; }
+            .btn-group { justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; text-align: center; }
+            .header-title h1 { font-size: 1.2rem; }
+            .btn { padding: 8px 14px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <header class="header">
+        <div class="header-title">
+            <h1>Unit Circle Trigonometry Simulation</h1>
+            <h2>Angle θ, Right Triangle, Sine & Cosine Visualization</h2>
+            <p>Drag the point on the unit circle or use the slider to explore trigonometric functions interactively.</p>
+        </div>
+        <button class="theme-toggle" id="themeToggleBtn">
+            <span id="themeIcon">☀️</span> <span id="themeText">Light Mode</span>
+        </button>
+    </header>
+
+    <main class="main-container">
+        <!-- Canvas Card -->
+        <div class="canvas-card">
+            <h3>
+                <span>⭕ Interactive Unit Circle (r = 1)</span>
+                <span style="font-size: 0.8rem; color: var(--heading-yellow);" id="quadrantDisplay">Quadrant I</span>
+            </h3>
+            <div class="p5-box" id="circle-container"></div>
+
+            <!-- Metrics Display -->
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <span class="label">Angle θ</span>
+                    <span class="metric-val" id="valAngleDeg">45° (π/4 rad)</span>
+                </div>
+                <div class="metric-item">
+                    <span class="label">Point P</span>
+                    <span class="metric-val" id="valPointCoords">(0.707, 0.707)</span>
+                </div>
+                <div class="metric-item">
+                    <span class="label">sin θ</span>
+                    <span class="metric-val sin-val" id="valSin">0.7071</span>
+                </div>
+                <div class="metric-item">
+                    <span class="label">cos θ</span>
+                    <span class="metric-val cos-val" id="valCos">0.7071</span>
+                </div>
+                <div class="metric-item" style="grid-column: span 2;">
+                    <span class="label">tan θ = sin/cos</span>
+                    <span class="metric-val tan-val" id="valTan">1.0000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-card">
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>📐 Angle θ Slider</span>
+                    <span class="val" id="sliderValText">45°</span>
+                </div>
+                <input type="range" id="sliderAngle" min="0" max="360" value="45" step="0.5">
+            </div>
+
+            <div class="controls-row">
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="autoRotateBtn">
+                        <span id="rotateIcon">▶</span> <span id="rotateText">Auto-Rotate</span>
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">🔄 Reset (θ = 0°)</button>
+                    <button class="btn btn-secondary" id="snapBtn">🎯 Snap: <span id="snapStatus">ON</span></button>
+                </div>
+            </div>
+
+            <!-- Color Legend -->
+            <div class="legend-row">
+                <div class="legend-item">
+                    <div class="legend-color" style="background:var(--heading-yellow);"></div>
+                    Hypotenuse / Radius (r = 1)
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:var(--subheading-blue);"></div>
+                    Adjacent / cos θ
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:var(--accent-pink);"></div>
+                    Opposite / sin θ
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background:var(--accent-green);"></div>
+                    Tangent (tan θ)
+                </div>
+            </div>
+        </div>
+
+        <!-- Quadrant Signs -->
+        <div class="quadrant-card">
+            <h3>📊 Quadrant Sign Rules (ASTC)</h3>
+            <div class="quadrant-grid">
+                <div class="quad-box" id="q1Box">
+                    <span class="quad-label">Quadrant I (0°–90°)</span>
+                    <span class="signs">All: <span style="color:var(--accent-pink);">sin+</span> <span style="color:var(--subheading-blue);">cos+</span> <span style="color:var(--accent-green);">tan+</span></span>
+                </div>
+                <div class="quad-box" id="q2Box">
+                    <span class="quad-label">Quadrant II (90°–180°)</span>
+                    <span class="signs"><span style="color:var(--accent-pink);">sin+</span> <span style="color:var(--subheading-blue);">cos−</span> <span style="color:var(--accent-green);">tan−</span></span>
+                </div>
+                <div class="quad-box" id="q3Box">
+                    <span class="quad-label">Quadrant III (180°–270°)</span>
+                    <span class="signs"><span style="color:var(--accent-pink);">sin−</span> <span style="color:var(--subheading-blue);">cos−</span> <span style="color:var(--accent-green);">tan+</span></span>
+                </div>
+                <div class="quad-box" id="q4Box">
+                    <span class="quad-label">Quadrant IV (270°–360°)</span>
+                    <span class="signs"><span style="color:var(--accent-pink);">sin−</span> <span style="color:var(--subheading-blue);">cos+</span> <span style="color:var(--accent-green);">tan−</span></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Designed & Developed by <span class="signature">Inam Alvi</span>
+    </footer>
+
+    <!-- p5.js Script -->
+    <script>
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
+        let angleDeg = 45.0;
+        let isAutoRotating = false;
+        let isSnapEnabled = true;
+        let isDragging = false;
+
+        const specialAngles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360];
+
+        // ============================================================
+        // P5 SKETCH
+        // ============================================================
+        const sketch = (p) => {
+            let cx, cy, R = 150;
+
+            p.setup = () => {
+                const box = document.getElementById("circle-container");
+                const w = box.offsetWidth || 600;
+                p.createCanvas(w, 380);
+                p.ellipseMode(p.CENTER);
+                p.textFont('Poppins');
+            };
+
+            p.draw = () => {
+                const isDark = document.body.getAttribute("data-theme") === "dark";
+                p.background(isDark ? 18 : 248);
+
+                cx = p.width / 2;
+                cy = p.height / 2;
+
+                // Auto-rotate
+                if (isAutoRotating) {
+                    angleDeg = (angleDeg + 0.5) % 360;
+                    document.getElementById("sliderAngle").value = angleDeg;
+                }
+
+                const rad = p.radians(angleDeg);
+                const cosVal = Math.cos(rad);
+                const sinVal = Math.sin(rad);
+
+                const px = cx + R * cosVal;
+                const py = cy - R * sinVal;
+
+                // ---- DRAW ----
+
+                // Grid & Axes
+                drawGrid(p, cx, cy, R, isDark);
+
+                // Unit Circle
+                p.noFill();
+                p.stroke(isDark ? 120 : 180);
+                p.strokeWeight(1.5);
+                p.ellipse(cx, cy, R * 2, R * 2);
+
+                // Filled Triangle
+                p.fill(255, 208, 0, isDark ? 20 : 35);
+                p.noStroke();
+                p.triangle(cx, cy, px, cy, px, py);
+
+                // Adjacent (cos) - Blue
+                p.stroke(0, 174, 239);
+                p.strokeWeight(3);
+                p.line(cx, cy, px, cy);
+
+                // Opposite (sin) - Pink
+                p.stroke(255, 42, 109);
+                p.strokeWeight(3);
+                p.line(px, cy, px, py);
+
+                // Horizontal projection to y-axis - dashed
+                p.stroke(0, 174, 239, 150);
+                p.strokeWeight(1.5);
+                p.drawingContext.setLineDash([5, 5]);
+                p.line(px, py, cx, py);
+                p.drawingContext.setLineDash([]);
+
+                // Hypotenuse (radius) - Yellow
+                p.stroke(255, 208, 0);
+                p.strokeWeight(3);
+                p.line(cx, cy, px, py);
+
+                // Right angle marker
+                p.stroke(isDark ? 200 : 80);
+                p.strokeWeight(1.5);
+                p.noFill();
+                const sz = 12;
+                const sx = cosVal >= 0 ? -1 : 1;
+                const sy = sinVal >= 0 ? -1 : 1;
+                p.rect(px, cy, sz * sx, sz * sy);
+
+                // Angle arc
+                p.noFill();
+                p.stroke(255, 208, 0, 200);
+                p.strokeWeight(2);
+                p.arc(cx, cy, 50, 50, -rad, 0);
+
+                // θ label
+                p.noStroke();
+                p.fill(255, 208, 0);
+                p.textSize(14);
+                p.textAlign(p.LEFT, p.CENTER);
+                p.text("θ", cx + 30 * Math.cos(-rad / 2), cy + 30 * Math.sin(-rad / 2));
+
+                // Point P
+                p.fill(isDragging ? 255 : 255, 208, 0);
+                p.stroke(isDark ? 255 : 30);
+                p.strokeWeight(2);
+                p.ellipse(px, py, 16, 16);
+
+                // Point label
+                p.noStroke();
+                p.fill(isDark ? 255 : 30);
+                p.textSize(11);
+                p.textStyle(p.BOLD);
+                const lx = px + (cosVal >= 0 ? 14 : -90);
+                const ly = py + (sinVal >= 0 ? -14 : 20);
+                p.text(`P(${cosVal.toFixed(2)}, ${sinVal.toFixed(2)})`, lx, ly);
+
+                // Side labels
+                p.textStyle(p.NORMAL);
+                p.textAlign(p.CENTER, p.TOP);
+                p.fill(0, 174, 239);
+                p.textSize(10);
+                p.text("Adjacent (cos θ)", (cx + px) / 2, cy + 8);
+
+                p.textAlign(p.LEFT, p.CENTER);
+                p.fill(255, 42, 109);
+                p.text("Opposite (sin θ)", px + 8, (cy + py) / 2);
+
+                p.textAlign(p.CENTER, p.BOTTOM);
+                p.fill(255, 208, 0);
+                p.text("Hypotenuse (r = 1)", (cx + px) / 2 - 10, (cy + py) / 2 - 12);
+
+                // Mouse drag
+                if (p.mouseIsPressed) {
+                    const d = p.dist(p.mouseX, p.mouseY, px, py);
+                    if (d < 25 || isDragging) {
+                        isDragging = true;
+                        let a = p.degrees(Math.atan2(cy - p.mouseY, p.mouseX - cx));
+                        if (a < 0) a += 360;
+
+                        if (isSnapEnabled) {
+                            for (const sa of specialAngles) {
+                                if (Math.abs(a - sa) < 3.5) { a = sa; break; }
+                            }
+                        }
+                        angleDeg = a;
+                        document.getElementById("sliderAngle").value = angleDeg;
+                    }
+                } else {
+                    isDragging = false;
+                }
+
+                // Update UI
+                updateUI(rad, cosVal, sinVal);
+            };
+        };
+
+        // ============================================================
+        // GRID HELPER
+        // ============================================================
+        function drawGrid(p, cx, cy, R, isDark) {
+            p.push();
+            p.stroke(isDark ? 40 : 215);
+            p.strokeWeight(0.8);
+
+            const range = R * 1.3;
+            for (let x = cx - range; x <= cx + range; x += R / 2) {
+                p.line(x, cy - range, x, cy + range);
+            }
+            for (let y = cy - range; y <= cy + range; y += R / 2) {
+                p.line(cx - range, y, cx + range, y);
+            }
+
+            // Axes
+            p.stroke(isDark ? 120 : 90);
+            p.strokeWeight(1.8);
+            p.line(cx - range, cy, cx + range, cy);
+            p.line(cx, cy - range, cx, cy + range);
+
+            // Axis labels
+            p.noStroke();
+            p.textStyle(p.BOLD);
+            p.textSize(12);
+
+            p.fill(0, 174, 239);
+            p.textAlign(p.LEFT, p.CENTER);
+            p.text("x-axis (cosine)", cx + R + 14, cy);
+
+            p.fill(255, 42, 109);
+            p.textAlign(p.CENTER, p.BOTTOM);
+            p.text("y-axis (sine)", cx, cy - R - 14);
+
+            // Tick labels
+            p.textStyle(p.NORMAL);
+            p.textSize(10);
+            p.fill(isDark ? 160 : 100);
+            p.textAlign(p.CENTER, p.TOP);
+            p.text("(1,0)", cx + R, cy + 6);
+            p.text("(-1,0)", cx - R, cy + 6);
+            p.textAlign(p.LEFT, p.CENTER);
+            p.text("(0,1)", cx + 6, cy - R);
+            p.text("(0,-1)", cx + 6, cy + R);
+
+            p.pop();
+        }
+
+        // ============================================================
+        // UI UPDATE
+        // ============================================================
+        function updateUI(rad, cosVal, sinVal) {
+            const deg = angleDeg;
+            const tanVal = (Math.abs(cosVal) < 0.0001) ? "∞" : (sinVal / cosVal).toFixed(4);
+
+            // Angle
+            const piFrac = (deg / 180).toFixed(2);
+            let radStr = `${piFrac}π`;
+            if (Math.abs(deg - 0) < 0.01 || Math.abs(deg - 360) < 0.01) radStr = "0";
+            else if (Math.abs(deg - 180) < 0.01) radStr = "π";
+            else if (Math.abs(deg - 90) < 0.01) radStr = "π/2";
+            else if (Math.abs(deg - 270) < 0.01) radStr = "3π/2";
+
+            document.getElementById("valAngleDeg").textContent = `${deg.toFixed(1)}° (${radStr})`;
+            document.getElementById("sliderValText").textContent = `${deg.toFixed(1)}°`;
+            document.getElementById("valPointCoords").textContent = `(${cosVal.toFixed(3)}, ${sinVal.toFixed(3)})`;
+            document.getElementById("valSin").textContent = sinVal.toFixed(4);
+            document.getElementById("valCos").textContent = cosVal.toFixed(4);
+            document.getElementById("valTan").textContent = tanVal;
+
+            // Quadrant
+            let qText = "Quadrant I";
+            let activeId = "q1Box";
+            if (deg > 90 && deg < 180) { qText = "Quadrant II"; activeId = "q2Box"; }
+            else if (deg > 180 && deg < 270) { qText = "Quadrant III"; activeId = "q3Box"; }
+            else if (deg > 270 && deg < 360) { qText = "Quadrant IV"; activeId = "q4Box"; }
+            else if (deg === 0 || deg === 360) qText = "Positive X-axis";
+            else if (deg === 90) qText = "Positive Y-axis";
+            else if (deg === 180) qText = "Negative X-axis";
+            else if (deg === 270) qText = "Negative Y-axis";
+
+            document.getElementById("quadrantDisplay").textContent = qText;
+
+            // Highlight quadrant
+            document.querySelectorAll(".quad-box").forEach(b => b.classList.remove("active"));
+            const box = document.getElementById(activeId);
+            if (box) box.classList.add("active");
+        }
+
+        // ============================================================
+        // CONTROLS
+        // ============================================================
+        document.getElementById("sliderAngle").addEventListener("input", function() {
+            angleDeg = parseFloat(this.value);
+            isAutoRotating = false;
+            updateRotateUI();
+        });
+
+        document.getElementById("autoRotateBtn").addEventListener("click", function() {
+            isAutoRotating = !isAutoRotating;
+            updateRotateUI();
+        });
+
+        function updateRotateUI() {
+            document.getElementById("rotateIcon").textContent = isAutoRotating ? "⏸" : "▶";
+            document.getElementById("rotateText").textContent = isAutoRotating ? "Pause" : "Auto-Rotate";
+        }
+
+        document.getElementById("resetBtn").addEventListener("click", function() {
+            angleDeg = 0;
+            isAutoRotating = false;
+            document.getElementById("sliderAngle").value = 0;
+            updateRotateUI();
+        });
+
+        document.getElementById("snapBtn").addEventListener("click", function() {
+            isSnapEnabled = !isSnapEnabled;
+            document.getElementById("snapStatus").textContent = isSnapEnabled ? "ON" : "OFF";
+        });
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        document.getElementById("themeToggleBtn").addEventListener("click", function() {
+            const body = document.body;
+            const isDark = body.getAttribute("data-theme") === "dark";
+            if (isDark) {
+                body.setAttribute("data-theme", "light");
+                document.getElementById("themeIcon").textContent = "🌙";
+                document.getElementById("themeText").textContent = "Dark Mode";
+            } else {
+                body.setAttribute("data-theme", "dark");
+                document.getElementById("themeIcon").textContent = "☀️";
+                document.getElementById("themeText").textContent = "Light Mode";
+            }
+        });
+
+        // ============================================================
+        // RESIZE HANDLER
+        // ============================================================
+        let p5Instance = null;
+
+        window.addEventListener('resize', () => {
+            const box = document.getElementById("circle-container");
+            const w = box.offsetWidth || 600;
+            if (p5Instance) {
+                p5Instance.resizeCanvas(w, 380);
+            }
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        window.onload = () => {
+            p5Instance = new p5(sketch, "circle-container");
+        };
+    </script>
+</body>
+</html>

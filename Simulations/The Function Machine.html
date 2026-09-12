@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Machine — Inam Alvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg-2: #131313;
+    --surface: #161616;
+    --surface-2: #1c1c1c;
+    --surface-3: #262626;
+    --blue: #2fa8e8;
+    --blue-light: #6dc4f4;
+    --gold: #f4c50f;
+    --gold-light: #ffdb4d;
+    --text: #ffffff;
+    --text-muted: #b0b0b0;
+    --text-faint: #707070;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-blue: rgba(47, 168, 232, 0.45);
+    --border-soft: rgba(255, 255, 255, 0.07);
+    --shadow-glow: rgba(244, 197, 15, 0.14);
+    --warn: #f0866b;
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f4f4;
+    --bg-2: #ececec;
+    --surface: #ffffff;
+    --surface-2: #f7f7f7;
+    --surface-3: #ececec;
+    --blue: #1c85bd;
+    --blue-light: #0c6595;
+    --gold: #b3860a;
+    --gold-light: #8f6b06;
+    --text: #111111;
+    --text-muted: #4a4a4a;
+    --text-faint: #8a8a8a;
+    --border: rgba(0, 0, 0, 0.14);
+    --border-blue: rgba(28, 133, 189, 0.4);
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --shadow-glow: rgba(179, 134, 10, 0.12);
+    --warn: #c1502f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 28px 20px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 22px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .eyebrow { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; color: var(--blue); margin: 0 0 8px; }
+  h1 { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.01em; color: var(--text); }
+  h1 span { color: var(--gold); }
+  .sub { color: var(--text-muted); font-size: 14px; margin: 10px 0 0; max-width: 520px; line-height: 1.6; }
+
+  .toggle { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer; user-select: none; }
+  .toggle-track { width: 40px; height: 22px; border-radius: 999px; background: var(--surface-3); position: relative; border: 1px solid var(--border); }
+  .toggle-thumb { position: absolute; top: 1px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); transition: transform 0.3s ease; }
+  [data-theme="light"] .toggle-thumb { transform: translateX(18px); }
+  .toggle-label { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
+
+  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    box-shadow: 0 18px 40px -24px var(--shadow-glow);
+  }
+  .panel + .panel { margin-top: 20px; }
+
+  .panel-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); margin: 0 0 16px; letter-spacing: 0.01em; }
+  .panel-hint { font-size: 12px; color: var(--text-faint); margin: 8px 0 0; }
+
+  .split { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 16px; }
+  @media (max-width: 640px) { .split { grid-template-columns: 1fr; } }
+
+  .stage-outer {
+    border-radius: 14px;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, var(--bg-2), var(--bg) 75%);
+    border: 1px solid var(--border-soft);
+  }
+  canvas#machineStage { display: block; width: 100%; }
+  canvas#graphStage { display: block; width: 100%; }
+
+  .controls { margin-top: 18px; display: grid; gap: 14px; }
+  .select-row { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 12px; }
+  .select-row label { font-size: 13px; color: var(--text-muted); }
+  select, input[type="text"] {
+    width: 100%;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    padding: 9px 10px; outline: none;
+  }
+  select { font-family: 'Inter', sans-serif; cursor: pointer; }
+  input[type="text"]:focus, select:focus { border-color: var(--border-blue); }
+
+  .slider-row { display: grid; grid-template-columns: 100px 1fr 70px; align-items: center; gap: 12px; }
+  .slider-row label { font-size: 13px; color: var(--text-muted); }
+  .slider-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold); text-align: right; }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--surface-3); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-blue); cursor: pointer; }
+  input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); cursor: pointer; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  button.action {
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 20px;
+    border-radius: 8px; border: 1.5px solid var(--border-blue); background: transparent; color: var(--blue);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  button.action:hover { background: rgba(47,168,232,0.1); }
+  button.action.primary { background: var(--gold); color: #171200; border: none; font-weight: 700; }
+  button.action.primary:hover { background: var(--gold-light); }
+
+  .status-line { font-size: 12px; color: var(--warn); margin: 10px 2px 0; min-height: 16px; }
+
+  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .stat { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 12px; padding: 12px 14px; }
+  .stat .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-faint); margin-bottom: 6px; }
+  .stat .num { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500; color: var(--text); }
+  .stat .num.fail { color: var(--warn); }
+  .stat.wide { grid-column: 1 / -1; }
+
+  .history-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .history-table th { text-align: left; color: var(--text-faint); font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+  .history-table td { padding: 7px 4px; border-bottom: 1px solid var(--border-soft); font-family: 'JetBrains Mono', monospace; color: var(--text); }
+  .history-table td.out.fail { color: var(--warn); }
+  .history-table td.out { color: var(--gold-light); }
+
+  .formula-list { display: grid; gap: 14px; }
+  .formula-item { border-left: 2px solid var(--border-blue); padding-left: 12px; }
+  .formula-name { font-size: 12px; color: var(--text-muted); margin: 0 0 4px; }
+  .formula-expr { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--gold); letter-spacing: 0.01em; line-height: 1.5; }
+
+  footer { display: flex; justify-content: flex-end; align-items: center; padding: 30px 10px 4px; }
+  .signature { font-family: 'Sacramento', cursive; font-size: 34px; font-weight: 400; color: var(--gold); opacity: 0.92; letter-spacing: 0.02em; }
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow">Mathematics · Functions</p>
+      <h1>The Function <span>Machine</span></h1>
+      <p class="sub">Feed a number into the machine, watch f(x) process it, and see exactly one output come out — while the graph traces domain and range live.</p>
+    </div>
+    <div class="toggle" id="themeToggle">
+      <span class="toggle-label" id="themeLabel">Dark</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <div class="panel">
+      <p class="panel-title">The machine</p>
+      <div class="split">
+        <div class="stage-outer"><canvas id="machineStage" width="220" height="360"></canvas></div>
+        <div class="stage-outer"><canvas id="graphStage" width="380" height="360"></canvas></div>
+      </div>
+
+      <div class="controls">
+        <div class="select-row">
+          <label for="presetSelect">Try a formula</label>
+          <select id="presetSelect">
+            <option value="2x+1">f(x) = 2x + 1</option>
+            <option value="x^2">f(x) = x²</option>
+            <option value="x^2-4">f(x) = x² − 4</option>
+            <option value="1/x">f(x) = 1/x</option>
+            <option value="1/(x-2)">f(x) = 1/(x − 2)</option>
+            <option value="sqrt(x)">f(x) = √x</option>
+            <option value="abs(x)">f(x) = |x|</option>
+            <option value="3sin(x)">f(x) = 3 sin(x)</option>
+          </select>
+        </div>
+        <div class="select-row">
+          <label for="formulaInput">f(x) =</label>
+          <input type="text" id="formulaInput" value="2x+1">
+        </div>
+        <div class="slider-row">
+          <label for="xSlider">Input x</label>
+          <input type="range" id="xSlider" min="-10" max="10" step="0.1" value="3">
+          <span class="val" id="xVal">3.0</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="action primary" id="feedBtn">Feed x into machine</button>
+        <button class="action" id="clearBtn">Clear history</button>
+      </div>
+      <p class="status-line" id="statusLine"></p>
+    </div>
+
+    <div>
+      <div class="panel">
+        <p class="panel-title">Live readouts</p>
+        <div class="readouts">
+          <div class="stat wide"><div class="lbl">Function</div><div class="num" id="fxLabel">f(x) = 2x + 1</div></div>
+          <div class="stat"><div class="lbl">Input (x)</div><div class="num" id="xReadout">—</div></div>
+          <div class="stat"><div class="lbl">Output f(x)</div><div class="num" id="yReadout">—</div></div>
+          <div class="stat wide"><div class="lbl">Domain (within view, x ∈ [−10, 10])</div><div class="num" id="domainReadout">—</div></div>
+          <div class="stat wide"><div class="lbl">Range (observed within view)</div><div class="num" id="rangeReadout">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Input → output history</p>
+        <table class="history-table">
+          <thead><tr><th>x</th><th>f(x)</th></tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Function concepts</p>
+        <div class="formula-list">
+          <div class="formula-item">
+            <p class="formula-name">Definition</p>
+            <p class="formula-expr">Every input maps to exactly one output</p>
+          </div>
+          <div class="formula-item">
+            <p class="formula-name">Notation</p>
+            <p class="formula-expr">f : Domain → Range,&nbsp; y = f(x)</p>
+          </div>
+          <div class="formula-item">
+            <p class="formula-name">Domain</p>
+            <p class="formula-expr">The set of all valid inputs x</p>
+          </div>
+          <div class="formula-item">
+            <p class="formula-name">Range</p>
+            <p class="formula-expr">The set of all outputs f(x) actually produces</p>
+          </div>
+          <div class="formula-item">
+            <p class="formula-name">Vertical line test</p>
+            <p class="formula-expr">A vertical line meets the graph at most once</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><span class="signature">Inam Alvi</span></footer>
+
+</div>
+
+<script>
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+themeToggle.addEventListener('click', () => {
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeLabel.textContent = isDark ? 'Light' : 'Dark';
+  drawMachine(); drawGraph();
+});
+
+const presetSelect = document.getElementById('presetSelect');
+const formulaInput = document.getElementById('formulaInput');
+const xSlider = document.getElementById('xSlider');
+const xVal = document.getElementById('xVal');
+const feedBtn = document.getElementById('feedBtn');
+const clearBtn = document.getElementById('clearBtn');
+const statusLine = document.getElementById('statusLine');
+
+const fxLabel = document.getElementById('fxLabel');
+const xReadout = document.getElementById('xReadout');
+const yReadout = document.getElementById('yReadout');
+const domainReadout = document.getElementById('domainReadout');
+const rangeReadout = document.getElementById('rangeReadout');
+const historyBody = document.getElementById('historyBody');
+
+const machineStage = document.getElementById('machineStage');
+const mctx = machineStage.getContext('2d');
+const graphStage = document.getElementById('graphStage');
+const gctx = graphStage.getContext('2d');
+
+function cssVar(name) { return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+
+/* ---------- expression compiler ---------- */
+function compileExpression(raw) {
+  let s = raw.replace(/\s+/g, '').toLowerCase();
+  s = s.replace(/(\d)([a-z(])/g, '$1*$2');
+  s = s.replace(/(x)(\()/g, '$1*$2');
+  s = s.replace(/(\))([a-z0-9(])/g, '$1*$2');
+  let i = 0;
+
+  function peek() { return s[i]; }
+  function err(msg) { throw new Error(msg); }
+
+  function parseExpr() {
+    let left = parseTerm();
+    while (peek() === '+' || peek() === '-') {
+      const op = s[i++];
+      const right = parseTerm();
+      const l = left;
+      left = op === '+' ? (x => l(x) + right(x)) : (x => l(x) - right(x));
+    }
+    return left;
+  }
+  function parseTerm() {
+    let left = parseUnary();
+    while (peek() === '*' || peek() === '/') {
+      const op = s[i++];
+      const right = parseUnary();
+      const l = left;
+      left = op === '*' ? (x => l(x) * right(x)) : (x => l(x) / right(x));
+    }
+    return left;
+  }
+  function parseUnary() {
+    if (peek() === '-') { i++; const f = parseUnary(); return x => -f(x); }
+    if (peek() === '+') { i++; return parseUnary(); }
+    return parsePower();
+  }
+  function parsePower() {
+    const base = parsePrimary();
+    if (peek() === '^') {
+      i++;
+      const exp = parseUnary();
+      return x => Math.pow(base(x), exp(x));
+    }
+    return base;
+  }
+  const funcs = { sqrt: Math.sqrt, abs: Math.abs, sin: Math.sin, cos: Math.cos, tan: Math.tan, log: Math.log10, ln: Math.log, exp: Math.exp };
+  function parsePrimary() {
+    if (peek() === '(') {
+      i++;
+      const e = parseExpr();
+      if (peek() !== ')') err('Missing closing parenthesis');
+      i++;
+      return e;
+    }
+    if (/[0-9.]/.test(peek())) {
+      let numStr = '';
+      while (i < s.length && /[0-9.]/.test(s[i])) { numStr += s[i]; i++; }
+      const val = parseFloat(numStr);
+      return () => val;
+    }
+    if (/[a-z]/.test(peek())) {
+      let name = '';
+      while (i < s.length && /[a-z]/.test(s[i])) { name += s[i]; i++; }
+      if (name === 'x') return x => x;
+      if (funcs[name]) {
+        if (peek() !== '(') err('Expected ( after ' + name);
+        i++;
+        const arg = parseExpr();
+        if (peek() !== ')') err('Missing closing parenthesis');
+        i++;
+        const fn = funcs[name];
+        return x => fn(arg(x));
+      }
+      err('Unknown identifier: ' + name);
+    }
+    err('Unexpected character: "' + peek() + '"');
+  }
+
+  if (!s) err('Enter a formula');
+  const result = parseExpr();
+  if (i < s.length) err('Unexpected trailing characters');
+  return result;
+}
+
+let fn = compileExpression('2*x+1');
+let formulaValid = true;
+let history = [];
+let animState = null;
+
+function safeEval(x) {
+  try {
+    const y = fn(x);
+    return isFinite(y) ? y : NaN;
+  } catch (e) {
+    return NaN;
+  }
+}
+
+function formatNum(n) {
+  if (!isFinite(n)) return 'undefined';
+  const r = Math.round(n * 1000) / 1000;
+  return Object.is(r, -0) ? '0' : r.toString();
+}
+
+function updateFormula() {
+  const raw = formulaInput.value;
+  try {
+    fn = compileExpression(raw);
+    formulaValid = true;
+    statusLine.textContent = '';
+    fxLabel.textContent = 'f(x) = ' + raw;
+  } catch (e) {
+    formulaValid = false;
+    statusLine.textContent = 'Formula error: ' + e.message;
+  }
+  computeDomainRange();
+  drawGraph();
+  drawMachine();
+}
+
+function computeDomainRange() {
+  if (!formulaValid) { domainReadout.textContent = '—'; rangeReadout.textContent = '—'; return; }
+  const xMin = -10, xMax = 10, steps = 500;
+  const intervals = [];
+  let curStart = null, xPrev = null;
+  let yMin = Infinity, yMax = -Infinity;
+  for (let k = 0; k <= steps; k++) {
+    const x = xMin + (k / steps) * (xMax - xMin);
+    const y = safeEval(x);
+    const valid = isFinite(y);
+    if (valid) {
+      if (curStart === null) curStart = x;
+      if (y < yMin) yMin = y;
+      if (y > yMax) yMax = y;
+    } else if (curStart !== null) {
+      intervals.push([curStart, xPrev]);
+      curStart = null;
+    }
+    xPrev = x;
+  }
+  if (curStart !== null) intervals.push([curStart, xMax]);
+
+  domainReadout.textContent = intervals.length
+    ? intervals.map(iv => '[' + iv[0].toFixed(1) + ', ' + iv[1].toFixed(1) + ']').join(' ∪ ')
+    : 'undefined everywhere in view';
+  rangeReadout.textContent = isFinite(yMin) ? '[' + formatNum(yMin) + ', ' + formatNum(yMax) + ']' : 'undefined everywhere in view';
+}
+
+function worldToPxGraph(x, y, view) {
+  const w = graphStage.width, h = graphStage.height;
+  const marginL = 34, marginR = 14, marginT = 14, marginB = 26;
+  const usableW = w - marginL - marginR, usableH = h - marginT - marginB;
+  const px = marginL + ((x - view.xMin) / (view.xMax - view.xMin)) * usableW;
+  const py = marginT + usableH - ((y - view.yMin) / (view.yMax - view.yMin)) * usableH;
+  return { x: px, y: py };
+}
+
+function drawGraph() {
+  const w = graphStage.width, h = graphStage.height;
+  gctx.clearRect(0, 0, w, h);
+  const bg = cssVar('--bg-2');
+  const grad = gctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, bg);
+  grad.addColorStop(1, cssVar('--bg'));
+  gctx.fillStyle = grad;
+  gctx.fillRect(0, 0, w, h);
+
+  const view = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+
+  const marginL = 34, marginR = 14, marginT = 14, marginB = 26;
+  gctx.strokeStyle = cssVar('--border-soft');
+  gctx.lineWidth = 1;
+  gctx.font = '9px JetBrains Mono';
+  gctx.fillStyle = cssVar('--text-faint');
+  for (let gx = -10; gx <= 10; gx += 5) {
+    const p = worldToPxGraph(gx, 0, view);
+    gctx.beginPath(); gctx.moveTo(p.x, marginT); gctx.lineTo(p.x, h - marginB); gctx.stroke();
+  }
+  for (let gy = -10; gy <= 10; gy += 5) {
+    const p = worldToPxGraph(0, gy, view);
+    gctx.beginPath(); gctx.moveTo(marginL, p.y); gctx.lineTo(w - marginR, p.y); gctx.stroke();
+  }
+
+  const O = worldToPxGraph(0, 0, view);
+  gctx.strokeStyle = cssVar('--border');
+  gctx.lineWidth = 1.4;
+  gctx.beginPath(); gctx.moveTo(marginL, O.y); gctx.lineTo(w - marginR, O.y); gctx.stroke();
+  gctx.beginPath(); gctx.moveTo(O.x, marginT); gctx.lineTo(O.x, h - marginB); gctx.stroke();
+
+  if (formulaValid) {
+    gctx.strokeStyle = cssVar('--gold');
+    gctx.lineWidth = 2;
+    gctx.beginPath();
+    let drawing = false;
+    const steps = 300;
+    for (let k = 0; k <= steps; k++) {
+      const x = view.xMin + (k / steps) * (view.xMax - view.xMin);
+      const y = safeEval(x);
+      if (!isFinite(y) || y < view.yMin - 2 || y > view.yMax + 2) { drawing = false; continue; }
+      const p = worldToPxGraph(x, y, view);
+      if (!drawing) { gctx.moveTo(p.x, p.y); drawing = true; } else { gctx.lineTo(p.x, p.y); }
+    }
+    gctx.stroke();
+  }
+
+  // history trail
+  history.forEach((h_, idx) => {
+    if (!isFinite(h_.y)) return;
+    const p = worldToPxGraph(h_.x, h_.y, view);
+    const isLast = idx === history.length - 1;
+    gctx.fillStyle = isLast ? cssVar('--gold-light') : 'rgba(244,197,15,0.35)';
+    gctx.beginPath();
+    gctx.arc(p.x, p.y, isLast ? 5.5 : 3, 0, Math.PI * 2);
+    gctx.fill();
+    if (isLast) {
+      gctx.strokeStyle = cssVar('--border');
+      gctx.lineWidth = 1;
+      gctx.stroke();
+    }
+  });
+
+  gctx.fillStyle = cssVar('--text-faint');
+  gctx.font = '9px JetBrains Mono';
+  gctx.fillText('x', w - marginR - 8, O.y - 6);
+  gctx.fillText('y', O.x + 6, marginT + 8);
+}
+
+function drawGears(cx, cy, r, angle, color) {
+  mctx.save();
+  mctx.translate(cx, cy);
+  mctx.rotate(angle);
+  mctx.strokeStyle = color;
+  mctx.lineWidth = 2;
+  mctx.beginPath();
+  mctx.arc(0, 0, r, 0, Math.PI * 2);
+  mctx.stroke();
+  for (let t = 0; t < 8; t++) {
+    const a = (t / 8) * Math.PI * 2;
+    mctx.beginPath();
+    mctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+    mctx.lineTo(Math.cos(a) * (r + 5), Math.sin(a) * (r + 5));
+    mctx.stroke();
+  }
+  mctx.restore();
+}
+
+let gearAngle = 0;
+function drawMachine() {
+  const w = machineStage.width, h = machineStage.height;
+  mctx.clearRect(0, 0, w, h);
+  const bg = cssVar('--bg-2');
+  const grad = mctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, bg);
+  grad.addColorStop(1, cssVar('--bg'));
+  mctx.fillStyle = grad;
+  mctx.fillRect(0, 0, w, h);
+
+  const cx = w / 2;
+
+  // funnel (IN)
+  mctx.strokeStyle = cssVar('--border');
+  mctx.lineWidth = 1.6;
+  mctx.beginPath();
+  mctx.moveTo(cx - 55, 20);
+  mctx.lineTo(cx + 55, 20);
+  mctx.lineTo(cx + 18, 60);
+  mctx.lineTo(cx - 18, 60);
+  mctx.closePath();
+  mctx.stroke();
+  mctx.fillStyle = cssVar('--text-faint');
+  mctx.font = '10px JetBrains Mono';
+  mctx.textAlign = 'center';
+  mctx.fillText('IN', cx, 14);
+
+  // body
+  const bodyTop = 60, bodyBottom = 280;
+  mctx.strokeStyle = cssVar('--border');
+  mctx.lineWidth = 1.6;
+  mctx.strokeRect(cx - 65, bodyTop, 130, bodyBottom - bodyTop);
+  mctx.fillStyle = 'rgba(47,168,232,0.05)';
+  mctx.fillRect(cx - 65, bodyTop, 130, bodyBottom - bodyTop);
+
+  mctx.fillStyle = cssVar('--gold-light');
+  mctx.font = '600 13px Poppins';
+  mctx.textAlign = 'center';
+  const raw = formulaInput.value || '?';
+  mctx.fillText('f(x) =', cx, bodyTop + 45);
+  mctx.font = '600 12px JetBrains Mono';
+  mctx.fillText(raw.length > 14 ? raw.slice(0, 14) + '…' : raw, cx, bodyTop + 65);
+
+  drawGears(cx - 32, bodyTop + 110, 16, gearAngle, cssVar('--blue-light'));
+  drawGears(cx + 32, bodyTop + 145, 12, -gearAngle * 1.4, cssVar('--gold-light'));
+
+  // chute (OUT)
+  mctx.beginPath();
+  mctx.moveTo(cx - 18, bodyBottom);
+  mctx.lineTo(cx + 18, bodyBottom);
+  mctx.lineTo(cx + 40, bodyBottom + 30);
+  mctx.lineTo(cx - 40, bodyBottom + 30);
+  mctx.closePath();
+  mctx.strokeStyle = cssVar('--border');
+  mctx.stroke();
+  mctx.fillStyle = cssVar('--text-faint');
+  mctx.fillText('OUT', cx, bodyBottom + 46);
+  mctx.textAlign = 'left';
+
+  // animated ball
+  if (animState) {
+    const t = animState.t;
+    let by;
+    let bx = cx;
+    let color = cssVar('--blue-light');
+    let label = null;
+    if (t < 0.3) {
+      by = 10 + (t / 0.3) * (bodyTop + 20 - 10);
+    } else if (t < 0.75) {
+      by = bodyTop + 20 + Math.sin(t * 40) * 4;
+      color = cssVar('--gold-light');
+    } else {
+      const tt = (t - 0.75) / 0.25;
+      by = (bodyTop + 20) + tt * ((bodyBottom + 40) - (bodyTop + 20));
+      color = animState.success ? cssVar('--gold-light') : cssVar('--warn');
+      if (tt > 0.5) label = animState.success ? formatNum(animState.y) : '✕';
+    }
+    mctx.fillStyle = color;
+    mctx.beginPath();
+    mctx.arc(bx, by, 9, 0, Math.PI * 2);
+    mctx.fill();
+    mctx.strokeStyle = cssVar('--border');
+    mctx.lineWidth = 1;
+    mctx.stroke();
+    if (label !== null) {
+      mctx.fillStyle = cssVar('--text');
+      mctx.font = '600 12px JetBrains Mono';
+      mctx.textAlign = 'center';
+      mctx.fillText(label, bx, by + 26);
+      mctx.textAlign = 'left';
+    }
+  }
+}
+
+function renderLoop() {
+  gearAngle += 0.015;
+  if (animState) {
+    animState.t = Math.min(1, animState.t + 0.014);
+    if (animState.t >= 1) {
+      setTimeout(() => { animState = null; drawMachine(); }, 500);
+    }
+  }
+  drawMachine();
+  requestAnimationFrame(renderLoop);
+}
+
+function feedX() {
+  if (!formulaValid) { statusLine.textContent = 'Fix the formula before feeding a value.'; return; }
+  const x = parseFloat(xSlider.value);
+  const y = safeEval(x);
+  const success = isFinite(y);
+  history.push({ x, y });
+  if (history.length > 8) history.shift();
+  renderHistory();
+  xReadout.textContent = formatNum(x);
+  yReadout.innerHTML = success ? formatNum(y) : '<span class="fail" style="color:var(--warn)">undefined</span>';
+  statusLine.textContent = success ? '' : 'x = ' + formatNum(x) + ' is outside the domain of this function.';
+  animState = { t: 0, y, success };
+  drawGraph();
+}
+
+function renderHistory() {
+  historyBody.innerHTML = '';
+  [...history].reverse().forEach(h_ => {
+    const tr = document.createElement('tr');
+    const outClass = isFinite(h_.y) ? 'out' : 'out fail';
+    tr.innerHTML = '<td>' + formatNum(h_.x) + '</td><td class="' + outClass + '">' + (isFinite(h_.y) ? formatNum(h_.y) : 'undefined') + '</td>';
+    historyBody.appendChild(tr);
+  });
+}
+
+xSlider.addEventListener('input', () => { xVal.textContent = parseFloat(xSlider.value).toFixed(1); });
+
+presetSelect.addEventListener('change', () => {
+  formulaInput.value = presetSelect.value;
+  updateFormula();
+});
+
+formulaInput.addEventListener('change', updateFormula);
+formulaInput.addEventListener('keydown', e => { if (e.key === 'Enter') updateFormula(); });
+
+feedBtn.addEventListener('click', feedX);
+clearBtn.addEventListener('click', () => {
+  history = [];
+  renderHistory();
+  xReadout.textContent = '—';
+  yReadout.textContent = '—';
+  statusLine.textContent = '';
+  drawGraph();
+});
+
+updateFormula();
+renderHistory();
+renderLoop();
+</script>
+</body>
+</html>

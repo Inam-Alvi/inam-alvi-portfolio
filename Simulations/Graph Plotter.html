@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Graph Plotter | Inam Alvi</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Chart.js Zoom Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161920;
+            --border-color: #242936;
+            --text-white: #ffffff;
+            --text-secondary: #94a3b8;
+            --heading-yellow: #ffd000;
+            --subheading-blue: #00aeef;
+            --accent-pink: #ff2a6d;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --button-hover: #e6bb00;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --input-bg: #1e2430;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-white: #0f172a;
+            --text-secondary: #475569;
+            --heading-yellow: #d97706;
+            --subheading-blue: #0284c7;
+            --accent-pink: #e11d48;
+            --accent-green: #059669;
+            --accent-orange: #ea580c;
+            --button-hover: #b45309;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --input-bg: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+            height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--heading-yellow);
+            border-radius: 2px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--heading-yellow);
+        }
+
+        .sidebar-header h2 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--subheading-blue);
+            margin-top: 2px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .input-group input {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        [data-theme="light"] .input-group input {
+            color: #0f172a;
+        }
+
+        .input-group input:focus {
+            border-color: var(--heading-yellow);
+            box-shadow: 0 0 20px rgba(255, 208, 0, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .error-msg {
+            font-size: 0.8rem;
+            color: var(--accent-pink);
+            min-height: 20px;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--heading-yellow);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 174, 239, 0.1);
+            transform: scale(1.02);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 42, 109, 0.1);
+            transform: scale(1.02);
+        }
+
+        .btn-success {
+            background: transparent;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .btn-success:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.02);
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            margin-bottom: 6px;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .preset-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--heading-yellow);
+            color: var(--heading-yellow);
+            background: rgba(255, 208, 0, 0.05);
+        }
+
+        .preset-btn .math {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-white);
+        }
+
+        [data-theme="light"] .preset-btn .math {
+            color: #0f172a;
+        }
+
+        .preset-btn:hover .math {
+            color: var(--heading-yellow);
+        }
+
+        /* Table of Values */
+        .table-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .table-container th {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 10px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .table-container td {
+            padding: 4px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .table-container tr:hover td {
+            background: rgba(255, 208, 0, 0.05);
+        }
+
+        .table-container .highlight-row td {
+            color: var(--heading-yellow);
+            font-weight: 600;
+        }
+
+        /* Main Graph Area */
+        .main-area {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .graph-header h3 {
+            font-size: 1rem;
+            color: var(--subheading-blue);
+        }
+
+        .graph-header .equation-display {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--heading-yellow);
+            font-family: 'Courier New', monospace;
+        }
+
+        .graph-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .graph-controls .btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+
+        .chart-container {
+            flex: 1;
+            min-height: 400px;
+            position: relative;
+        }
+
+        #graphCanvas {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 400px;
+        }
+
+        .domain-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .domain-controls label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .domain-controls input {
+            width: 60px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        [data-theme="light"] .domain-controls input {
+            color: #0f172a;
+        }
+
+        .domain-controls input:focus {
+            border-color: var(--heading-yellow);
+            outline: none;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: var(--subheading-blue);
+            font-weight: 400;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--heading-yellow);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .sidebar {
+                max-height: 500px;
+            }
+            .chart-container {
+                min-height: 350px;
+            }
+            #graphCanvas {
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .preset-grid { grid-template-columns: 1fr 1fr; }
+            .domain-controls { flex-direction: column; align-items: stretch; }
+            .domain-controls label { justify-content: space-between; }
+            .graph-header { flex-direction: column; align-items: stretch; }
+            .graph-controls { justify-content: center; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h1>📈 Graph Plotter</h1>
+                    <button class="theme-toggle" id="themeToggleBtn">
+                        <span id="themeIcon">☀️</span>
+                    </button>
+                </div>
+                <h2>Interactive Mathematics</h2>
+                <p>Plot functions, explore graphs, learn visually</p>
+            </div>
+
+            <!-- Equation Input -->
+            <div class="input-group">
+                <label for="equationInput">📐 Enter Equation</label>
+                <input type="text" id="equationInput" 
+                       placeholder="e.g., x^2 - 4 or Math.sin(x)" 
+                       value="x^2 - 4">
+                <div class="error-msg" id="errorMsg"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="plotBtn">📊 Plot Graph</button>
+                <button class="btn btn-secondary" id="resetViewBtn">🔄 Reset View</button>
+                <button class="btn btn-danger" id="clearBtn">✖ Clear</button>
+            </div>
+
+            <!-- Presets -->
+            <div>
+                <div class="section-title">⚡ Quick Presets</div>
+                <div class="preset-grid">
+                    <button class="preset-btn" data-equation="2*x + 1"><span class="math">y = 2x + 1</span>Linear</button>
+                    <button class="preset-btn" data-equation="x^2 - 4"><span class="math">y = x² − 4</span>Quadratic</button>
+                    <button class="preset-btn" data-equation="x^3 - 3*x"><span class="math">y = x³ − 3x</span>Cubic</button>
+                    <button class="preset-btn" data-equation="Math.sin(x)"><span class="math">y = sin(x)</span>Trigonometric</button>
+                    <button class="preset-btn" data-equation="Math.pow(2, x)"><span class="math">y = 2ˣ</span>Exponential</button>
+                    <button class="preset-btn" data-equation="1/x"><span class="math">y = 1/x</span>Rational</button>
+                </div>
+            </div>
+
+            <!-- Table of Values -->
+            <div>
+                <div class="section-title">📊 Table of Values</div>
+                <div class="table-container" id="tableContainer">
+                    <table>
+                        <thead>
+                            <tr><th>x</th><th>y</th></tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr><td colspan="2" style="text-align:center; color:var(--text-secondary);">Plot a function to see values</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div>
+                <div class="section-title">🎯 Key Features</div>
+                <div id="keyFeatures" style="font-size:0.8rem; color:var(--text-secondary); min-height:40px;">
+                    Plot a function to detect features
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Graph Area -->
+        <main class="main-area">
+            <div class="graph-header">
+                <div>
+                    <h3>📈 Graph View</h3>
+                    <div class="equation-display" id="equationDisplay">y = x² − 4</div>
+                </div>
+                <div class="graph-controls">
+                    <button class="btn btn-secondary" id="showTableBtn">📊 Show Table</button>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="graphCanvas"></canvas>
+            </div>
+
+            <!-- Domain Controls -->
+            <div class="domain-controls">
+                <label>X min: <input type="number" id="xMin" value="-10" step="1"></label>
+                <label>X max: <input type="number" id="xMax" value="10" step="1"></label>
+                <label>Y min: <input type="number" id="yMin" value="-10" step="1"></label>
+                <label>Y max: <input type="number" id="yMax" value="10" step="1"></label>
+                <label>Step: <input type="number" id="stepSize" value="0.1" step="0.05" min="0.01"></label>
+                <button class="btn btn-secondary" id="updateDomainBtn" style="padding:4px 12px; font-size:0.75rem;">Update</button>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        Designed & Developed by <span class="signature">Inam Alvi</span>
+    </footer>
+
+    <script>
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
+        let currentEquation = 'x^2 - 4';
+        let chartInstance = null;
+        let chartData = null;
+        let domain = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+        let stepSize = 0.1;
+        let debounceTimer = null;
+
+        // ============================================================
+        // MATH PARSER
+        // ============================================================
+        function parseEquation(expr) {
+            // Convert common notation to JavaScript math
+            let sanitized = expr
+                .replace(/\^/g, '**')                    // x^2 -> x**2
+                .replace(/Math\./g, 'Math.')              // Already valid
+                .replace(/(?<![a-zA-Z])sin\(/g, 'Math.sin(')
+                .replace(/(?<![a-zA-Z])cos\(/g, 'Math.cos(')
+                .replace(/(?<![a-zA-Z])tan\(/g, 'Math.tan(')
+                .replace(/(?<![a-zA-Z])sqrt\(/g, 'Math.sqrt(')
+                .replace(/(?<![a-zA-Z])log\(/g, 'Math.log(')
+                .replace(/(?<![a-zA-Z])abs\(/g, 'Math.abs(')
+                .replace(/(?<![a-zA-Z])exp\(/g, 'Math.exp(');
+
+            // Replace 'x' with 'x' (already valid)
+            // Validate: check for dangerous characters
+            const dangerous = /[;'"`<>]/;
+            if (dangerous.test(sanitized)) {
+                throw new Error('Invalid characters in equation');
+            }
+
+            // Create function
+            return new Function('x', `'use strict'; return (${sanitized});`);
+        }
+
+        function getEquationDisplay(expr) {
+            let display = expr
+                .replace(/\*\*/g, '^')
+                .replace(/Math\.sin/g, 'sin')
+                .replace(/Math\.cos/g, 'cos')
+                .replace(/Math\.tan/g, 'tan')
+                .replace(/Math\.sqrt/g, '√')
+                .replace(/Math\.pow\(([^,]+),\s*([^)]+)\)/g, '$1^$2')
+                .replace(/Math\.abs/g, '| |')
+                .replace(/Math\.log/g, 'log')
+                .replace(/Math\.exp/g, 'exp');
+            return 'y = ' + display;
+        }
+
+        // ============================================================
+        // CHART INITIALIZATION
+        // ============================================================
+        function initChart() {
+            const ctx = document.getElementById('graphCanvas').getContext('2d');
+
+            // Register zoom plugin
+            Chart.register(ChartZoom);
+
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'f(x)',
+                        data: [],
+                        borderColor: '#ffd000',
+                        backgroundColor: 'rgba(255, 208, 0, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        tension: 0.3,
+                        showLine: true,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 300
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `(${context.parsed.x.toFixed(4)}, ${context.parsed.y.toFixed(4)})`;
+                                }
+                            }
+                        },
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'xy',
+                                modifierKey: 'shift',
+                            },
+                            zoom: {
+                                wheel: {
+                                    enabled: true,
+                                    speed: 0.05,
+                                },
+                                pinch: {
+                                    enabled: true,
+                                },
+                                mode: 'xy',
+                            },
+                            limits: {
+                                x: { min: -100, max: 100 },
+                                y: { min: -100, max: 100 }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: domain.xMin,
+                            max: domain.xMax,
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.15)',
+                                drawTicks: true,
+                            },
+                            title: {
+                                display: true,
+                                text: 'x',
+                                color: '#94a3b8',
+                                font: { weight: 'bold', size: 12 }
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                maxTicksLimit: 15,
+                            }
+                        },
+                        y: {
+                            min: domain.yMin,
+                            max: domain.yMax,
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.15)',
+                                drawTicks: true,
+                            },
+                            title: {
+                                display: true,
+                                text: 'y',
+                                color: '#94a3b8',
+                                font: { weight: 'bold', size: 12 }
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                maxTicksLimit: 15,
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update chart with current equation
+            plotEquation(currentEquation);
+        }
+
+        // ============================================================
+        // PLOTTING FUNCTION
+        // ============================================================
+        function plotEquation(expr) {
+            const errorEl = document.getElementById('errorMsg');
+            errorEl.textContent = '';
+
+            try {
+                const fn = parseEquation(expr);
+                const points = [];
+                const step = parseFloat(document.getElementById('stepSize').value) || 0.1;
+                const xMin = parseFloat(document.getElementById('xMin').value) || -10;
+                const xMax = parseFloat(document.getElementById('xMax').value) || 10;
+
+                let validPoints = 0;
+                for (let x = xMin; x <= xMax; x += step) {
+                    try {
+                        const y = fn(x);
+                        if (isFinite(y) && !isNaN(y)) {
+                            points.push({ x: x, y: y });
+                            validPoints++;
+                        }
+                    } catch (e) {
+                        // Skip invalid points
+                    }
+                }
+
+                if (validPoints === 0) {
+                    throw new Error('No valid points generated. Check your equation.');
+                }
+
+                currentEquation = expr;
+                chartData = points;
+
+                // Update chart
+                chartInstance.data.datasets[0].data = points;
+                chartInstance.data.datasets[0].borderColor = getThemeColor();
+                chartInstance.update('none');
+
+                // Update display
+                document.getElementById('equationDisplay').textContent = getEquationDisplay(expr);
+
+                // Update table
+                updateTable(points);
+
+                // Update key features
+                updateKeyFeatures(points, fn);
+
+            } catch (error) {
+                errorEl.textContent = '⚠️ ' + error.message;
+                // Keep previous data if available
+                if (chartData && chartData.length > 0) {
+                    chartInstance.data.datasets[0].data = chartData;
+                    chartInstance.update('none');
+                }
+            }
+        }
+
+        // ============================================================
+        // TABLE OF VALUES
+        // ============================================================
+        function updateTable(points) {
+            const tbody = document.getElementById('tableBody');
+            if (!points || points.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--text-secondary);">No data available</td></tr>';
+                return;
+            }
+
+            // Sample points (limit to ~20 for readability)
+            const step = Math.max(1, Math.floor(points.length / 20));
+            const sampled = points.filter((_, i) => i % step === 0);
+
+            let html = '';
+            // Find y=0 crossings for highlighting
+            const zeroCrossings = [];
+            for (let i = 1; i < points.length; i++) {
+                if ((points[i-1].y * points[i].y) < 0) {
+                    zeroCrossings.push(points[i].x);
+                }
+            }
+
+            for (const p of sampled) {
+                const isHighlight = Math.abs(p.y) < 0.01 || zeroCrossings.some(z => Math.abs(z - p.x) < 0.1);
+                html += `<tr class="${isHighlight ? 'highlight-row' : ''}">
+                            <td>${p.x.toFixed(4)}</td>
+                            <td>${p.y.toFixed(4)}</td>
+                        </tr>`;
+            }
+            tbody.innerHTML = html;
+        }
+
+        // ============================================================
+        // KEY FEATURES DETECTION
+        // ============================================================
+        function updateKeyFeatures(points, fn) {
+            const container = document.getElementById('keyFeatures');
+
+            if (!points || points.length < 2) {
+                container.innerHTML = '📊 Not enough data to detect features.';
+                return;
+            }
+
+            let features = [];
+
+            // Find y-intercept (x=0)
+            let yIntercept = null;
+            for (const p of points) {
+                if (Math.abs(p.x) < 0.01) {
+                    yIntercept = p.y;
+                    break;
+                }
+            }
+            if (yIntercept !== null) {
+                features.push(`✅ y-intercept: (0, ${yIntercept.toFixed(4)})`);
+            }
+
+            // Find roots (y=0 crossings)
+            const roots = [];
+            for (let i = 1; i < points.length; i++) {
+                const p1 = points[i-1];
+                const p2 = points[i];
+                if ((p1.y * p2.y) < 0) {
+                    // Linear interpolation for root
+                    const t = -p1.y / (p2.y - p1.y);
+                    const rootX = p1.x + t * (p2.x - p1.x);
+                    roots.push(rootX);
+                } else if (Math.abs(p1.y) < 0.001) {
+                    roots.push(p1.x);
+                }
+            }
+
+            // Remove duplicates
+            const uniqueRoots = [];
+            for (const r of roots) {
+                if (!uniqueRoots.some(u => Math.abs(u - r) < 0.01)) {
+                    uniqueRoots.push(r);
+                }
+            }
+
+            if (uniqueRoots.length > 0) {
+                const rootStr = uniqueRoots.map(r => r.toFixed(4)).join(', ');
+                features.push(`🎯 Roots (x-intercepts): ${rootStr}`);
+            } else {
+                features.push('🔍 No real roots detected');
+            }
+
+            // Detect asymptotes (vertical)
+            let asymptotes = [];
+            for (let i = 1; i < points.length; i++) {
+                const p1 = points[i-1];
+                const p2 = points[i];
+                if (Math.abs(p2.y - p1.y) > 1000) {
+                    asymptotes.push((p1.x + p2.x) / 2);
+                }
+            }
+
+            if (asymptotes.length > 0) {
+                const uniqueAsym = [];
+                for (const a of asymptotes) {
+                    if (!uniqueAsym.some(u => Math.abs(u - a) < 0.1)) {
+                        uniqueAsym.push(a);
+                    }
+                }
+                if (uniqueAsym.length > 0) {
+                    features.push(`⚡ Vertical asymptotes near: ${uniqueAsym.map(a => a.toFixed(2)).join(', ')}`);
+                }
+            }
+
+            container.innerHTML = features.length > 0 ? features.join(' | ') : '🔍 No key features detected.';
+        }
+
+        // ============================================================
+        // THEME SUPPORT
+        // ============================================================
+        function getThemeColor() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            return isDark ? '#ffd000' : '#d97706';
+        }
+
+        function updateChartColors() {
+            if (chartInstance) {
+                chartInstance.data.datasets[0].borderColor = getThemeColor();
+                chartInstance.update('none');
+            }
+        }
+
+        // ============================================================
+        // UI CONTROLS
+        // ============================================================
+        document.getElementById('plotBtn').addEventListener('click', function() {
+            const expr = document.getElementById('equationInput').value.trim();
+            if (expr) plotEquation(expr);
+        });
+
+        document.getElementById('equationInput').addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const expr = this.value.trim();
+                if (expr) plotEquation(expr);
+            }, 500);
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const eq = this.dataset.equation;
+                document.getElementById('equationInput').value = eq;
+                plotEquation(eq);
+            });
+        });
+
+        // Reset view
+        document.getElementById('resetViewBtn').addEventListener('click', function() {
+            document.getElementById('xMin').value = -10;
+            document.getElementById('xMax').value = 10;
+            document.getElementById('yMin').value = -10;
+            document.getElementById('yMax').value = 10;
+            document.getElementById('stepSize').value = 0.1;
+            updateDomain();
+            chartInstance.resetZoom();
+        });
+
+        // Clear
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            if (chartInstance) {
+                chartInstance.data.datasets[0].data = [];
+                chartInstance.update('none');
+                document.getElementById('equationDisplay').textContent = 'y = ';
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="2" style="text-align:center; color:var(--text-secondary);">Plot a function to see values</td></tr>';
+                document.getElementById('keyFeatures').innerHTML = 'Plot a function to detect features';
+            }
+        });
+
+        // Update domain
+        document.getElementById('updateDomainBtn').addEventListener('click', updateDomain);
+
+        function updateDomain() {
+            const xMin = parseFloat(document.getElementById('xMin').value);
+            const xMax = parseFloat(document.getElementById('xMax').value);
+            const yMin = parseFloat(document.getElementById('yMin').value);
+            const yMax = parseFloat(document.getElementById('yMax').value);
+
+            if (isNaN(xMin) || isNaN(xMax) || isNaN(yMin) || isNaN(yMax)) return;
+
+            domain = { xMin, xMax, yMin, yMax };
+
+            if (chartInstance) {
+                chartInstance.options.scales.x.min = xMin;
+                chartInstance.options.scales.x.max = xMax;
+                chartInstance.options.scales.y.min = yMin;
+                chartInstance.options.scales.y.max = yMax;
+                chartInstance.update('none');
+            }
+
+            // Re-plot with new domain
+            const expr = document.getElementById('equationInput').value.trim();
+            if (expr) plotEquation(expr);
+        }
+
+        // Show table toggle
+        let tableVisible = true;
+        document.getElementById('showTableBtn').addEventListener('click', function() {
+            const container = document.getElementById('tableContainer');
+            tableVisible = !tableVisible;
+            container.style.display = tableVisible ? 'block' : 'none';
+            this.textContent = tableVisible ? '📊 Hide Table' : '📊 Show Table';
+        });
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        document.getElementById('themeToggleBtn').addEventListener('click', function() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                body.setAttribute('data-theme', 'light');
+                document.getElementById('themeIcon').textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+            updateChartColors();
+            // Update chart grid colors
+            if (chartInstance) {
+                const isDarkNow = document.body.getAttribute('data-theme') === 'dark';
+                const gridColor = isDarkNow ? 'rgba(148, 163, 184, 0.15)' : 'rgba(100, 116, 139, 0.2)';
+                chartInstance.options.scales.x.grid.color = gridColor;
+                chartInstance.options.scales.y.grid.color = gridColor;
+                chartInstance.update('none');
+            }
+        });
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.getElementById('equationInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const expr = this.value.trim();
+                if (expr) plotEquation(expr);
+            }
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        window.onload = function() {
+            initChart();
+            // Auto-plot initial equation
+            setTimeout(() => {
+                plotEquation('x^2 - 4');
+            }, 100);
+        };
+
+        // Handle resize
+        window.addEventListener('resize', function() {
+            if (chartInstance) {
+                chartInstance.resize();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molecular Geometry / VSEPR — Inam Alvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg-2: #131313;
+    --surface: #161616;
+    --surface-2: #1c1c1c;
+    --surface-3: #262626;
+    --blue: #2fa8e8;
+    --blue-light: #6dc4f4;
+    --gold: #f4c50f;
+    --gold-light: #ffdb4d;
+    --text: #ffffff;
+    --text-muted: #b0b0b0;
+    --text-faint: #707070;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-blue: rgba(47, 168, 232, 0.45);
+    --border-soft: rgba(255, 255, 255, 0.07);
+    --shadow-glow: rgba(244, 197, 15, 0.14);
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f4f4;
+    --bg-2: #ececec;
+    --surface: #ffffff;
+    --surface-2: #f7f7f7;
+    --surface-3: #ececec;
+    --blue: #1c85bd;
+    --blue-light: #0c6595;
+    --gold: #b3860a;
+    --gold-light: #8f6b06;
+    --text: #111111;
+    --text-muted: #4a4a4a;
+    --text-faint: #8a8a8a;
+    --border: rgba(0, 0, 0, 0.14);
+    --border-blue: rgba(28, 133, 189, 0.4);
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --shadow-glow: rgba(179, 134, 10, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 28px 20px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 22px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .eyebrow { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; color: var(--blue); margin: 0 0 8px; }
+  h1 { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.01em; color: var(--text); }
+  h1 span { color: var(--gold); }
+  .sub { color: var(--text-muted); font-size: 14px; margin: 10px 0 0; max-width: 500px; line-height: 1.6; }
+
+  .toggle { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer; user-select: none; }
+  .toggle-track { width: 40px; height: 22px; border-radius: 999px; background: var(--surface-3); position: relative; border: 1px solid var(--border); }
+  .toggle-thumb { position: absolute; top: 1px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); transition: transform 0.3s ease; }
+  [data-theme="light"] .toggle-thumb { transform: translateX(18px); }
+  .toggle-label { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
+
+  .grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 22px; }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    box-shadow: 0 18px 40px -24px var(--shadow-glow);
+  }
+  .panel + .panel { margin-top: 20px; }
+
+  .panel-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); margin: 0 0 16px; letter-spacing: 0.01em; }
+  .panel-hint { font-size: 12px; color: var(--text-faint); margin: -10px 0 16px; }
+
+  .stage-outer {
+    perspective: 1100px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, var(--bg-2), var(--bg) 75%);
+    border: 1px solid var(--border-soft);
+  }
+
+  canvas#stage { display: block; width: 100%; cursor: grab; touch-action: none; }
+  canvas#stage:active { cursor: grabbing; }
+
+  .controls { margin-top: 18px; display: grid; gap: 14px; }
+  .select-row { display: grid; grid-template-columns: 128px 1fr; align-items: center; gap: 12px; }
+  .select-row label { font-size: 13px; color: var(--text-muted); }
+
+  select {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 9px 10px;
+    outline: none;
+    cursor: pointer;
+  }
+  select:hover { border-color: var(--border-blue); }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  button.action {
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 20px;
+    border-radius: 8px; border: 1.5px solid var(--border-blue); background: transparent; color: var(--blue);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  button.action:hover { background: rgba(47,168,232,0.1); }
+  button.action.primary { background: var(--gold); color: #171200; border: none; font-weight: 700; }
+  button.action.primary:hover { background: var(--gold-light); }
+  button.action.active { background: rgba(244,197,15,0.15); border-color: var(--gold); color: var(--gold); }
+
+  .legend { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.central { background: var(--gold); }
+  .dot.bond { background: var(--blue); }
+  .dot.lone { background: rgba(244,197,15,0.35); border: 1px solid var(--gold); }
+
+  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .stat { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 12px; padding: 12px 14px; }
+  .stat .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-faint); margin-bottom: 6px; }
+  .stat .num { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 500; color: var(--text); }
+  .stat.wide { grid-column: 1 / -1; }
+
+  .angle-list { display: grid; gap: 8px; margin-top: 4px; }
+  .angle-row { display: flex; justify-content: space-between; align-items: center; background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 8px; padding: 8px 12px; }
+  .angle-row .a-val { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-size: 14px; }
+  .angle-row .a-count { font-size: 11.5px; color: var(--text-faint); }
+
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+  .comp-table th { text-align: left; color: var(--text-faint); font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+  .comp-table td { padding: 6.5px 4px; border-bottom: 1px solid var(--border-soft); font-family: 'JetBrains Mono', monospace; color: var(--text); }
+  .comp-table td.name { font-family: 'Inter', sans-serif; color: var(--text-muted); }
+  .comp-table tr.active-row td { color: var(--gold); }
+
+  footer { display: flex; justify-content: flex-end; align-items: center; padding: 30px 10px 4px; }
+  .signature { font-family: 'Sacramento', cursive; font-size: 34px; font-weight: 400; color: var(--gold); opacity: 0.92; letter-spacing: 0.02em; }
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow">Chemistry · Molecular Geometry</p>
+      <h1>VSEPR <span>Builder</span></h1>
+      <p class="sub">Pick a real molecule or build your own with bonding pairs and lone pairs. Drag to rotate in 3D and read off the ideal bond angles.</p>
+    </div>
+    <div class="toggle" id="themeToggle">
+      <span class="toggle-label" id="themeLabel">Dark</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <div class="panel">
+      <p class="panel-title">Molecule viewer</p>
+      <div class="stage-outer">
+        <canvas id="stage" width="680" height="440"></canvas>
+      </div>
+
+      <div class="controls">
+        <div class="select-row">
+          <label for="presetSelect">Preset molecule</label>
+          <select id="presetSelect"></select>
+        </div>
+        <div class="select-row">
+          <label for="domainSelect">Electron domains</label>
+          <select id="domainSelect"></select>
+        </div>
+        <div class="select-row">
+          <label for="loneSelect">Lone pairs</label>
+          <select id="loneSelect"></select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="action primary" id="rotateBtn">Auto-rotate: On</button>
+        <button class="action" id="resetViewBtn">Reset view</button>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="dot central"></span>Central atom</div>
+        <div class="legend-item"><span class="dot bond"></span>Bonding atom</div>
+        <div class="legend-item"><span class="dot lone"></span>Lone pair</div>
+      </div>
+      <p class="panel-hint">Drag the molecule with your mouse or finger to rotate it.</p>
+    </div>
+
+    <div>
+      <div class="panel">
+        <p class="panel-title">Molecule info</p>
+        <div class="readouts">
+          <div class="stat wide"><div class="lbl">Molecule</div><div class="num" id="moleculeName">—</div></div>
+          <div class="stat"><div class="lbl">Notation</div><div class="num" id="axnemVal">—</div></div>
+          <div class="stat"><div class="lbl">Hybridization</div><div class="num" id="hybridVal">—</div></div>
+          <div class="stat wide"><div class="lbl">Electron-domain geometry</div><div class="num" id="edGeomVal">—</div></div>
+          <div class="stat wide"><div class="lbl">Molecular shape</div><div class="num" id="shapeVal">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Bond angles (ideal)</p>
+        <div class="angle-list" id="angleList"></div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">VSEPR reference</p>
+        <table class="comp-table" id="refTable">
+          <thead><tr><th>Notation</th><th>Shape</th><th>Angle</th></tr></thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><span class="signature">Inam Alvi</span></footer>
+
+</div>
+
+<script>
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+themeToggle.addEventListener('click', () => {
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeLabel.textContent = isDark ? 'Light' : 'Dark';
+});
+
+/* ---------- geometry data ---------- */
+
+function norm(v) { const l = Math.hypot(v[0], v[1], v[2]); return [v[0]/l, v[1]/l, v[2]/l]; }
+
+const tet = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);
+
+const domainSets = {
+  2: { positions: [[1,0,0],[-1,0,0]], lonePriority: [0,1] },
+  3: { positions: [[1,0,0],[-0.5,0.866,0],[-0.5,-0.866,0]], lonePriority: [0,1,2] },
+  4: { positions: tet, lonePriority: [0,1,2,3] },
+  5: { positions: [[0,0,1],[0,0,-1],[1,0,0],[-0.5,0.866,0],[-0.5,-0.866,0]], lonePriority: [2,3,4,0,1] },
+  6: { positions: [[0,0,1],[0,0,-1],[1,0,0],[-1,0,0],[0,1,0],[0,-1,0]], lonePriority: [0,1,2,3,4,5] }
+};
+
+const shapeInfo = {
+  '2-0': { shape:'Linear', edGeom:'Linear', angle:'180°', axnem:'AX2', hybrid:'sp' },
+  '3-0': { shape:'Trigonal planar', edGeom:'Trigonal planar', angle:'120°', axnem:'AX3', hybrid:'sp²' },
+  '3-1': { shape:'Bent', edGeom:'Trigonal planar', angle:'~119°', axnem:'AX2E', hybrid:'sp²' },
+  '4-0': { shape:'Tetrahedral', edGeom:'Tetrahedral', angle:'109.5°', axnem:'AX4', hybrid:'sp³' },
+  '4-1': { shape:'Trigonal pyramidal', edGeom:'Tetrahedral', angle:'~107°', axnem:'AX3E', hybrid:'sp³' },
+  '4-2': { shape:'Bent', edGeom:'Tetrahedral', angle:'~104.5°', axnem:'AX2E2', hybrid:'sp³' },
+  '5-0': { shape:'Trigonal bipyramidal', edGeom:'Trigonal bipyramidal', angle:'90° / 120°', axnem:'AX5', hybrid:'sp³d' },
+  '5-1': { shape:'Seesaw', edGeom:'Trigonal bipyramidal', angle:'~90° / 120° / 173°', axnem:'AX4E', hybrid:'sp³d' },
+  '5-2': { shape:'T-shaped', edGeom:'Trigonal bipyramidal', angle:'~90°', axnem:'AX3E2', hybrid:'sp³d' },
+  '5-3': { shape:'Linear', edGeom:'Trigonal bipyramidal', angle:'180°', axnem:'AX2E3', hybrid:'sp³d' },
+  '6-0': { shape:'Octahedral', edGeom:'Octahedral', angle:'90°', axnem:'AX6', hybrid:'sp³d²' },
+  '6-1': { shape:'Square pyramidal', edGeom:'Octahedral', angle:'~90°', axnem:'AX5E', hybrid:'sp³d²' },
+  '6-2': { shape:'Square planar', edGeom:'Octahedral', angle:'90°', axnem:'AX4E2', hybrid:'sp³d²' }
+};
+
+const presets = {
+  custom: null,
+  CO2:  { name:'Carbon Dioxide (CO₂)', domains:2, lone:0, central:'C', peripheral:'O' },
+  BF3:  { name:'Boron Trifluoride (BF₃)', domains:3, lone:0, central:'B', peripheral:'F' },
+  SO2:  { name:'Sulfur Dioxide (SO₂)', domains:3, lone:1, central:'S', peripheral:'O' },
+  CH4:  { name:'Methane (CH₄)', domains:4, lone:0, central:'C', peripheral:'H' },
+  NH3:  { name:'Ammonia (NH₃)', domains:4, lone:1, central:'N', peripheral:'H' },
+  H2O:  { name:'Water (H₂O)', domains:4, lone:2, central:'O', peripheral:'H' },
+  PCl5: { name:'Phosphorus Pentachloride (PCl₅)', domains:5, lone:0, central:'P', peripheral:'Cl' },
+  SF4:  { name:'Sulfur Tetrafluoride (SF₄)', domains:5, lone:1, central:'S', peripheral:'F' },
+  ClF3: { name:'Chlorine Trifluoride (ClF₃)', domains:5, lone:2, central:'Cl', peripheral:'F' },
+  XeF2: { name:'Xenon Difluoride (XeF₂)', domains:5, lone:3, central:'Xe', peripheral:'F' },
+  SF6:  { name:'Sulfur Hexafluoride (SF₆)', domains:6, lone:0, central:'S', peripheral:'F' },
+  BrF5: { name:'Bromine Pentafluoride (BrF₅)', domains:6, lone:1, central:'Br', peripheral:'F' },
+  XeF4: { name:'Xenon Tetrafluoride (XeF₄)', domains:6, lone:2, central:'Xe', peripheral:'F' }
+};
+
+/* ---------- DOM refs ---------- */
+const presetSelect = document.getElementById('presetSelect');
+const domainSelect = document.getElementById('domainSelect');
+const loneSelect = document.getElementById('loneSelect');
+const rotateBtn = document.getElementById('rotateBtn');
+const resetViewBtn = document.getElementById('resetViewBtn');
+
+const moleculeName = document.getElementById('moleculeName');
+const axnemVal = document.getElementById('axnemVal');
+const hybridVal = document.getElementById('hybridVal');
+const edGeomVal = document.getElementById('edGeomVal');
+const shapeVal = document.getElementById('shapeVal');
+const angleList = document.getElementById('angleList');
+const refTableBody = document.getElementById('refTableBody');
+
+const stage = document.getElementById('stage');
+const sctx = stage.getContext('2d');
+
+function cssVar(name) { return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+
+/* populate preset dropdown */
+Object.entries(presets).forEach(([key, p]) => {
+  const opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = key === 'custom' ? 'Custom (build your own)' : p.name;
+  presetSelect.appendChild(opt);
+});
+
+/* populate reference table */
+Object.entries(shapeInfo).forEach(([key, info]) => {
+  const tr = document.createElement('tr');
+  tr.dataset.key = key;
+  tr.innerHTML = '<td class="name">' + info.axnem + '</td><td class="name">' + info.shape + '</td><td>' + info.angle + '</td>';
+  refTableBody.appendChild(tr);
+});
+
+/* populate domain dropdown */
+[2,3,4,5,6].forEach(d => {
+  const opt = document.createElement('option');
+  opt.value = d;
+  opt.textContent = d + ' domains';
+  domainSelect.appendChild(opt);
+});
+
+function populateLoneSelect(domains) {
+  loneSelect.innerHTML = '';
+  Object.keys(shapeInfo).forEach(key => {
+    const [d, l] = key.split('-').map(Number);
+    if (d === domains) {
+      const opt = document.createElement('option');
+      opt.value = l;
+      opt.textContent = l + ' lone pair' + (l === 1 ? '' : 's');
+      loneSelect.appendChild(opt);
+    }
+  });
+}
+
+let molState = { domains: 4, lone: 0, central: 'A', peripheral: 'X' };
+let yaw = 0.5, pitch = -0.3, autoRotate = true, dragging = false, lastX = 0, lastY = 0;
+
+function applyMolState(domains, lone, central, peripheral) {
+  molState = { domains, lone, central, peripheral };
+  domainSelect.value = domains;
+  populateLoneSelect(domains);
+  loneSelect.value = lone;
+  updateInfo();
+}
+
+presetSelect.addEventListener('change', () => {
+  const key = presetSelect.value;
+  if (key === 'custom') return;
+  const p = presets[key];
+  applyMolState(p.domains, p.lone, p.central, p.peripheral);
+});
+
+domainSelect.addEventListener('change', () => {
+  presetSelect.value = 'custom';
+  const d = parseInt(domainSelect.value, 10);
+  populateLoneSelect(d);
+  const l = parseInt(loneSelect.value, 10);
+  applyMolState(d, l, 'A', 'X');
+});
+
+loneSelect.addEventListener('change', () => {
+  presetSelect.value = 'custom';
+  applyMolState(molState.domains, parseInt(loneSelect.value, 10), molState.central === 'A' ? 'A' : molState.central, molState.peripheral === 'X' ? 'X' : molState.peripheral);
+});
+
+function getPositions(domains, lone) {
+  const set = domainSets[domains];
+  const bonds = [], lones = [];
+  set.lonePriority.forEach((idx, i) => {
+    if (i < lone) lones.push(set.positions[idx]);
+    else bonds.push(set.positions[idx]);
+  });
+  return { bonds, lones };
+}
+
+function updateInfo() {
+  const key = molState.domains + '-' + molState.lone;
+  const info = shapeInfo[key];
+  const presetKey = presetSelect.value;
+  const isPreset = presetKey !== 'custom';
+
+  moleculeName.textContent = isPreset ? presets[presetKey].name : ('Custom · ' + info.axnem.replace('X', molState.peripheral === 'X' ? 'X' : molState.peripheral));
+  axnemVal.textContent = info.axnem;
+  hybridVal.textContent = info.hybrid;
+  edGeomVal.textContent = info.edGeom;
+  shapeVal.textContent = info.shape;
+
+  document.querySelectorAll('#refTableBody tr').forEach(tr => tr.classList.toggle('active-row', tr.dataset.key === key));
+
+  const { bonds } = getPositions(molState.domains, molState.lone);
+  const angles = [];
+  for (let i = 0; i < bonds.length; i++) {
+    for (let j = i + 1; j < bonds.length; j++) {
+      const dot = bonds[i][0]*bonds[j][0] + bonds[i][1]*bonds[j][1] + bonds[i][2]*bonds[j][2];
+      const deg = Math.acos(Math.max(-1, Math.min(1, dot))) * 180 / Math.PI;
+      angles.push(Math.round(deg * 10) / 10);
+    }
+  }
+  const counts = {};
+  angles.forEach(a => { counts[a] = (counts[a] || 0) + 1; });
+  const sorted = Object.keys(counts).map(Number).sort((a, b) => a - b);
+
+  angleList.innerHTML = '';
+  if (sorted.length === 0) {
+    angleList.innerHTML = '<div class="angle-row"><span class="a-val">—</span><span class="a-count">Only one bond — no angle to measure</span></div>';
+  } else {
+    sorted.forEach(a => {
+      const row = document.createElement('div');
+      row.className = 'angle-row';
+      row.innerHTML = '<span class="a-val">' + a.toFixed(1) + '°</span><span class="a-count">' + counts[a] + ' pair' + (counts[a] === 1 ? '' : 's') + '</span>';
+      angleList.appendChild(row);
+    });
+  }
+}
+
+/* ---------- 3D rendering ---------- */
+
+function rotatePoint(p, yaw, pitch) {
+  let [x, y, z] = p;
+  let cosY = Math.cos(yaw), sinY = Math.sin(yaw);
+  let x1 = x * cosY + z * sinY;
+  let z1 = -x * sinY + z * cosY;
+  let cosP = Math.cos(pitch), sinP = Math.sin(pitch);
+  let y2 = y * cosP - z1 * sinP;
+  let z2 = y * sinP + z1 * cosP;
+  return [x1, y2, z2];
+}
+
+function project(p, cx, cy, scaleUnit) {
+  const D = 4.2;
+  const [x, y, z] = p;
+  const persp = D / (D - z);
+  return { x: cx + x * persp * scaleUnit, y: cy - y * persp * scaleUnit, scale: persp, z };
+}
+
+function drawStage() {
+  const w = stage.width, h = stage.height;
+  sctx.clearRect(0, 0, w, h);
+
+  const bg = cssVar('--bg-2');
+  const grad = sctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, bg);
+  grad.addColorStop(1, cssVar('--bg'));
+  sctx.fillStyle = grad;
+  sctx.fillRect(0, 0, w, h);
+
+  sctx.strokeStyle = cssVar('--border-soft');
+  sctx.lineWidth = 1;
+  for (let gx = 0; gx <= w; gx += 40) { sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke(); }
+
+  const cx = w / 2, cy = h / 2 + 10;
+  const scaleUnit = 110;
+  const bondLen = 1.55, loneLen = 1.05;
+
+  const { bonds, lones } = getPositions(molState.domains, molState.lone);
+
+  const bondPts = bonds.map(v => project(rotatePoint([v[0]*bondLen, v[1]*bondLen, v[2]*bondLen], yaw, pitch), cx, cy, scaleUnit));
+  const lonePts = lones.map(v => project(rotatePoint([v[0]*loneLen, v[1]*loneLen, v[2]*loneLen], yaw, pitch), cx, cy, scaleUnit));
+  const centerPt = project([0,0,0], cx, cy, scaleUnit);
+
+  // bonds (lines) drawn first
+  bondPts.forEach(bp => {
+    const lg = sctx.createLinearGradient(centerPt.x, centerPt.y, bp.x, bp.y);
+    lg.addColorStop(0, cssVar('--gold'));
+    lg.addColorStop(1, cssVar('--blue'));
+    sctx.strokeStyle = lg;
+    sctx.lineWidth = 4 * ((centerPt.scale + bp.scale) / 2);
+    sctx.beginPath();
+    sctx.moveTo(centerPt.x, centerPt.y);
+    sctx.lineTo(bp.x, bp.y);
+    sctx.stroke();
+  });
+
+  // depth-sorted spheres: center + bonds + lones
+  const items = [];
+  items.push({ type: 'center', p: centerPt });
+  bondPts.forEach((p, i) => items.push({ type: 'bond', p, label: molState.peripheral }));
+  lonePts.forEach((p, i) => items.push({ type: 'lone', p }));
+  items.sort((a, b) => a.p.z - b.p.z);
+
+  items.forEach(item => {
+    const p = item.p;
+    if (item.type === 'lone') {
+      const r = 20 * p.scale;
+      sctx.fillStyle = 'rgba(244,197,15,0.22)';
+      sctx.strokeStyle = 'rgba(244,197,15,0.55)';
+      sctx.lineWidth = 1.4;
+      sctx.setLineDash([3,3]);
+      sctx.beginPath();
+      sctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      sctx.fill();
+      sctx.stroke();
+      sctx.setLineDash([]);
+      return;
+    }
+
+    const isCenter = item.type === 'center';
+    const baseR = isCenter ? 26 : 20;
+    const r = baseR * p.scale;
+
+    sctx.fillStyle = 'rgba(0,0,0,0.3)';
+    sctx.beginPath();
+    sctx.ellipse(p.x, p.y + r*0.8, r*0.7, r*0.22, 0, 0, Math.PI*2);
+    sctx.fill();
+
+    const c1 = isCenter ? cssVar('--gold-light') : cssVar('--blue-light');
+    const c2 = isCenter ? cssVar('--gold') : cssVar('--blue');
+    const gradS = sctx.createRadialGradient(p.x - r*0.35, p.y - r*0.4, r*0.15, p.x, p.y, r);
+    gradS.addColorStop(0, c1);
+    gradS.addColorStop(0.6, c2);
+    gradS.addColorStop(1, isCenter ? '#7a5e05' : '#125e85');
+    sctx.fillStyle = gradS;
+    sctx.beginPath();
+    sctx.arc(p.x, p.y, r, 0, Math.PI*2);
+    sctx.fill();
+    sctx.strokeStyle = cssVar('--border');
+    sctx.lineWidth = 1;
+    sctx.stroke();
+
+    if (r > 6) {
+      sctx.fillStyle = isCenter ? '#171200' : '#ffffff';
+      sctx.font = (isCenter ? Math.round(r*0.7) : Math.round(r*0.75)) + 'px Poppins';
+      sctx.textAlign = 'center';
+      sctx.textBaseline = 'middle';
+      sctx.fillText(isCenter ? molState.central : item.label, p.x, p.y);
+      sctx.textAlign = 'left';
+      sctx.textBaseline = 'alphabetic';
+    }
+  });
+}
+
+function renderLoop() {
+  if (autoRotate && !dragging) yaw += 0.006;
+  drawStage();
+  requestAnimationFrame(renderLoop);
+}
+
+/* pointer drag rotation */
+stage.addEventListener('pointerdown', e => {
+  dragging = true;
+  lastX = e.clientX; lastY = e.clientY;
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  yaw += dx * 0.008;
+  pitch = Math.max(-1.3, Math.min(1.3, pitch + dy * 0.008));
+});
+stage.addEventListener('pointerup', () => { dragging = false; });
+stage.addEventListener('pointercancel', () => { dragging = false; });
+
+rotateBtn.addEventListener('click', () => {
+  autoRotate = !autoRotate;
+  rotateBtn.textContent = 'Auto-rotate: ' + (autoRotate ? 'On' : 'Off');
+  rotateBtn.classList.toggle('primary', autoRotate);
+});
+
+resetViewBtn.addEventListener('click', () => {
+  yaw = 0.5; pitch = -0.3;
+});
+
+/* init */
+presetSelect.value = 'CH4';
+applyMolState(4, 0, 'C', 'H');
+renderLoop();
+</script>
+</body>
+</html>

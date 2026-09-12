@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Transformations — Inam Alvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg-2: #131313;
+    --surface: #161616;
+    --surface-2: #1c1c1c;
+    --surface-3: #262626;
+    --blue: #2fa8e8;
+    --blue-light: #6dc4f4;
+    --gold: #f4c50f;
+    --gold-light: #ffdb4d;
+    --text: #ffffff;
+    --text-muted: #b0b0b0;
+    --text-faint: #707070;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-blue: rgba(47, 168, 232, 0.45);
+    --border-soft: rgba(255, 255, 255, 0.07);
+    --shadow-glow: rgba(244, 197, 15, 0.14);
+    --warn: #f0866b;
+    --cubic-color: #ffffff;
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f4f4;
+    --bg-2: #ececec;
+    --surface: #ffffff;
+    --surface-2: #f7f7f7;
+    --surface-3: #ececec;
+    --blue: #1c85bd;
+    --blue-light: #0c6595;
+    --gold: #b3860a;
+    --gold-light: #8f6b06;
+    --text: #111111;
+    --text-muted: #4a4a4a;
+    --text-faint: #8a8a8a;
+    --border: rgba(0, 0, 0, 0.14);
+    --border-blue: rgba(28, 133, 189, 0.4);
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --shadow-glow: rgba(179, 134, 10, 0.12);
+    --warn: #c1502f;
+    --cubic-color: #111111;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 28px 20px; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 22px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .eyebrow { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 15px; color: var(--blue); margin: 0 0 8px; }
+  h1 { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 34px; margin: 0; letter-spacing: -0.01em; color: var(--text); }
+  h1 span { color: var(--gold); }
+  .sub { color: var(--text-muted); font-size: 14px; margin: 10px 0 0; max-width: 540px; line-height: 1.6; }
+
+  .toggle { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px 6px 6px; cursor: pointer; user-select: none; }
+  .toggle-track { width: 40px; height: 22px; border-radius: 999px; background: var(--surface-3); position: relative; border: 1px solid var(--border); }
+  .toggle-thumb { position: absolute; top: 1px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); transition: transform 0.3s ease; }
+  [data-theme="light"] .toggle-thumb { transform: translateX(18px); }
+  .toggle-label { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
+
+  .grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px 22px;
+    box-shadow: 0 18px 40px -24px var(--shadow-glow);
+  }
+  .panel + .panel { margin-top: 20px; }
+
+  .panel-title { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--gold); margin: 0 0 16px; letter-spacing: 0.01em; }
+  .panel-hint { font-size: 12px; color: var(--text-faint); margin: 10px 0 0; }
+
+  .stage-outer {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-2);
+    border: 1px solid var(--border-soft);
+  }
+  .stage-outer canvas { display: block; cursor: grab; touch-action: none; }
+  .stage-outer canvas:active { cursor: grabbing; }
+
+  .zoom-controls { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .zoom-btn {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+    background: rgba(20,20,20,0.7); color: var(--text); font-size: 16px; font-family: 'Poppins', sans-serif;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  [data-theme="light"] .zoom-btn { background: rgba(255,255,255,0.8); }
+  .zoom-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .top-controls-row { display: flex; gap: 12px; margin: 18px 0 4px; flex-wrap: wrap; align-items: center; }
+  .select-wrap { flex: 1; min-width: 180px; }
+  select {
+    width: 100%;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 13px;
+    padding: 10px 12px; outline: none; cursor: pointer;
+  }
+
+  .mini-toggle { display: flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; user-select: none; }
+  .mini-toggle .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--text-faint); }
+  .mini-toggle.on .dot { background: var(--gold); }
+  .mini-toggle span.lbl { font-size: 12.5px; color: var(--text-muted); font-family: 'Inter', sans-serif; }
+
+  .controls { margin-top: 16px; display: grid; gap: 14px; }
+  .slider-row { display: grid; grid-template-columns: 46px 1fr 60px; align-items: center; gap: 12px; }
+  .slider-row label { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-muted); font-weight: 500; }
+  .slider-row .val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold); text-align: right; }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: var(--surface-3); border-radius: 2px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-blue); cursor: pointer; }
+  input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--blue); border: 2px solid var(--surface); cursor: pointer; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  button.action {
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 18px;
+    border-radius: 8px; border: 1.5px solid var(--border-blue); background: transparent; color: var(--blue);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  button.action:hover { background: rgba(47,168,232,0.1); }
+  button.action.primary { background: var(--gold); color: #171200; border: none; font-weight: 700; }
+  button.action.primary:hover { background: var(--gold-light); }
+
+  .equation-display {
+    font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 500;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 14px 16px; text-align: center; margin-bottom: 16px;
+  }
+
+  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 12px; padding: 12px 14px; }
+  .stat .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-faint); margin-bottom: 6px; }
+  .stat .num { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; color: var(--text); }
+  .stat.wide { grid-column: 1 / -1; }
+
+  .trace-list { display: grid; gap: 8px; margin-top: 4px; }
+  .trace-row { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 8px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); }
+  .trace-swatch { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .trace-empty { font-size: 12.5px; color: var(--text-faint); padding: 6px 2px; }
+
+  .formula-list { display: grid; gap: 14px; }
+  .formula-item { border-left: 2px solid var(--border-blue); padding-left: 12px; }
+  .formula-name { font-size: 12px; color: var(--text-muted); margin: 0 0 4px; }
+  .formula-expr { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--gold); letter-spacing: 0.01em; line-height: 1.5; }
+
+  footer { display: flex; justify-content: flex-end; align-items: center; padding: 30px 10px 4px; }
+  .signature { font-family: 'Sacramento', cursive; font-size: 34px; font-weight: 400; color: var(--gold); opacity: 0.92; letter-spacing: 0.02em; }
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <header>
+    <div>
+      <p class="eyebrow">Mathematics · Function Transformations</p>
+      <h1>Transform <span>Explorer</span></h1>
+      <p class="sub">Slide a, h, k, m and b to stretch, shift and reflect a graph in real time — trace multiple versions on top of each other to compare.</p>
+    </div>
+    <div class="toggle" id="themeToggle">
+      <span class="toggle-label" id="themeLabel">Dark</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <div class="panel">
+      <p class="panel-title">Graph</p>
+      <div class="stage-outer" id="stageOuter">
+        <div id="canvasHolder"></div>
+        <div class="zoom-controls">
+          <div class="zoom-btn" id="zoomInBtn">+</div>
+          <div class="zoom-btn" id="zoomOutBtn">−</div>
+          <div class="zoom-btn" id="zoomResetBtn" style="font-size:12px;">⟲</div>
+        </div>
+      </div>
+
+      <div class="top-controls-row">
+        <div class="select-wrap">
+          <select id="typeSelect">
+            <option value="linear">Linear — y = mx + b</option>
+            <option value="quadratic" selected>Quadratic — y = a(x−h)² + k</option>
+            <option value="cubic">Cubic — y = a(x−h)³ + k</option>
+            <option value="absolute">Absolute Value — y = a|x−h| + k</option>
+          </select>
+        </div>
+        <div class="mini-toggle on" id="gridToggle"><span class="dot"></span><span class="lbl">Show grid</span></div>
+      </div>
+
+      <div class="controls" id="sliderContainer">
+        <div class="slider-row" data-param="m"><label>m</label><input type="range" id="mSlider" min="-5" max="5" step="0.1" value="1"><span class="val" id="mVal">1.0</span></div>
+        <div class="slider-row" data-param="b"><label>b</label><input type="range" id="bSlider" min="-10" max="10" step="0.5" value="0"><span class="val" id="bVal">0.0</span></div>
+        <div class="slider-row" data-param="a"><label>a</label><input type="range" id="aSlider" min="-3" max="3" step="0.1" value="1"><span class="val" id="aVal">1.0</span></div>
+        <div class="slider-row" data-param="h"><label>h</label><input type="range" id="hSlider" min="-8" max="8" step="0.5" value="0"><span class="val" id="hVal">0.0</span></div>
+        <div class="slider-row" data-param="k"><label>k</label><input type="range" id="kSlider" min="-8" max="8" step="0.5" value="0"><span class="val" id="kVal">0.0</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="action primary" id="traceBtn">Add to Trace</button>
+        <button class="action" id="clearTraceBtn">Clear Traces</button>
+        <button class="action" id="resetParamsBtn">Reset Parameters</button>
+      </div>
+      <p class="panel-hint">Drag the graph to pan, scroll or use +/− to zoom.</p>
+    </div>
+
+    <div>
+      <div class="panel">
+        <p class="panel-title">Current function</p>
+        <div class="equation-display" id="equationDisplay">y = (x − 0)² + 0</div>
+        <div class="readouts">
+          <div class="stat wide" id="vertexStat"><div class="lbl">Vertex</div><div class="num" id="vertexVal">(0, 0)</div></div>
+          <div class="stat"><div class="lbl">y-intercept</div><div class="num" id="yIntVal">—</div></div>
+          <div class="stat"><div class="lbl">x-intercept(s)</div><div class="num" id="xIntVal">—</div></div>
+          <div class="stat wide" id="slopeStat" style="display:none;"><div class="lbl">Slope</div><div class="num" id="slopeVal">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Traced graphs</p>
+        <div class="trace-list" id="traceList"><div class="trace-empty">No traces yet — click "Add to Trace" to pin the current graph.</div></div>
+      </div>
+
+      <div class="panel">
+        <p class="panel-title">Formulas</p>
+        <div class="formula-list">
+          <div class="formula-item"><p class="formula-name">Linear</p><p class="formula-expr">y = mx + b</p></div>
+          <div class="formula-item"><p class="formula-name">Quadratic (vertex form)</p><p class="formula-expr">y = a(x − h)² + k</p></div>
+          <div class="formula-item"><p class="formula-name">Cubic</p><p class="formula-expr">y = a(x − h)³ + k</p></div>
+          <div class="formula-item"><p class="formula-name">Absolute value</p><p class="formula-expr">y = a|x − h| + k</p></div>
+          <div class="formula-item"><p class="formula-name">Transformation roles</p><p class="formula-expr">a: stretch/reflect&nbsp;&nbsp; h: shift right&nbsp;&nbsp; k: shift up</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer><span class="signature">Inam Alvi</span></footer>
+
+</div>
+
+<script>
+const themeToggle = document.getElementById('themeToggle');
+const themeLabel = document.getElementById('themeLabel');
+themeToggle.addEventListener('click', () => {
+  const body = document.body;
+  const isDark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeLabel.textContent = isDark ? 'Light' : 'Dark';
+});
+
+function cssVar(name) { return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+function fmt(n) {
+  const r = Math.round(n * 100) / 100;
+  return Object.is(r, -0) ? 0 : r;
+}
+
+const typeSelect = document.getElementById('typeSelect');
+const gridToggle = document.getElementById('gridToggle');
+const mSlider = document.getElementById('mSlider'), bSlider = document.getElementById('bSlider');
+const aSlider = document.getElementById('aSlider'), hSlider = document.getElementById('hSlider'), kSlider = document.getElementById('kSlider');
+const mVal = document.getElementById('mVal'), bVal = document.getElementById('bVal');
+const aVal = document.getElementById('aVal'), hVal = document.getElementById('hVal'), kVal = document.getElementById('kVal');
+
+const equationDisplay = document.getElementById('equationDisplay');
+const vertexStat = document.getElementById('vertexStat');
+const vertexVal = document.getElementById('vertexVal');
+const yIntVal = document.getElementById('yIntVal');
+const xIntVal = document.getElementById('xIntVal');
+const slopeStat = document.getElementById('slopeStat');
+const slopeVal = document.getElementById('slopeVal');
+const traceList = document.getElementById('traceList');
+
+const traceBtn = document.getElementById('traceBtn');
+const clearTraceBtn = document.getElementById('clearTraceBtn');
+const resetParamsBtn = document.getElementById('resetParamsBtn');
+const zoomInBtn = document.getElementById('zoomInBtn');
+const zoomOutBtn = document.getElementById('zoomOutBtn');
+const zoomResetBtn = document.getElementById('zoomResetBtn');
+
+let showGrid = true;
+let traces = [];
+
+const defaults = { m: 1, b: 0, a: 1, h: 0, k: 0 };
+
+function getParams() {
+  return {
+    m: parseFloat(mSlider.value), b: parseFloat(bSlider.value),
+    a: parseFloat(aSlider.value), h: parseFloat(hSlider.value), k: parseFloat(kSlider.value)
+  };
+}
+
+function typeColorVar(type) {
+  return { linear: '--blue', quadratic: '--gold', cubic: '--cubic-color', absolute: '--warn' }[type];
+}
+
+function evalFn(type, p, x) {
+  if (type === 'linear') return p.m * x + p.b;
+  if (type === 'quadratic') return p.a * Math.pow(x - p.h, 2) + p.k;
+  if (type === 'cubic') return p.a * Math.pow(x - p.h, 3) + p.k;
+  if (type === 'absolute') return p.a * Math.abs(x - p.h) + p.k;
+}
+
+function baseTerm(h) {
+  if (h === 0) return 'x';
+  return h > 0 ? `(x − ${fmt(h)})` : `(x + ${fmt(-h)})`;
+}
+function signStr(n) { return n >= 0 ? ` + ${fmt(n)}` : ` − ${fmt(Math.abs(n))}`; }
+
+function formatEquation(type, p) {
+  if (type === 'linear') return `y = ${fmt(p.m)}x${signStr(p.b)}`;
+  if (type === 'quadratic') return `y = ${fmt(p.a)}${baseTerm(p.h)}²${signStr(p.k)}`;
+  if (type === 'cubic') return `y = ${fmt(p.a)}${baseTerm(p.h)}³${signStr(p.k)}`;
+  if (type === 'absolute') return `y = ${fmt(p.a)}|${p.h === 0 ? 'x' : (p.h > 0 ? `x − ${fmt(p.h)}` : `x + ${fmt(-p.h)}`)}|${signStr(p.k)}`;
+}
+
+function getFeatures(type, p) {
+  if (type === 'linear') {
+    const yInt = p.b;
+    let xInt;
+    if (p.m === 0) xInt = p.b === 0 ? 'All real x' : 'None';
+    else xInt = fmt(-p.b / p.m).toString();
+    return { vertex: null, yIntercept: fmt(yInt), xIntercepts: xInt, slope: fmt(p.m) };
+  }
+  if (type === 'quadratic') {
+    const yInt = p.a * p.h * p.h + p.k;
+    const disc = p.a !== 0 ? -p.k / p.a : NaN;
+    let xInt;
+    if (p.a === 0) xInt = 'Not a function (a = 0)';
+    else if (disc < 0) xInt = 'None (no real roots)';
+    else if (Math.abs(disc) < 1e-9) xInt = fmt(p.h).toString();
+    else { const s = Math.sqrt(disc); xInt = fmt(p.h - s) + ', ' + fmt(p.h + s); }
+    return { vertex: [fmt(p.h), fmt(p.k)], vertexLabel: 'Vertex', yIntercept: fmt(yInt), xIntercepts: xInt, slope: null };
+  }
+  if (type === 'cubic') {
+    const yInt = -p.a * Math.pow(p.h, 3) + p.k;
+    let xInt;
+    if (p.a === 0) xInt = 'Not a function (a = 0)';
+    else { const root = Math.cbrt(-p.k / p.a); xInt = fmt(p.h + root).toString(); }
+    return { vertex: [fmt(p.h), fmt(p.k)], vertexLabel: 'Inflection point', yIntercept: fmt(yInt), xIntercepts: xInt, slope: null };
+  }
+  if (type === 'absolute') {
+    const yInt = p.a * Math.abs(p.h) + p.k;
+    const disc = p.a !== 0 ? -p.k / p.a : NaN;
+    let xInt;
+    if (p.a === 0) xInt = 'Not a function (a = 0)';
+    else if (disc < 0) xInt = 'None';
+    else if (Math.abs(disc) < 1e-9) xInt = fmt(p.h).toString();
+    else xInt = fmt(p.h - disc) + ', ' + fmt(p.h + disc);
+    return { vertex: [fmt(p.h), fmt(p.k)], vertexLabel: 'Vertex', yIntercept: fmt(yInt), xIntercepts: xInt, slope: null };
+  }
+}
+
+function updateSliderVisibility() {
+  const type = typeSelect.value;
+  const showLinear = type === 'linear';
+  document.querySelector('[data-param="m"]').style.display = showLinear ? 'grid' : 'none';
+  document.querySelector('[data-param="b"]').style.display = showLinear ? 'grid' : 'none';
+  document.querySelector('[data-param="a"]').style.display = showLinear ? 'none' : 'grid';
+  document.querySelector('[data-param="h"]').style.display = showLinear ? 'none' : 'grid';
+  document.querySelector('[data-param="k"]').style.display = showLinear ? 'none' : 'grid';
+  slopeStat.style.display = showLinear ? 'block' : 'none';
+  vertexStat.style.display = showLinear ? 'none' : 'block';
+}
+
+function updateReadouts() {
+  const type = typeSelect.value;
+  const p = getParams();
+  equationDisplay.textContent = formatEquation(type, p);
+  const feat = getFeatures(type, p);
+  if (feat.vertex) {
+    vertexVal.textContent = '(' + feat.vertex[0] + ', ' + feat.vertex[1] + ')';
+    vertexStat.querySelector('.lbl').textContent = feat.vertexLabel;
+  }
+  yIntVal.textContent = feat.yIntercept;
+  xIntVal.textContent = feat.xIntercepts;
+  if (feat.slope !== null) slopeVal.textContent = feat.slope;
+}
+
+[mSlider, bSlider, aSlider, hSlider, kSlider].forEach(s => {
+  s.addEventListener('input', () => {
+    mVal.textContent = parseFloat(mSlider.value).toFixed(1);
+    bVal.textContent = parseFloat(bSlider.value).toFixed(1);
+    aVal.textContent = parseFloat(aSlider.value).toFixed(1);
+    hVal.textContent = parseFloat(hSlider.value).toFixed(1);
+    kVal.textContent = parseFloat(kSlider.value).toFixed(1);
+    updateReadouts();
+  });
+});
+
+typeSelect.addEventListener('change', () => {
+  updateSliderVisibility();
+  updateReadouts();
+});
+
+gridToggle.addEventListener('click', () => {
+  showGrid = !showGrid;
+  gridToggle.classList.toggle('on', showGrid);
+});
+
+function renderTraceList() {
+  traceList.innerHTML = '';
+  if (traces.length === 0) {
+    traceList.innerHTML = '<div class="trace-empty">No traces yet — click "Add to Trace" to pin the current graph.</div>';
+    return;
+  }
+  traces.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'trace-row';
+    row.innerHTML = '<span class="trace-swatch" style="background:' + t.color + '"></span><span>' + t.eqText + '</span>';
+    traceList.appendChild(row);
+  });
+}
+
+traceBtn.addEventListener('click', () => {
+  const type = typeSelect.value;
+  const p = getParams();
+  traces.push({ type, params: { ...p }, color: cssVar(typeColorVar(type)), eqText: formatEquation(type, p) });
+  if (traces.length > 6) traces.shift();
+  renderTraceList();
+});
+
+clearTraceBtn.addEventListener('click', () => { traces = []; renderTraceList(); });
+
+resetParamsBtn.addEventListener('click', () => {
+  mSlider.value = defaults.m; bSlider.value = defaults.b;
+  aSlider.value = defaults.a; hSlider.value = defaults.h; kSlider.value = defaults.k;
+  mVal.textContent = defaults.m.toFixed(1); bVal.textContent = defaults.b.toFixed(1);
+  aVal.textContent = defaults.a.toFixed(1); hVal.textContent = defaults.h.toFixed(1); kVal.textContent = defaults.k.toFixed(1);
+  updateReadouts();
+});
+
+/* ---------- p5 sketch ---------- */
+let view = { scale: 28, panX: 0, panY: 0 };
+
+const sketch = (p) => {
+  let canvasEl;
+  let dragging = false, lastMX = 0, lastMY = 0;
+
+  p.setup = function () {
+    const holder = document.getElementById('canvasHolder');
+    const w = holder.clientWidth || 680;
+    canvasEl = p.createCanvas(w, 440);
+    canvasEl.parent('canvasHolder');
+    p.pixelDensity(Math.min(2, window.devicePixelRatio || 1));
+  };
+
+  function worldToPx(wx, wy) {
+    return { x: p.width / 2 + (wx - view.panX) * view.scale, y: p.height / 2 - (wy - view.panY) * view.scale };
+  }
+  function pxToWorld(px, py) {
+    return { x: (px - p.width / 2) / view.scale + view.panX, y: -(py - p.height / 2) / view.scale + view.panY };
+  }
+  function chooseStep(scale) {
+    if (scale > 70) return 1;
+    if (scale > 35) return 2;
+    if (scale > 15) return 5;
+    if (scale > 6) return 10;
+    return 20;
+  }
+
+  function drawAxesAndGrid() {
+    const step = chooseStep(view.scale);
+    const topLeft = pxToWorld(0, 0), botRight = pxToWorld(p.width, p.height);
+    const xMin = Math.floor(topLeft.x / step) * step, xMax = Math.ceil(botRight.x / step) * step;
+    const yMin = Math.floor(botRight.y / step) * step, yMax = Math.ceil(topLeft.y / step) * step;
+
+    if (showGrid) {
+      p.stroke(cssVar('--border-soft'));
+      p.strokeWeight(1);
+      for (let gx = xMin; gx <= xMax; gx += step) {
+        const a = worldToPx(gx, yMin), b = worldToPx(gx, yMax);
+        p.line(a.x, a.y, b.x, b.y);
+      }
+      for (let gy = yMin; gy <= yMax; gy += step) {
+        const a = worldToPx(xMin, gy), b = worldToPx(xMax, gy);
+        p.line(a.x, a.y, b.x, b.y);
+      }
+    }
+
+    const O = worldToPx(0, 0);
+    p.stroke(cssVar('--border'));
+    p.strokeWeight(1.6);
+    p.line(0, O.y, p.width, O.y);
+    p.line(O.x, 0, O.x, p.height);
+
+    p.noStroke();
+    p.fill(cssVar('--text-faint'));
+    p.textSize(10);
+    p.textFont('monospace');
+    for (let gx = xMin; gx <= xMax; gx += step) {
+      if (gx === 0) continue;
+      const pt = worldToPx(gx, 0);
+      if (pt.x < 0 || pt.x > p.width) continue;
+      p.text(fmt(gx), pt.x - 6, O.y + 14);
+    }
+    for (let gy = yMin; gy <= yMax; gy += step) {
+      if (gy === 0) continue;
+      const pt = worldToPx(0, gy);
+      if (pt.y < 0 || pt.y > p.height) continue;
+      p.text(fmt(gy), O.x + 6, pt.y + 3);
+    }
+  }
+
+  function drawCurve(type, params, colorHex, alpha) {
+    const c = p.color(colorHex);
+    c.setAlpha(alpha);
+    p.stroke(c);
+    p.strokeWeight(alpha > 200 ? 2.6 : 1.8);
+    p.noFill();
+    p.beginShape();
+    for (let px = 0; px <= p.width; px += 2) {
+      const wx = pxToWorld(px, 0).x;
+      const wy = evalFn(type, params, wx);
+      const py = worldToPx(wx, wy).y;
+      if (py < -1000 || py > p.height + 1000 || !isFinite(py)) { p.endShape(); p.beginShape(); continue; }
+      p.vertex(px, py);
+    }
+    p.endShape();
+  }
+
+  function drawMarkers(type, params) {
+    const feat = getFeatures(type, params);
+    if (feat.vertex) {
+      const v = worldToPx(params.h, evalFn(type, params, params.h));
+      p.stroke(cssVar('--border'));
+      p.strokeWeight(1);
+      p.fill(cssVar('--text'));
+      p.circle(v.x, v.y, 10);
+    }
+    const yInt = evalFn(type, params, 0);
+    const yp = worldToPx(0, yInt);
+    p.noStroke();
+    p.fill(cssVar('--blue-light'));
+    p.circle(yp.x, yp.y, 8);
+  }
+
+  p.draw = function () {
+    p.background(cssVar('--bg-2'));
+    drawAxesAndGrid();
+
+    traces.forEach(t => drawCurve(t.type, t.params, t.color, 110));
+
+    const type = typeSelect.value;
+    const params = getParams();
+    const color = cssVar(typeColorVar(type));
+    drawCurve(type, params, color, 255);
+    drawMarkers(type, params);
+
+    p.noStroke();
+    p.fill(cssVar('--text-faint'));
+    p.textSize(11);
+    p.text('x', p.width - 16, p.height / 2 - 8);
+    p.text('y', p.width / 2 + 8, 14);
+  };
+
+  function inCanvas() { return p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height; }
+
+  p.mousePressed = function () {
+    if (!inCanvas()) return;
+    dragging = true; lastMX = p.mouseX; lastMY = p.mouseY;
+  };
+  p.mouseDragged = function () {
+    if (!dragging) return;
+    const dx = p.mouseX - lastMX, dy = p.mouseY - lastMY;
+    view.panX -= dx / view.scale;
+    view.panY += dy / view.scale;
+    lastMX = p.mouseX; lastMY = p.mouseY;
+  };
+  p.mouseReleased = function () { dragging = false; };
+
+  p.mouseWheel = function (event) {
+    if (!inCanvas()) return true;
+    const before = pxToWorld(p.mouseX, p.mouseY);
+    const factor = event.delta > 0 ? 0.92 : 1.08;
+    view.scale = Math.max(4, Math.min(300, view.scale * factor));
+    const after = pxToWorld(p.mouseX, p.mouseY);
+    view.panX += before.x - after.x;
+    view.panY += before.y - after.y;
+    return false;
+  };
+
+  window.zoomIn = () => { view.scale = Math.min(300, view.scale * 1.2); };
+  window.zoomOut = () => { view.scale = Math.max(4, view.scale / 1.2); };
+  window.zoomResetFn = () => { view.scale = 28; view.panX = 0; view.panY = 0; };
+
+  window.addEventListener('resize', () => {
+    const holder = document.getElementById('canvasHolder');
+    p.resizeCanvas(holder.clientWidth || 680, 440);
+  });
+};
+
+new p5(sketch);
+
+zoomInBtn.addEventListener('click', () => window.zoomIn && window.zoomIn());
+zoomOutBtn.addEventListener('click', () => window.zoomOut && window.zoomOut());
+zoomResetBtn.addEventListener('click', () => window.zoomResetFn && window.zoomResetFn());
+
+updateSliderVisibility();
+updateReadouts();
+renderTraceList();
+</script>
+</body>
+</html>

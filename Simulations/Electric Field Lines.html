@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics Lab: 2D Electric Field Lines</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { fontFamily: {
+  pop: ['Poppins','ui-sans-serif','system-ui','sans-serif'],
+  sig: ['"Alex Brush"','cursive']
+} } } };
+</script>
+
+<style>
+  :root{
+    --bg:#1a1a1a; --panel:#212121; --edge:#3a3a3a; --input:#2a2a2a; --viewport:#161616;
+    --gold:#FFD700; --sky:#29ABE2; --text:#E6E6E6; --muted:#9a9a9a;
+    --danger:#ff5252; --cyan:#00e5ff; --magenta:#ff4fd8; --track:#333;
+    --sky10:rgba(41,171,226,.12); --gold10:rgba(255,215,0,.12);
+    --cyan10:rgba(0,229,255,.12); --danger10:rgba(255,82,82,.12);
+  }
+  body.light{
+    --bg:#f2f5f7; --panel:#ffffff; --edge:#d8dfe5; --input:#eef1f4; --viewport:#f7fafc;
+    --gold:#c19300; --sky:#0d84bd; --text:#1d2730; --muted:#5b6a75;
+    --danger:#d32f2f; --cyan:#0090b4; --magenta:#d0219c; --track:#cfd8de;
+    --sky10:rgba(13,132,189,.12); --gold10:rgba(193,147,0,.15);
+    --cyan10:rgba(0,144,180,.12); --danger10:rgba(211,47,47,.12);
+  }
+  html,body{background:var(--bg);}
+  body{transition:background .3s ease,color .3s ease;color:var(--text);}
+  ::selection{background:var(--sky);color:var(--bg);}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--edge);border-radius:5px}
+
+  .panel{background:var(--panel);border:1px solid var(--edge);border-radius:12px;}
+  .c-gold{color:var(--gold)} .c-sky{color:var(--sky)} .c-muted{color:var(--muted)}
+  .c-danger{color:var(--danger)} .c-cyan{color:var(--cyan)} .c-mag{color:var(--magenta)}
+  .vp-bg{background:var(--viewport)}
+  .chip{border:1px solid var(--edge);color:var(--muted);border-radius:8px;}
+  .chip-on{border-color:var(--sky);color:var(--sky);background:var(--sky10);}
+  .chip:not(.chip-on):hover{color:var(--text);}
+  .btn-o{border:1px solid var(--edge);color:var(--text);border-radius:8px;}
+  .btn-o:hover{border-color:var(--gold);color:var(--gold);}
+  .btn-on{border-color:var(--gold);color:var(--gold);background:var(--gold10);}
+  .t-toggle{border:1px solid var(--edge);color:var(--text);border-radius:9999px;}
+  .t-toggle:hover{border-color:var(--sky);color:var(--sky);}
+  .badge{display:inline-block;padding:5px 16px;border-radius:9999px;border:1px solid;font-weight:700;font-size:.85rem;}
+  .badge-cyan{border-color:var(--cyan);color:var(--cyan);background:var(--cyan10);}
+  .badge-gold{border-color:var(--gold);color:var(--gold);background:var(--gold10);}
+  .prow{display:flex;justify-content:space-between;font-size:.83rem;gap:8px;}
+  .eqbox{font-size:.78rem;line-height:1.55;border:1px dashed var(--edge);border-radius:8px;padding:8px 10px;}
+  .leg{display:flex;align-items:center;gap:8px;font-size:.75rem;}
+  .sw{width:16px;height:3px;border-radius:2px;flex:none;}
+  .dotc{width:10px;height:10px;border-radius:50%;flex:none;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:var(--track);outline:none;cursor:pointer;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--sky);border:2px solid var(--bg);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--sky);border:2px solid var(--bg);cursor:pointer;}
+  #wsCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;}
+</style>
+</head>
+
+<body class="font-pop min-h-screen flex flex-col">
+
+<header class="px-5 md:px-8 pt-6 pb-1 flex items-start justify-between gap-4">
+  <div>
+    <h1 class="c-gold font-extrabold text-3xl md:text-4xl tracking-tight">Physics Lab: 2D Electric Field Lines</h1>
+    <p class="c-sky font-bold text-lg md:text-2xl mt-2">E-field topography &bull; lines leave + and enter &minus; &bull; density &prop; |q| &bull; dipoles, plates &amp; superposition</p>
+  </div>
+  <button id="themeToggle" class="t-toggle px-4 py-2 text-sm font-semibold transition shrink-0 mt-1">&#9728;&#65039; Light Mode</button>
+</header>
+
+<main class="flex-1 grid grid-cols-1 xl:grid-cols-[320px_1fr_340px] gap-4 p-4 md:p-6">
+
+  <!-- ===== CONTROLS ===== -->
+  <aside class="order-2 xl:order-1 space-y-4">
+    <div class="panel p-4 space-y-3">
+      <h2 class="c-gold font-bold uppercase tracking-widest text-xs">Classic Configurations</h2>
+      <div class="grid grid-cols-2 gap-1.5">
+        <button data-p="pos" class="p-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Isolated +</button>
+        <button data-p="neg" class="p-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Isolated &minus;</button>
+        <button data-p="pp" class="p-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Like + / +</button>
+        <button data-p="nn" class="p-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Like &minus; / &minus;</button>
+        <button data-p="dip" class="p-btn chip chip-on px-0 py-1.5 text-[11px] font-semibold transition">Dipole + / &minus;</button>
+        <button data-p="cap" class="p-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Parallel Plates</button>
+      </div>
+      <div class="grid grid-cols-3 gap-1.5">
+        <button data-mode="drag" class="md-btn chip chip-on px-0 py-1.5 text-[11px] font-semibold transition">Drag</button>
+        <button data-mode="addp" class="md-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Add +</button>
+        <button data-mode="addn" class="md-btn chip px-0 py-1.5 text-[11px] font-semibold transition">Add &minus;</button>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button id="btnRem" class="btn-o rounded-md py-1.5 text-sm font-semibold transition">Remove sel.</button>
+        <button id="btnReset" class="btn-o rounded-md py-1.5 text-sm font-semibold transition">&#8634; Reset</button>
+      </div>
+    </div>
+
+    <div class="panel p-4 space-y-4">
+      <h2 class="c-gold font-bold uppercase tracking-widest text-xs">Parameters</h2>
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-[11px] uppercase tracking-wider c-muted">q selected (<span id="selLab" class="c-gold">q&#8321;</span>) &mu;C</label>
+          <span id="vQ" class="c-sky text-sm font-semibold">5.0</span>
+        </div>
+        <input id="rQ" type="range" min="-10" max="10" step="0.5" value="5">
+      </div>
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-[11px] uppercase tracking-wider c-muted">Field-line density</label>
+          <span id="vD" class="c-sky text-sm font-semibold">7</span>
+        </div>
+        <input id="rD" type="range" min="2" max="12" step="1" value="7">
+      </div>
+      <button id="tgEq" class="btn-o w-full rounded-md py-1.5 text-[12px] font-semibold transition">Show Equipotential Lines</button>
+    </div>
+
+    <div class="panel p-4 space-y-1.5">
+      <h2 class="c-gold font-bold uppercase tracking-widest text-xs">Legend</h2>
+      <div class="leg c-muted"><span class="dotc" style="background:#ff5252"></span>Positive charge &mdash; lines originate</div>
+      <div class="leg c-muted"><span class="dotc" style="background:#29ABE2"></span>Negative charge &mdash; lines terminate</div>
+      <div class="leg c-muted"><span class="sw" style="background:#00e5ff"></span>Field lines (animated flow direction)</div>
+      <div class="leg c-muted"><span class="sw" style="background:#ff4fd8"></span>Equipotential contours (V = const)</div>
+      <div class="leg c-muted"><span class="sw" style="background:#FFD700"></span>Probe E-vector (draggable)</div>
+    </div>
+  </aside>
+
+  <!-- ===== WORKSPACE ===== -->
+  <section class="order-1 xl:order-2 relative rounded-xl overflow-hidden vp-bg border min-h-[420px] h-[52vh] xl:h-auto" style="border-color:var(--edge)">
+    <canvas id="wsCanvas"></canvas>
+    <div id="hint" class="absolute bottom-2 left-3 text-[12px] c-muted pointer-events-none">drag charges or whole plates &bull; yellow crosshair = E probe &bull; dashes flow away from + and into &minus;</div>
+  </section>
+
+  <!-- ===== DATA ===== -->
+  <aside class="order-3 space-y-4">
+    <div class="panel p-4 text-center"><span id="badge" class="badge badge-cyan">Dipole configuration</span></div>
+    <div class="panel p-4 space-y-2">
+      <h2 class="c-gold font-bold uppercase tracking-widest text-xs">Probe Telemetry</h2>
+      <div class="prow"><span class="c-muted">|E| at probe</span><span id="dE" class="font-semibold c-gold">—</span></div>
+      <div class="prow"><span class="c-muted">Potential V at probe</span><span id="dV" class="font-semibold c-cyan">—</span></div>
+      <div class="prow"><span class="c-muted">Field direction</span><span id="dA" class="font-semibold">—</span></div>
+      <div class="prow"><span class="c-muted">Lines traced</span><span id="dL" class="font-semibold c-cyan">—</span></div>
+      <div class="prow"><span class="c-muted">Net charge &Sigma;q</span><span id="dQ" class="font-semibold">—</span></div>
+    </div>
+    <div class="panel p-4">
+      <div class="eqbox c-text">Field lines: start on +, end on &minus;; never cross; density &prop; |E| &prop; |q|. Equipotentials &perp; field lines; uniform between plates with edge fringing. E = kq/r&sup2;, V = kq/r.</div>
+    </div>
+  </aside>
+</main>
+
+<footer class="py-10 text-center select-none mt-2" style="border-top:1px solid var(--edge)">
+  <div class="font-sig text-6xl md:text-7xl c-gold leading-none">Inam Alvi</div>
+  <div class="mt-3 c-sky font-bold tracking-wide text-sm md:text-base">Mathematics Educator&nbsp;|&nbsp;Science Teacher&nbsp;|&nbsp;Web Developer</div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+window.addEventListener('error',function(e){
+  var h=document.getElementById('hint');
+  if(h)h.textContent='JS Error: '+e.message;
+});
+var $=function(id){return document.getElementById(id);};
+var clamp=function(x,a,b){return Math.max(a,Math.min(b,x));};
+var K0=8.99e9;
+
+var state={mode:'drag',density:7,showEq:false,sel:0,
+  charges:[{q:5,x:-2.2,y:0,pid:-1},{q:-5,x:2.2,y:0,pid:-1}],
+  probe:{x:0,y:1.6},preset:'dip'};
+
+var cv=$('wsCanvas'),ctx=cv.getContext('2d');
+var W=800,H=500,DPR=1,S=50;
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=cv.clientWidth;H=cv.clientHeight;
+  if(W<10||H<10)return;
+  cv.width=W*DPR;cv.height=H*DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  S=Math.min(W,H)/11;
+  rebuild();
+}
+window.addEventListener('resize',resize);
+
+var themeName='dark';
+try{themeName=localStorage.getItem('inam-theme')==='light'?'light':'dark';}catch(e){}
+function themeCols(){
+  return themeName==='dark'
+    ?{bg:'#161616',grid:'#242c36',text:'#E6E6E6',muted:'#9a9a9a'}
+    :{bg:'#f7fafc',grid:'#d5dee8',text:'#1d2730',muted:'#5b6a75'};
+}
+function applyTheme(n){
+  themeName=n;
+  document.body.classList.toggle('light',n==='light');
+  $('themeToggle').innerHTML=(n==='dark')?'&#9728;&#65039; Light Mode':'&#127769; Dark Mode';
+  try{localStorage.setItem('inam-theme',n);}catch(e){}
+}
+$('themeToggle').addEventListener('click',function(){applyTheme(themeName==='dark'?'light':'dark');});
+if(themeName==='light'){document.body.classList.add('light');$('themeToggle').innerHTML='&#127769; Dark Mode';}
+
+function PX(x){return W/2+x*S;}
+function PY(y){return H/2+y*S;}
+function WX(px){return (px-W/2)/S;}
+function WY(py){return (py-H/2)/S;}
+
+/* ---------------- physics ---------------- */
+function eField(px,py){
+  var ex=0,ey=0;
+  for(var i=0;i<state.charges.length;i++){
+    var c=state.charges[i];
+    var dx=px-c.x,dy=py-c.y;
+    var r2=dx*dx+dy*dy+1e-4;
+    var r=Math.sqrt(r2);
+    var E=K0*(c.q*1e-6)/r2;
+    ex+=E*dx/r;ey+=E*dy/r;
+  }
+  return[ex,ey];
+}
+function vPot(px,py){
+  var V=0;
+  for(var i=0;i<state.charges.length;i++){
+    var c=state.charges[i];
+    V+=K0*(c.q*1e-6)/(Math.hypot(px-c.x,py-c.y)+1e-4);
+  }
+  return V;
+}
+function eHat(x,y,sign){
+  var E=eField(x,y);
+  var m=Math.hypot(E[0],E[1]);
+  if(m<1e-9)return[0,0,0];
+  return[E[0]/m*sign,E[1]/m*sign,m];
+}
+
+/* ---------------- RK4 field line tracing ---------------- */
+var lines=[];
+var MAXL=240;
+function trace(sx,sy,sign){
+  var h=0.11,pts=[sx,sy],x=sx,y=sy;
+  var heavy=state.charges.length>28;
+  var maxS=heavy?150:260;
+  for(var s=0;s<maxS;s++){
+    var a=eHat(x,y,sign);if(!a[2])break;
+    var b=eHat(x+a[0]*h/2,y+a[1]*h/2,sign);if(!b[2])break;
+    var c2=eHat(x+b[0]*h/2,y+b[1]*h/2,sign);if(!c2[2])break;
+    var d=eHat(x+c2[0]*h,y+c2[1]*h,sign);if(!d[2])break;
+    x+=h/6*(a[0]+2*b[0]+2*c2[0]+d[0]);
+    y+=h/6*(a[1]+2*b[1]+2*c2[1]+d[1]);
+    pts.push(x,y);
+    if(x<-7.5||x>7.5||y<-6||y>6)break;
+    var cap=false;
+    for(var q=0;q<state.charges.length;q++){
+      var cc=state.charges[q];
+      var dd=Math.hypot(x-cc.x,y-cc.y);
+      if(dd<0.16){cap=true;break;}
+    }
+    if(cap)break;
+  }
+  if(pts.length>=8)lines.push({pts:pts,sign:sign});
+}
+function rebuild(){
+  lines=[];
+  var posSum=0,negSum=0,i;
+  state.charges.forEach(function(c){if(c.q>0)posSum+=c.q;else negSum-=c.q;});
+  for(i=0;i<state.charges.length&&lines.length<MAXL;i++){
+    var c=state.charges[i];
+    if(c.q<=0)continue;
+    var n=Math.min(Math.round(state.density*Math.abs(c.q)),40);
+    var skip=(c.pid>=0&&Math.abs(c.q)<1)?2:1;
+    for(var s=0;s<n&&lines.length<MAXL;s+=skip){
+      var a=s/n*Math.PI*2+0.21;
+      trace(c.x+Math.cos(a)*0.22,c.y+Math.sin(a)*0.22,1);
+    }
+  }
+  if(negSum>posSum){
+    for(i=0;i<state.charges.length&&lines.length<MAXL;i++){
+      var c3=state.charges[i];
+      if(c3.q>=0)continue;
+      var n3=Math.min(Math.round(state.density*Math.abs(c3.q)),40);
+      for(var s3=0;s3<n3&&lines.length<MAXL;s3+=1){
+        var a3=s3/n3*Math.PI*2+0.21;
+        trace(c3.x+Math.cos(a3)*0.22,c3.y+Math.sin(a3)*0.22,-1);
+      }
+    }
+  }
+  buildEq();
+  $('dL').textContent=lines.length;
+}
+
+/* ---------------- equipotentials (offscreen) ---------------- */
+var eqCv=document.createElement('canvas');
+var eqx=eqCv.getContext('2d');
+function buildEq(){
+  var w=Math.max(60,Math.floor(W/6)),h=Math.max(50,Math.floor(H/6));
+  eqCv.width=w;eqCv.height=h;
+  var img=eqx.createImageData(w,h);
+  var band=new Float32Array(w*h);
+  var i,j;
+  for(j=0;j<h;j++){
+    for(i=0;i<w;i++){
+      var V=vPot(WX(i*6),WY(j*6));
+      band[j*w+i]=Math.floor(Math.asinh(V/2e4)*1.4);
+    }
+  }
+  var dta=img.data;
+  for(j=1;j<h-1;j++){
+    for(i=1;i<w-1;i++){
+      var b0=band[j*w+i];
+      if(b0!==band[j*w+i+1]||b0!==band[(j+1)*w+i]){
+        var idx=(j*w+i)*4;
+        dta[idx]=255;dta[idx+1]=79;dta[idx+2]=216;dta[idx+3]=140;
+      }
+    }
+  }
+  eqx.putImageData(img,0,0);
+}
+
+/* ---------------- pointer ---------------- */
+var dragIdx=-1,dragPlate=-1,dragProbe=false,lastMX=0,lastMY=0;
+function evPos(e){
+  var r=cv.getBoundingClientRect();
+  return{px:e.clientX-r.left,py:e.clientY-r.top};
+}
+function chargeAt(px,py){
+  for(var i=state.charges.length-1;i>=0;i--){
+    var c=state.charges[i];
+    if(Math.hypot(px-PX(c.x),py-PY(c.y))<Math.max(13,7+Math.abs(c.q)*0.8))return i;
+  }
+  return -1;
+}
+cv.addEventListener('pointerdown',function(e){
+  var p=evPos(e);
+  if(state.mode==='addp'||state.mode==='addn'){
+    if(state.charges.length<40){
+      state.charges.push({q:state.mode==='addp'?3:-3,
+        x:clamp(WX(p.px),-7.5,7.5),y:clamp(WY(p.py),-5.5,5.5),pid:-1});
+      state.sel=state.charges.length-1;
+      syncSel();rebuild();
+    }
+    return;
+  }
+  if(Math.hypot(p.px-PX(state.probe.x),p.py-PY(state.probe.y))<16){
+    dragProbe=true;cv.setPointerCapture(e.pointerId);return;
+  }
+  var i=chargeAt(p.px,p.py);
+  if(i>=0){
+    var c=state.charges[i];
+    if(c.pid>=0){dragPlate=c.pid;}
+    else{dragIdx=i;state.sel=i;syncSel();}
+    lastMX=p.px;lastMY=p.py;
+    cv.setPointerCapture(e.pointerId);
+  }
+});
+cv.addEventListener('pointermove',function(e){
+  var p=evPos(e);
+  if(dragProbe){
+    state.probe.x=clamp(WX(p.px),-7.5,7.5);
+    state.probe.y=clamp(WY(p.py),-6,6);
+    return;
+  }
+  if(dragIdx>=0){
+    state.charges[dragIdx].x=clamp(WX(p.px),-7.5,7.5);
+    state.charges[dragIdx].y=clamp(WY(p.py),-6,6);
+    rebuild();
+    return;
+  }
+  if(dragPlate>=0){
+    var dx=WX(p.px)-WX(lastMX),dy=WY(p.py)-WY(lastMY);
+    state.charges.forEach(function(c){
+      if(c.pid===dragPlate){c.x=clamp(c.x+dx,-7.5,7.5);c.y=clamp(c.y+dy,-5.5,5.5);}
+    });
+    lastMX=p.px;lastMY=p.py;
+    rebuild();
+  }
+});
+window.addEventListener('pointerup',function(){dragIdx=-1;dragPlate=-1;dragProbe=false;});
+
+/* ---------------- presets & controls ---------------- */
+function loadPreset(key){
+  state.preset=key;
+  var A=[];
+  function pt(q,x,y){A.push({q:q,x:x,y:y,pid:-1});}
+  if(key==='pos')pt(5,0,0);
+  if(key==='neg')pt(-5,0,0);
+  if(key==='pp'){pt(5,-2.2,0);pt(5,2.2,0);}
+  if(key==='nn'){pt(-5,-2.2,0);pt(-5,2.2,0);}
+  if(key==='dip'){pt(5,-2.2,0);pt(-5,2.2,0);}
+  if(key==='cap'){
+    for(var i=0;i<=20;i++){
+      var y=-3+6*i/20;
+      A.push({q:0.8,x:-2.5,y:y,pid:0});
+      A.push({q:-0.8,x:2.5,y:y,pid:1});
+    }
+  }
+  state.charges=A;state.sel=0;
+  var names={pos:'Isolated + charge',neg:'Isolated \u2212 charge',pp:'Like charges (+/+) \u2014 neutral point',
+    nn:'Like charges (\u2212/\u2212)',dip:'Dipole (+/\u2212)',cap:'Parallel-plate capacitor \u2014 uniform E + fringing'};
+  $('badge').textContent=names[key];
+  document.querySelectorAll('.p-btn').forEach(function(x){x.classList.toggle('chip-on',x.dataset.p===key);});
+  syncSel();rebuild();
+}
+document.querySelectorAll('.p-btn').forEach(function(b){
+  b.addEventListener('click',function(){loadPreset(b.dataset.p);});
+});
+document.querySelectorAll('.md-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    state.mode=b.dataset.mode;
+    document.querySelectorAll('.md-btn').forEach(function(x){x.classList.toggle('chip-on',x===b);});
+    cv.style.cursor=state.mode==='drag'?'crosshair':'copy';
+  });
+});
+function syncSel(){
+  var c=state.charges[state.sel];
+  if(!c)return;
+  $('selLab').innerHTML='q'+(state.sel+1);
+  $('rQ').value=c.q;
+  $('vQ').textContent=c.q.toFixed(1);
+}
+$('rQ').addEventListener('input',function(e){
+  var c=state.charges[state.sel];
+  if(c&&c.pid<0){c.q=+e.target.value;$('vQ').textContent=c.q.toFixed(1);rebuild();}
+});
+$('rD').addEventListener('input',function(e){
+  state.density=+e.target.value;
+  $('vD').textContent=state.density;
+  rebuild();
+});
+$('tgEq').addEventListener('click',function(){
+  state.showEq=!state.showEq;
+  $('tgEq').classList.toggle('btn-on',state.showEq);
+});
+$('btnRem').addEventListener('click',function(){
+  var c=state.charges[state.sel];
+  if(c&&c.pid<0&&state.charges.length>1){
+    state.charges.splice(state.sel,1);
+    state.sel=0;syncSel();rebuild();
+  }
+});
+$('btnReset').addEventListener('click',function(){loadPreset('dip');});
+
+/* ---------------- render ---------------- */
+function fmtSci(x,unit){
+  if(!isFinite(x))return'0'+unit;
+  var sgn=x<0?'\u2212':'';
+  x=Math.abs(x);
+  if(x===0)return'0.0'+unit;
+  var e=Math.floor(Math.log10(x));
+  var m=x/Math.pow(10,e);
+  var sup=String(e)
+    .replace(/-/g,'\u207B').replace(/0/g,'\u2070').replace(/1/g,'\u00B9')
+    .replace(/2/g,'\u00B2').replace(/3/g,'\u00B3').replace(/4/g,'\u2074')
+    .replace(/5/g,'\u2075').replace(/6/g,'\u2076').replace(/7/g,'\u2077')
+    .replace(/8/g,'\u2078').replace(/9/g,'\u2079');
+  return sgn+m.toFixed(1)+'\u00D710'+sup+unit;
+}
+var tG=0;
+function draw(){
+  var T=themeCols();
+  ctx.fillStyle=T.bg;ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=T.grid;ctx.lineWidth=1;
+  for(var gx=-8;gx<=8;gx++){ctx.beginPath();ctx.moveTo(PX(gx),0);ctx.lineTo(PX(gx),H);ctx.stroke();}
+  for(var gy=-6;gy<=6;gy++){ctx.beginPath();ctx.moveTo(0,PY(gy));ctx.lineTo(W,PY(gy));ctx.stroke();}
+  if(state.showEq){
+    ctx.imageSmoothingEnabled=true;
+    ctx.drawImage(eqCv,0,0,W,H);
+  }
+  /* field lines with animated flow dashes */
+  ctx.lineWidth=1.5;
+  ctx.strokeStyle=themeName==='dark'?'rgba(0,229,255,0.75)':'rgba(13,132,189,0.8)';
+  ctx.setLineDash([5,9]);
+  for(var i=0;i<lines.length;i++){
+    var L=lines[i];
+    ctx.lineDashOffset=-tG*26*L.sign;
+    ctx.beginPath();
+    for(var k=0;k<L.pts.length/2;k++){
+      var x=PX(L.pts[k*2]),y=PY(L.pts[k*2+1]);
+      if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);ctx.lineDashOffset=0;
+  /* charges */
+  for(var ci=0;ci<state.charges.length;ci++){
+    var c=state.charges[ci];
+    var rad=(c.pid>=0?4:7+Math.abs(c.q)*1.0);
+    var col=c.q>=0?'#ff5252':'#29ABE2';
+    ctx.fillStyle=col;
+    ctx.shadowColor=col;ctx.shadowBlur=c.pid>=0?4:12;
+    ctx.beginPath();ctx.arc(PX(c.x),PY(c.y),rad,0,6.2832);ctx.fill();
+    ctx.shadowBlur=0;
+    if(c.pid<0){
+      ctx.fillStyle='#fff';ctx.font='700 '+Math.max(11,rad*0.9)+'px Poppins,sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(c.q>=0?'+':'\u2212',PX(c.x),PY(c.y)+1);
+      ctx.textBaseline='alphabetic';
+      if(ci===state.sel){
+        ctx.strokeStyle='#FFD700';ctx.lineWidth=2.5;
+        ctx.beginPath();ctx.arc(PX(c.x),PY(c.y),rad+5,0,6.2832);ctx.stroke();
+      }
+    }
+  }
+  /* probe */
+  var E=eField(state.probe.x,state.probe.y);
+  var mE=Math.hypot(E[0],E[1]);
+  ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(PX(state.probe.x),PY(state.probe.y),7,0,6.2832);ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(PX(state.probe.x)-11,PY(state.probe.y));ctx.lineTo(PX(state.probe.x)+11,PY(state.probe.y));
+  ctx.moveTo(PX(state.probe.x),PY(state.probe.y)-11);ctx.lineTo(PX(state.probe.x),PY(state.probe.y)+11);
+  ctx.stroke();
+  if(mE>1e-3){
+    var LE=clamp(18+Math.log10(1+mE/1e3)*22,14,110);
+    var ux=E[0]/mE,uy=E[1]/mE;
+    var x0=PX(state.probe.x),y0=PY(state.probe.y);
+    var x1=x0+ux*LE,y1=y0+uy*LE;
+    ctx.strokeStyle='#FFD700';ctx.fillStyle='#FFD700';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+    var a2=Math.atan2(uy,ux);
+    ctx.beginPath();
+    ctx.moveTo(x1+Math.cos(a2)*8,y1+Math.sin(a2)*8);
+    ctx.lineTo(x1+Math.cos(a2+2.5)*7,y1+Math.sin(a2+2.5)*7);
+    ctx.lineTo(x1+Math.cos(a2-2.5)*7,y1+Math.sin(a2-2.5)*7);
+    ctx.fill();
+    ctx.font='700 11px Poppins,sans-serif';ctx.textAlign='left';
+    ctx.fillText(fmtSci(mE,' N/C'),x0+14,y0-12);
+  }
+}
+
+/* ---------------- telemetry ---------------- */
+var fr=0;
+function updateData(){
+  if(++fr%8!==0)return;
+  var E=eField(state.probe.x,state.probe.y);
+  var mE=Math.hypot(E[0],E[1]);
+  var V=vPot(state.probe.x,state.probe.y);
+  $('dE').innerHTML=fmtSci(mE,' N/C');
+  $('dV').innerHTML=fmtSci(V,' V');
+  $('dA').innerHTML=mE>1e-3?Math.round(Math.atan2(-E[1],E[0])*180/Math.PI)+'&deg;':'\u2014';
+  var Q=0;state.charges.forEach(function(c){Q+=c.q;});
+  $('dQ').innerHTML=(Q>=0?'+':'\u2212')+Math.abs(Q).toFixed(1)+' &mu;C';
+}
+
+/* ---------------- loop ---------------- */
+var last=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  var dt=Math.min((now-last)/1000,0.05);last=now;
+  tG+=dt;
+  draw();
+  updateData();
+}
+resize();
+loadPreset('dip');
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

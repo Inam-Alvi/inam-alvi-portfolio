@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projectile Motion Simulator - Inam Alvi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#00b4d8',
+                            yellow: '#ffcc00',
+                            darkBg: '#121212',
+                            cardBg: '#1e1e1e',
+                            lightBg: '#f8fafc',
+                            lightCard: '#ffffff'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for modern look & signature style -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .signature-font {
+            font-family: 'Great Vibes', cursive;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="bg-brand-lightBg dark:bg-brand-darkBg text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 flex flex-col justify-between">
+
+    <!-- Top Navigation / Header -->
+    <header class="w-full border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between bg-white/80 dark:bg-[#181818]/80 backdrop-blur-md sticky top-0 z-50">
+        <div>
+            <span class="text-brand-blue font-semibold text-sm tracking-wide">Interactive Physics Sandbox</span>
+            <h1 class="text-xl font-bold tracking-tight">Projectile Motion Simulator</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-sm" title="Toggle Theme">
+                <!-- Sun Icon -->
+                <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-brand-yellow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <!-- Moon Icon -->
+                <svg id="moonIcon" class="w-5 h-5 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+        
+        <!-- Left Panel: Launch Controls & Metrics (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-5">
+            <!-- Controls Card -->
+            <div class="bg-white dark:bg-brand-cardBg border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-lg flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-brand-blue inline-block"></span> Launch Parameters
+                    </h2>
+                    <button id="compareToggleBtn" class="text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition font-medium text-slate-700 dark:text-slate-300">
+                        Comparison Mode: OFF
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Primary Vector v_i -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span class="font-medium">Initial Velocity (<span style="font-style: italic;">v<sub>i</sub></span>)</span>
+                            <span id="viVal" class="font-bold text-brand-blue">25 m/s</span>
+                        </div>
+                        <input type="range" id="viRange" min="5" max="50" step="1" value="25" class="w-full accent-brand-blue cursor-pointer">
+                    </div>
+
+                    <!-- Primary Angle θ -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span class="font-medium">Launch Angle (<span style="font-style: italic;">θ<sub>1</sub></span>)</span>
+                            <span id="thetaVal" class="font-bold text-brand-yellow">45°</span>
+                        </div>
+                        <input type="range" id="thetaRange" min="0" max="90" step="1" value="45" class="w-full accent-brand-yellow cursor-pointer">
+                    </div>
+
+                    <!-- Comparison Angle θ₂ (Hidden by default) -->
+                    <div id="compareAngleContainer" class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 hidden">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span class="font-medium">Comparison Angle (<span style="font-style: italic;">θ<sub>2</sub></span>)</span>
+                            <span id="theta2Val" class="font-bold text-emerald-500">30°</span>
+                        </div>
+                        <input type="range" id="theta2Range" min="0" max="90" step="1" value="30" class="w-full accent-emerald-500 cursor-pointer">
+                    </div>
+
+                    <!-- Gravity g -->
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span class="font-medium">Gravity Acceleration (<span style="font-style: italic;">g</span>)</span>
+                            <span id="gVal" class="font-bold text-slate-800 dark:text-slate-200">9.8 m/s²</span>
+                        </div>
+                        <input type="range" id="gRange" min="1.6" max="25" step="0.1" value="9.8" class="w-full accent-slate-500 cursor-pointer">
+                    </div>
+
+                    <!-- Fire & Reset Buttons -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="fireBtn" class="w-full bg-brand-yellow hover:bg-yellow-400 text-slate-900 font-bold py-3 rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                            <span>Fire Projectile!</span>
+                        </button>
+                        <button id="resetSimBtn" class="w-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold py-3 rounded-xl transition">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics Card -->
+            <div class="bg-white dark:bg-brand-cardBg border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-base mb-3 flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-brand-yellow inline-block"></span> Trajectory Summary Metrics
+                </h2>
+
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 text-center">
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">Max Height (<span style="font-style: italic;">H</span>)</span>
+                        <span id="maxHeightMetric" class="text-base font-extrabold text-brand-blue">0.00 m</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 text-center">
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">Flight Time (<span style="font-style: italic;">T</span>)</span>
+                        <span id="flightTimeMetric" class="text-base font-extrabold text-emerald-500">0.00 s</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 text-center">
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">Max Range (<span style="font-style: italic;">R</span>)</span>
+                        <span id="rangeMetric" class="text-base font-extrabold text-brand-yellow">0.00 m</span>
+                    </div>
+                </div>
+
+                <!-- Formulas -->
+                <div class="bg-slate-50 dark:bg-slate-900/60 rounded-xl p-3 text-xs space-y-1.5 border border-slate-100 dark:border-slate-800/80 font-mono text-slate-500 dark:text-slate-400">
+                    <div>H = (v<sub>i</sub>² sin²θ) / (2g)</div>
+                    <div>T = (2v<sub>i</sub> sinθ) / g</div>
+                    <div>R = (v<sub>i</sub>² sin(2θ)) / g</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Canvas Animation Arena (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="bg-white dark:bg-brand-cardBg border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col h-full">
+                <!-- Canvas Header Bar -->
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Animation Live</span>
+                        <span class="text-slate-400">|</span>
+                        <span class="text-slate-500 dark:text-slate-400">Cannonball Trajectory View</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono">
+                        <span>Time: <span id="animTime" class="font-bold text-brand-yellow">0.00s</span></span>
+                    </div>
+                </div>
+
+                <!-- Canvas wrapper -->
+                <div class="relative w-full flex-grow rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#161616] min-h-[460px] flex items-center justify-center">
+                    <canvas id="simCanvas" class="w-full h-full"></canvas>
+                    
+                    <!-- Overlay Legend -->
+                    <div class="absolute bottom-3 left-3 bg-white/80 dark:bg-black/70 backdrop-blur-md px-3 py-2 rounded-xl text-[11px] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap gap-3 pointer-events-none">
+                        <span class="flex items-center gap-1.5"><i class="w-3 h-0.5 bg-[#ffcc00] inline-block"></i> <span style="font-style: italic;">θ<sub>1</sub> Path</span></span>
+                        <span id="legendCompare" class="hidden items-center gap-1.5"><i class="w-3 h-0.5 bg-[#10b981] inline-block"></i> <span style="font-style: italic;">θ<sub>2</sub> Path</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer with Signature -->
+    <footer class="w-full border-t border-slate-200 dark:border-slate-800 py-4 px-6 text-center bg-white/50 dark:bg-[#181818]/50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
+            <div>
+                Projectile Motion Simulator &bull; Uniform Gravity Mechanics
+            </div>
+            <div class="flex items-center gap-2">
+                <span>Designed & Built by</span>
+                <span class="signature-font text-2xl font-bold tracking-wider text-brand-blue">Inam Alvi</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- State Definition ---
+        const state = {
+            vi: 25,
+            theta1: 45,
+            theta2: 30,
+            g: 9.8,
+            comparisonMode: false,
+            animating: false,
+            animTime: 0,
+            maxTime: 0
+        };
+
+        // --- Canvas & Animation Variables ---
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        let scaleX = 10; // pixels per meter
+        let scaleY = 10;
+        let originX = 60;
+        let originY = 0;
+        let animationFrameId = null;
+
+        // --- Theme Management ---
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+            drawStaticScene();
+        });
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        // --- UI Elements ---
+        const viRange = document.getElementById('viRange');
+        const thetaRange = document.getElementById('thetaRange');
+        const theta2Range = document.getElementById('theta2Range');
+        const gRange = document.getElementById('gRange');
+        const viVal = document.getElementById('viVal');
+        const thetaVal = document.getElementById('thetaVal');
+        const theta2Val = document.getElementById('theta2Val');
+        const gVal = document.getElementById('gVal');
+        const compareToggleBtn = document.getElementById('compareToggleBtn');
+        const compareAngleContainer = document.getElementById('compareAngleContainer');
+        const legendCompare = document.getElementById('legendCompare');
+        const maxHeightMetric = document.getElementById('maxHeightMetric');
+        const flightTimeMetric = document.getElementById('flightTimeMetric');
+        const rangeMetric = document.getElementById('rangeMetric');
+        const animTimeDisplay = document.getElementById('animTime');
+        const fireBtn = document.getElementById('fireBtn');
+        const resetSimBtn = document.getElementById('resetSimBtn');
+
+        compareToggleBtn.addEventListener('click', () => {
+            state.comparisonMode = !state.comparisonMode;
+            if (state.comparisonMode) {
+                compareToggleBtn.className = "text-xs bg-brand-yellow text-slate-900 font-bold px-3 py-1.5 rounded-lg transition shadow-sm";
+                compareToggleBtn.innerText = "Comparison Mode: ON";
+                compareAngleContainer.classList.remove('hidden');
+                legendCompare.classList.remove('hidden');
+                legendCompare.classList.add('flex');
+            } else {
+                compareToggleBtn.className = "text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg transition font-medium text-slate-700 dark:text-slate-300";
+                compareToggleBtn.innerText = "Comparison Mode: OFF";
+                compareAngleContainer.classList.add('hidden');
+                legendCompare.classList.remove('flex');
+                legendCompare.classList.add('hidden');
+            }
+            updateMetrics();
+            drawStaticScene();
+        });
+
+        viRange.addEventListener('input', (e) => {
+            state.vi = parseFloat(e.target.value);
+            updateMetrics();
+            drawStaticScene();
+        });
+
+        thetaRange.addEventListener('input', (e) => {
+            state.theta1 = parseFloat(e.target.value);
+            updateMetrics();
+            drawStaticScene();
+        });
+
+        theta2Range.addEventListener('input', (e) => {
+            state.theta2 = parseFloat(e.target.value);
+            updateMetrics();
+            drawStaticScene();
+        });
+
+        gRange.addEventListener('input', (e) => {
+            state.g = parseFloat(e.target.value);
+            updateMetrics();
+            drawStaticScene();
+        });
+
+        function calculateMetrics(vi, thetaDeg, g) {
+            const rad = thetaDeg * Math.PI / 180;
+            const h = (Math.pow(vi, 2) * Math.pow(Math.sin(rad), 2)) / (2 * g);
+            const t = (2 * vi * Math.sin(rad)) / g;
+            const r = (Math.pow(vi, 2) * Math.sin(2 * rad)) / g;
+            return { h, t, r };
+        }
+
+        function updateMetrics() {
+            viVal.innerText = state.vi.toFixed(1) + ' m/s';
+            thetaVal.innerText = state.theta1 + '°';
+            theta2Val.innerText = state.theta2 + '°';
+            gVal.innerText = state.g.toFixed(1) + ' m/s²';
+
+            const m1 = calculateMetrics(state.vi, state.theta1, state.g);
+            maxHeightMetric.innerText = m1.h.toFixed(2) + ' m';
+            flightTimeMetric.innerText = m1.t.toFixed(2) + ' s';
+            rangeMetric.innerText = m1.r.toFixed(2) + ' m';
+        }
+
+        // --- Canvas Rendering & Animation ---
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            originX = 50;
+            originY = rect.height - 40;
+            drawStaticScene();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        resetSimBtn.addEventListener('click', () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            state.animating = false;
+            state.animTime = 0;
+            animTimeDisplay.innerText = "0.00s";
+            drawStaticScene();
+        });
+
+        fireBtn.addEventListener('click', () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            state.animating = true;
+            state.animTime = 0;
+
+            const m1 = calculateMetrics(state.vi, state.theta1, state.g);
+            let maxT = m1.t;
+            if (state.comparisonMode) {
+                const m2 = calculateMetrics(state.vi, state.theta2, state.g);
+                maxT = Math.max(m1.t, m2.t);
+            }
+            state.maxTime = maxT;
+
+            let lastTimestamp = null;
+
+            function animate(timestamp) {
+                if (!lastTimestamp) lastTimestamp = timestamp;
+                const dt = (timestamp - lastTimestamp) / 1000;
+                lastTimestamp = timestamp;
+
+                state.animTime += dt * 1.2; // Slight speed multiplier for engagement
+                if (state.animTime > state.maxTime) {
+                    state.animTime = state.maxTime;
+                    state.animating = false;
+                }
+
+                animTimeDisplay.innerText = state.animTime.toFixed(2) + 's';
+                drawStaticScene();
+
+                if (state.animating) {
+                    animationFrameId = requestAnimationFrame(animate);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+        });
+
+        function drawGrid(width, height) {
+            const isDark = htmlElement.classList.contains('dark');
+            ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            ctx.fillStyle = isDark ? '#888' : '#666';
+            ctx.lineWidth = 1;
+            ctx.font = '10px Plus Jakarta Sans, sans-serif';
+
+            // Dynamic scale adjustment based on range
+            const m1 = calculateMetrics(state.vi, state.theta1, state.g);
+            const maxR = state.comparisonMode ? Math.max(m1.r, calculateMetrics(state.vi, state.theta2, state.g).r) : m1.r;
+            
+            scaleX = Math.max(5, (width - 100) / Math.max(maxR * 1.15, 20));
+            scaleY = scaleX; // Uniform scaling
+
+            // Grid lines
+            for (let x = originX; x < width; x += scaleX * 10) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+
+                const val = Math.round((x - originX) / scaleX);
+                if (val >= 0) {
+                    ctx.fillText(val + 'm', x - 8, originY + 16);
+                }
+            }
+
+            for (let y = originY; y > 0; y -= scaleY * 10) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+
+                const val = Math.round((originY - y) / scaleY);
+                if (val > 0) {
+                    ctx.fillText(val + 'm', originX - 35, y + 4);
+                }
+            }
+
+            // Ground Baseline
+            ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, originY);
+            ctx.lineTo(width, originY);
+            ctx.stroke();
+        }
+
+        function drawTrajectoryPath(thetaDeg, color) {
+            const rad = thetaDeg * Math.PI / 180;
+            const v0x = state.vi * Math.cos(rad);
+            const v0y = state.vi * Math.sin(rad);
+            const tFlight = (2 * v0y) / state.g;
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+
+            for (let t = 0; t <= tFlight; t += 0.05) {
+                const x = v0x * t;
+                const y = v0y * t - 0.5 * state.g * t * t;
+                const screenX = originX + x * scaleX;
+                const screenY = originY - y * scaleY;
+
+                if (t === 0) ctx.moveTo(screenX, screenY);
+                else ctx.lineTo(screenX, screenY);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawProjectileAtTime(thetaDeg, color, tCurrent) {
+            const rad = thetaDeg * Math.PI / 180;
+            const v0x = state.vi * Math.cos(rad);
+            const v0y = state.vi * Math.sin(rad);
+            const tFlight = (2 * v0y) / state.g;
+
+            const t = Math.min(tCurrent, tFlight);
+            const x = v0x * t;
+            const y = v0y * t - 0.5 * state.g * t * t;
+            const screenX = originX + x * scaleX;
+            const screenY = originY - y * scaleY;
+
+            // Cannonball
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, 6, 0, 2 * Math.PI);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+        }
+
+        function drawStaticScene() {
+            const width = canvas.width / window.devicePixelRatio;
+            const height = canvas.height / window.devicePixelRatio;
+
+            ctx.clearRect(0, 0, width, height);
+            drawGrid(width, height);
+
+            // Draw full trajectory paths
+            drawTrajectoryPath(state.theta1, '#ffcc00');
+            drawProjectileAtTime(state.theta1, '#ffcc00', state.animating || state.animTime > 0 ? state.animTime : 0);
+
+            if (state.comparisonMode) {
+                drawTrajectoryPath(state.theta2, '#10b981');
+                drawProjectileAtTime(state.theta2, '#10b981', state.animating || state.animTime > 0 ? state.animTime : 0);
+            }
+        }
+
+        // --- Initialization ---
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            updateMetrics();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10844 @@
+
+/* ==========================================
+   RESET
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#121212;
+    color:#FFFFFF;
+    overflow-x:hidden;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+header{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    background:#1A1A1A;
+
+    z-index:1000;
+
+}
+
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.navbar{
+
+    width:100%;
+    max-width:1400px;
+
+    height:80px;
+
+    margin:auto;
+
+    padding:0 30px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    animation: slideDown .8s ease forwards;
+}
+
+.logo{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#FFFFFF;
+
+}
+
+.logo span{
+
+    color:#FFD700;
+
+}
+
+.nav-links{
+
+    display:flex;
+
+    list-style:none;
+
+    gap:45px;
+
+}
+
+.nav-links li{
+
+    list-style:none;
+
+}
+
+.nav-links a{
+
+    position:relative;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    font-weight:500;
+
+    transition:.3s;
+
+    cursor:pointer;
+}
+
+.nav-links a:hover{
+
+    color:#FFD700;
+
+}
+
+/* Animated underline */
+
+.nav-links a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-6px;
+
+    width:0;
+
+    height:2px;
+
+    background:#FFD700;
+
+    transition:.3s;
+    
+}
+
+.nav-links a:hover::after{
+
+    width:100%;
+
+}
+
+/* ==========================================
+   HERO SECTION
+========================================== */
+
+.hero{
+
+    width:100%;
+    max-width:1400px;
+
+    margin:auto;
+
+    min-height:100vh;
+
+    padding:100px 60px 40px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:100px;
+
+}
+
+/* Hero Text */
+
+.hero-text{
+
+    flex: 1 1 60%;
+
+    max-width: 900px;
+    animation: slideLeft 1s ease forwards;
+}
+
+.hero-text h3{
+
+    color:#38BDF8;
+
+    font-size:32px;
+
+    font-weight:600;
+
+    letter-spacing:0.5px;
+
+    text-transform:none;
+
+    margin-bottom:15px;
+
+
+}
+
+.hero-text h1{
+
+    font-size:72px;
+
+    font-weight:700;
+
+    line-height:1.1;
+
+    margin-bottom:20px;
+
+    white-space:nowrap;
+
+}
+#typing-text{
+
+    display:block;
+
+    margin:20px 0 30px;
+
+    font-size:34px;
+
+    font-weight:600;
+
+    color:#FFD700;
+
+    min-height:45px;
+
+}
+.hero-text h2{
+
+    color:#FFD700;
+
+    font-size:34px;
+
+    font-weight:500;
+
+    margin-bottom:30px;
+
+}
+
+.hero-text p{
+
+    max-width:650px;
+
+    font-size:20px;
+
+    color:#D1D5DB;
+
+    line-height:1.9;
+
+    margin-bottom:45px;
+
+}
+.typing-title{
+
+    color:#38BDF8;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin:20px 0;
+
+    min-height:45px;
+
+}
+#typing-text::after{
+
+    content:"|";
+
+    color:#FFD700;
+
+    animation:blink .8s infinite;
+
+}
+@keyframes blink{
+
+    50%{
+
+        opacity:0;
+
+    }
+
+}
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.hero-buttons{
+
+    display:flex;
+
+    gap:25px;
+
+    margin-top:10px;
+
+}
+
+.btn{
+
+    display:inline-block;
+
+    padding:16px 38px;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    border-radius:10px;
+
+    transition:all .35s ease;
+
+    cursor:pointer;
+}
+
+.btn:hover{
+
+    transform:translateY(-6px) scale(1.05);
+
+    box-shadow:
+        0 12px 25px rgba(0,0,0,.35),
+        0 0 25px rgba(255,215,0,.35);
+
+}
+.btn:active{
+
+    transform:translateY(-2px) scale(.98);
+
+}
+.btn-outline{
+
+    background:transparent;
+
+    color:#38BDF8;
+
+    border:2px solid #38BDF8;
+
+}
+
+.btn-outline:hover{
+
+    background:#38BDF8;
+
+    color:#121212;
+
+}
+
+/* ==========================================
+   HERO IMAGE
+========================================== */
+
+.hero-image{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    animation: zoomIn 1.2s ease forwards;
+}
+
+.hero-image img{
+
+    width:300px;
+
+    height:300px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:6px solid #38BDF8;
+
+    box-shadow:
+    0 0 18px rgba(56,189,248,.45),
+    0 0 30px rgba(56,189,248,.18);
+    transition:.4s ease;
+
+}
+
+.hero-image img:hover{
+
+    transform:scale(1.05);
+
+}
+
+/* ==========================================
+   ABOUT
+========================================== */
+
+#about{
+
+    min-height:100vh;
+
+    padding:100px 80px;
+
+}
+
+/
+/*==================== SECTION TITLE ====================*/
+
+.section-title{
+
+    position:relative;
+
+    z-index:2;
+
+    text-align:center;
+
+    margin-bottom:60px;
+
+}
+
+.section-title h2{
+
+    font-size:52px;
+
+    color:#FFD700;
+
+    margin-bottom:15px;
+
+    text-shadow:
+        0 0 12px rgba(255,215,0,.25);
+
+}
+
+.section-title p{
+
+    color:#cccccc;
+
+    font-size:18px;
+
+    max-width:700px;
+
+    margin:0 auto;
+
+    line-height:1.7;
+
+}
+/*==============================================================
+                    SKILLS CONTAINER
+==============================================================*/
+
+.skills-container{
+
+    width:100%;
+
+    max-width:1600px;
+
+    margin:55px auto 0;
+
+    display:grid;
+
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+
+    gap:28px;
+
+    box-sizing:border-box;
+
+}
+
+/*====================================================
+                    PROJECTS SECTION
+====================================================*/
+
+#projects{
+
+    position:relative;
+
+    padding:120px 8% 40px;
+
+    background:#111;
+
+    overflow:hidden;
+
+}
+#projects::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-200px;
+
+    left:-200px;
+
+    width:550px;
+
+    height:550px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+
+        circle,
+
+        rgba(255,215,0,.08),
+
+        transparent 70%
+
+    );
+
+    animation:moveGlow1 12s ease-in-out infinite alternate;
+
+}
+#projects::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-220px;
+
+    right:-220px;
+
+    width:600px;
+
+    height:600px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+
+        circle,
+
+        rgba(56,189,248,.08),
+
+        transparent 70%
+
+    );
+
+    animation:moveGlow2 15s ease-in-out infinite alternate;
+
+}
+@keyframes moveGlow1{
+
+    from{
+
+        transform:translate(0,0);
+
+    }
+
+    to{
+
+        transform:translate(80px,60px);
+
+    }
+
+}
+
+@keyframes moveGlow2{
+
+    from{
+
+        transform:translate(0,0);
+
+    }
+
+    to{
+
+        transform:translate(-80px,-60px);
+
+    }
+
+}
+
+/*====================================================
+                  PROJECTS GRID
+====================================================*/
+
+.projects-container{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+
+    gap:40px;
+
+    margin-top:60px;
+    
+    position:relative;
+
+    z-index:2;
+}
+
+/*==================== PROJECT CARD ====================*/
+
+.project-card{
+
+    background:#1d1d1d;
+
+    border-radius:20px;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    overflow:hidden;
+
+    position:relative;
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.35);
+
+     transform-style:preserve-3d;
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease,
+        border-color .45s ease;
+
+    z-index:1;
+
+     will-change:transform
+
+}
+
+/*==================== PROJECT CARD HOVER ====================*/
+
+.project-card:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    border-color:rgba(255,215,0,.45);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.45),
+        0 0 30px rgba(255,215,0,.12);
+
+}
+
+/*==================== PREMIUM ANIMATED BORDER ====================*/
+
+.project-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:22px;
+
+    background:linear-gradient(
+
+        135deg,
+
+        #38BDF8,
+
+        #FFD700,
+
+        #38BDF8
+
+    );
+
+    background-size:300% 300%;
+
+    opacity:0;
+
+    z-index:-1;
+
+    transition:opacity .4s ease;
+
+}
+
+.project-card:hover::before{
+
+    opacity:1;
+
+    animation:borderGlow 5s linear infinite;
+
+}
+
+/*==================== GOLD TOP LIGHT ====================*/
+
+.project-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:3px;
+
+    background:linear-gradient(
+
+        90deg,
+
+        transparent,
+
+        #FFD700,
+
+        transparent
+
+    );
+
+    opacity:0;
+
+    transition:.4s ease;
+
+}
+
+.project-card:hover::after{
+
+    opacity:1;
+
+}
+
+/*==================== ANIMATION DELAYS ====================*/
+
+.project-card:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.project-card:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+
+/*==================== BORDER GLOW ====================*/
+
+@keyframes borderGlow{
+
+    0%{
+
+        background-position:0% 50%;
+
+    }
+
+    100%{
+
+        background-position:300% 50%;
+
+    }
+
+}
+/*==================== PROJECT NUMBER ====================*/
+
+.project-number{
+
+    position:absolute;
+
+    top:18px;
+
+    right:22px;
+
+    font-size:78px;
+
+    font-weight:800;
+
+    color:rgba(255,215,0,.07);
+
+    line-height:1;
+
+    pointer-events:none;
+
+    user-select:none;
+
+    z-index:0;
+
+    transition:.4s ease;
+
+}
+.project-card:hover .project-number{
+
+    color:rgba(255,215,0,.15);
+
+    transform:scale(1.08);
+
+}
+/*====================================================
+                PROJECT IMAGE
+====================================================*/
+
+.project-card img{
+
+    width:100%;
+
+    height:260px;
+
+    object-fit:cover;
+
+    display:block;
+
+    border-radius:20px 20px 0 0;
+
+    transition:
+        transform .6s ease,
+        filter .6s ease;
+
+}
+
+.project-image{
+
+    position:relative;
+
+    overflow:hidden;
+
+    z-index:1;
+}
+
+/* ---------- Premium Overlay ---------- */
+
+.project-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:linear-gradient(
+        to top,
+        rgba(5,10,20,.90),
+        rgba(5,10,20,.35)
+    );
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    opacity:0;
+
+    transition:.45s ease;
+
+    z-index:2;
+
+}
+
+.project-overlay i{
+
+    color:#FFD700;
+
+    font-size:42px;
+
+    transform:translateY(20px);
+
+    transition:.45s ease;
+
+}
+
+.project-overlay span{
+
+    color:#ffffff;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    transform:translateY(20px);
+
+    transition:.45s ease;
+
+}
+/* ==================== Featured Badge ==================== */
+
+.featured-badge{
+
+    position:absolute;
+
+    top:18px;
+
+    right:18px;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    background:linear-gradient(
+        135deg,
+        #FFF8C6,
+        #FFD700,
+        #F4B400
+    );
+
+    color:#1b1b1b;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    box-shadow:0 6px 20px rgba(255,215,0,.45);
+
+    overflow:hidden;
+
+    z-index:10;
+
+    animation:badgeFloat 3s ease-in-out infinite;
+
+}
+
+.featured-badge::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:45%;
+
+    height:100%;
+
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.85),
+        transparent
+    );
+
+    transform:skewX(-25deg);
+
+}
+
+.project-card:hover .featured-badge::before{
+
+    animation:badgeShine .8s linear;
+
+}
+
+@keyframes badgeFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-4px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes badgeShine{
+
+    from{
+
+        left:-120%;
+
+    }
+
+    to{
+
+        left:160%;
+
+    }
+
+}
+/* ---------- Hover Effects ---------- */
+
+.project-card:hover img{
+
+    transform:scale(1.08);
+
+    filter:brightness(.65);
+
+}
+
+.project-card:hover .project-overlay{
+
+    opacity:1;
+
+}
+
+.project-card:hover .project-overlay i,
+
+.project-card:hover .project-overlay span{
+
+    transform:translateY(0);
+
+}
+
+/* ---------- Shine Animation ---------- */
+
+.project-image::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-80%;
+
+    width:50%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        120deg,
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+    z-index:3;
+
+}
+
+.project-card:hover .project-image::before{
+
+    animation:shine .8s linear;
+
+}
+
+@keyframes shine{
+
+    from{
+
+        left:-80%;
+
+    }
+
+    to{
+
+        left:140%;
+
+    }
+
+}
+
+/*====================================================
+              PROJECT CONTENT
+====================================================*/
+
+.project-content{
+
+    padding:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+}
+.project-number{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#FFD700;
+
+    letter-spacing:2px;
+
+    margin-bottom:12px;
+
+    display:inline-block;
+
+}
+.project-content h3{
+
+    color:#FFD700;
+
+    font-size:24px;
+
+    line-height:1.3;
+
+    min-height:64px;
+
+    margin-bottom:18px;
+
+}
+.project-content h3::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-8px;
+
+    width:0;
+
+    height:3px;
+
+    border-radius:10px;
+
+    background:linear-gradient(
+    90deg,
+    #FFD700,
+    #FFF3A0,
+    #FFD700
+);
+
+box-shadow:
+    0 0 8px rgba(255,215,0,.45);
+
+    transition:.4s ease;
+
+}
+.project-card:hover .project-content h3::after{
+
+    width:100%;
+
+}
+.project-card:hover .project-content h3{
+
+    transform:translateY(-3px);
+
+    text-shadow:
+        0 0 8px rgba(255,215,0,.35);
+
+}
+.project-card:hover .project-content h3{
+
+    text-shadow:
+        0 0 10px #FFD700,
+        0 0 25px #FFD700,
+        0 0 40px rgba(255,215,0,.4);
+
+}
+
+.project-content p{
+
+    color:#d6d6d6;
+
+    line-height:1.8;
+
+    margin-bottom:28px;
+
+    flex-grow:1;
+
+}
+
+/*====================================================
+                 TECH STACK
+====================================================*/
+
+/*==================== TECH STACK ====================*/
+
+.tech-stack{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-bottom:25px;
+
+}
+
+.tech-stack span{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(8px);
+
+    -webkit-backdrop-filter:blur(8px);
+
+    border:1px solid rgba(255,215,0,.35);
+
+    color:#FFD700;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.4px;
+
+    cursor:default;
+
+    transition:all .35s ease;
+
+    animation:tagFade .6s ease both;
+
+}
+
+/* Animation Delay */
+
+.tech-stack span:nth-child(1){
+
+    animation-delay:.10s;
+
+}
+
+.tech-stack span:nth-child(2){
+
+    animation-delay:.20s;
+
+}
+
+.tech-stack span:nth-child(3){
+
+    animation-delay:.30s;
+
+}
+
+/* Hover Effect */
+
+.tech-stack span:hover{
+
+    background:linear-gradient(
+        135deg,
+        #FFF6BF,
+        #FFD700,
+        #F4B400
+    );
+
+    color:#111;
+
+    transform:translateY(-5px) scale(1.05);
+
+    border-color:#FFD700;
+
+    box-shadow:
+        0 0 12px rgba(255,215,0,.45),
+        0 0 28px rgba(255,215,0,.25);
+
+}
+
+/* Fade Animation */
+
+@keyframes tagFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*====================================================
+               PROJECT BUTTONS
+====================================================*/
+
+.project-buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:auto;
+
+}
+
+.project-buttons .btn{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:16px 20px;
+
+    border-radius:14px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:all .35s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.project-buttons .btn i{
+
+    font-size:16px;
+
+    transition:transform .35s ease;
+
+}
+.project-buttons .btn:hover i{
+
+    transform:translateX(5px);
+
+}
+.project-buttons .btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:60%;
+
+    height:100%;
+
+    background:
+
+    linear-gradient(
+
+        120deg,
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+}
+.project-buttons .btn:hover::before{
+
+    left:160%;
+
+    transition:.7s;
+
+}
+
+.project-buttons .btn:hover{
+
+    transform:translateY(-3px);
+
+}
+
+.project-buttons .btn:hover i{
+
+    transform:translateX(4px);
+
+}
+
+.github-btn{
+
+    background:transparent;
+
+    color:#ffffff;
+
+    border:2px solid #FFD700;
+
+}
+
+.github-btn:hover{
+
+    background:#FFD700;
+
+    color:#111;
+
+    box-shadow:
+        0 0 20px rgba(255,215,0,.35);
+
+}
+
+.github-btn:hover i{
+
+    transform:rotate(10deg) scale(1.15);
+
+}
+
+/*====================================================
+               PROJECT HOVER
+====================================================*/
+
+.project-card:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    border-color:#FFD700;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.45),
+        0 0 25px rgba(255,215,0,.15);
+
+}
+
+.project-card:hover img{
+
+    transform:scale(1.08);
+
+    filter:
+        brightness(1.08)
+        contrast(1.05)
+        saturate(1.08);
+
+}
+
+/*====================================================
+               SHINING EFFECT
+====================================================*/
+
+.project-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:60%;
+
+    height:100%;
+
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.20),
+        transparent
+    );
+
+    transition:.8s;
+
+    z-index:5;
+
+}
+
+.project-card:hover::before{
+
+    left:150%;
+
+}
+
+/*==================== CONTACT ====================*/
+
+#contact{
+
+    padding:120px 8%;
+
+    background:#0f0f0f;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/*========== Layout ==========*/
+
+.contact-container{
+
+    display:grid;
+
+    grid-template-columns:1fr 1.2fr;
+
+    gap:60px;
+
+    align-items:start;
+
+    margin-top:60px;
+
+}
+
+.contact-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+/*==================== CONTACT FORM ====================*/
+
+.contact-form{
+
+    background:#1d1d1d;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.30);
+
+    transition:.4s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/* Hover */
+
+.contact-form:hover{
+
+    transform:translateY(-8px);
+
+    border-color:rgba(255,215,0,.35);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.45),
+        0 0 25px rgba(255,215,0,.12);
+
+}
+
+/* Gold Top Border */
+
+.contact-form::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:4px;
+
+    background:linear-gradient(
+        90deg,
+        #FFD700,
+        #FFC107,
+        #FFD700
+    );
+
+}
+
+/* Form */
+
+.contact-form form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+/* Input Group */
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+/* Labels */
+
+.input-group label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    color:#FFD700;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+}
+
+/* Label Icons */
+
+.input-group label i{
+
+    font-size:16px;
+
+    width:22px;
+
+    text-align:center;
+
+    transition:.3s ease;
+
+}
+
+/* Icon Animation */
+
+.input-group:focus-within label i{
+
+    color:#ffffff;
+
+    transform:scale(1.15);
+
+}
+
+/* Inputs & Textarea */
+
+.input-group input,
+.input-group textarea{
+
+    width:100%;
+
+    padding:16px 18px;
+
+    background:#1d1d1d;
+
+    color:#ffffff;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:14px;
+
+    outline:none;
+
+    font-size:16px;
+
+    font-family:'Poppins',sans-serif;
+
+    caret-color:#FFD700;
+
+    transition:
+        border-color .3s ease,
+        box-shadow .3s ease,
+        transform .25s ease,
+        background .3s ease;
+
+}
+
+/* Textarea */
+
+.input-group textarea{
+
+    resize:none;
+
+    min-height:160px;
+
+}
+
+/* Placeholder */
+
+.input-group input::placeholder,
+.input-group textarea::placeholder{
+
+    color:#888888;
+
+}
+
+/* Focus */
+
+.input-group input:focus,
+.input-group textarea:focus{
+
+    background:#252525;
+
+    border-color:#FFD700;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 0 0 3px rgba(255,215,0,.08),
+        0 0 18px rgba(255,215,0,.18);
+
+}
+.send-btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    width:100%;
+
+    padding:18px 28px;
+
+    margin-top:10px;
+
+    background:linear-gradient(135deg,#FFD700,#FFC107);
+
+    color:#121212;
+
+    border:none;
+
+    border-radius:14px;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    font-family:'Poppins',sans-serif;
+
+    cursor:pointer;
+
+    transition:all .35s ease;
+
+    overflow:hidden;
+
+    position:relative;
+
+}
+.send-btn:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 15px 35px rgba(255,215,0,.35);
+
+    background:linear-gradient(135deg,#FFE55C,#FFD700);
+
+}
+.send-btn:active{
+
+    transform:translateY(-2px);
+
+}
+.send-btn i{
+
+    font-size:18px;
+
+    transition:transform .35s ease;
+
+}
+.send-btn:hover i{
+
+    transform:translateX(6px)
+              rotate(-10deg);
+
+}
+.send-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:60%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        120deg,
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+}
+.send-btn:hover::before{
+
+    animation:buttonShine .8s linear;
+
+}
+@keyframes buttonShine{
+
+    from{
+
+        left:-120%;
+
+    }
+
+    to{
+
+        left:150%;
+
+    }
+
+}
+.form-note{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    color:#888888;
+
+    font-size:13px;
+
+    line-height:1.6;
+
+}
+
+/*==================== CONTACT CARDS ====================*/
+
+.contact-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:22px;
+
+    padding:25px;
+
+    background:#1d1d1d;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:18px;
+
+    transition:.35s ease;
+
+    cursor:pointer;
+
+}
+
+.contact-card:hover{
+
+    transform:translateY(-6px);
+
+    border-color:#FFD700;
+
+    box-shadow:
+        0 15px 35px rgba(255,215,0,.15);
+
+}
+
+/*==================== ICON ====================*/
+
+.contact-icon{
+
+    width:70px;
+
+    height:70px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    font-size:28px;
+
+    transition:.35s ease;
+
+}
+
+.contact-card:hover .contact-icon{
+
+    transform:rotate(12deg) scale(1.08);
+
+    box-shadow:
+        0 0 20px rgba(255,215,0,.45);
+
+}
+
+/*==================== DETAILS ====================*/
+
+.contact-details{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.contact-details h3{
+
+    color:#FFD700;
+
+    font-size:22px;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+}
+
+.contact-details p{
+
+    color:#d6d6d6;
+
+    font-size:16px;
+
+    line-height:1.7;
+
+    transition:.3s ease;
+
+}
+
+.contact-card:hover .contact-details p{
+
+    color:#ffffff;
+
+}
+/*==================== SOCIAL SECTION ====================*/
+
+.social-section{
+
+    margin-top:15px;
+
+    padding:25px;
+
+    background:#1d1d1d;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:18px;
+
+}
+
+.social-section h3{
+
+    color:#FFD700;
+
+    font-size:24px;
+
+    margin-bottom:20px;
+
+    font-weight:600;
+
+}
+.social-links{
+
+    display:flex;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+}
+
+.social-icon{
+
+    width:60px;
+
+    height:60px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#1d1d1d;
+
+    border:1px solid rgba(255,215,0,.2);
+
+    color:#FFD700;
+
+    font-size:24px;
+
+    text-decoration:none;
+
+    transition:.35s ease;
+
+}
+.social-icon:hover{
+
+    background:#FFD700;
+
+    color:#121212;
+
+    transform:
+
+        translateY(-6px)
+
+        rotate(8deg)
+
+        scale(1.08);
+
+    box-shadow:
+
+        0 0 20px rgba(255,215,0,.45);
+
+}
+/*==================== RESPONSIVE ====================*/
+
+@media (max-width:992px){
+
+    .contact-container{
+
+        grid-template-columns:1fr;
+
+        gap:40px;
+
+    }
+
+}
+
+/*==================== FOOTER ====================*/
+
+#footer{
+
+    background:#0a0a0a;
+
+    padding:70px 8% 25px;
+
+    margin-top:120px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+#footer::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-100%;
+
+    width:100%;
+
+    height:2px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #FFD700,
+        transparent
+    );
+
+    animation:footerLine 6s linear infinite;
+
+}
+
+@keyframes footerLine{
+
+    from{
+
+        left:-100%;
+
+    }
+
+    to{
+
+        left:100%;
+
+    }
+
+}
+
+.footer-container{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr 1fr;
+
+    gap:60px;
+
+    margin-bottom:50px;
+
+}
+
+/*==================== BRAND ====================*/
+
+.footer-brand h3{
+
+    color:#FFD700;
+
+    font-size:30px;
+
+    margin-bottom:15px;
+
+    transition:.35s ease;
+
+}
+
+.footer-brand h3:hover{
+
+    text-shadow:
+        0 0 12px rgba(255,215,0,.45);
+
+}
+
+.footer-brand p{
+
+    color:#bdbdbd;
+
+    line-height:1.8;
+
+    max-width:420px;
+
+}
+
+/*==================== LINKS ====================*/
+
+.footer-links h4,
+.footer-social h4{
+
+    color:#FFD700;
+
+    font-size:20px;
+
+    margin-bottom:22px;
+
+}
+
+.footer-links ul{
+
+    list-style:none;
+
+}
+
+.footer-links li{
+
+    margin-bottom:14px;
+
+}
+
+.footer-links a{
+
+    color:#d0d0d0;
+
+    text-decoration:none;
+
+    transition:.3s ease;
+
+    display:inline-block;
+
+}
+
+.footer-links a:hover{
+
+    color:#FFD700;
+
+    transform:translateX(8px);
+
+}
+
+/*==================== SOCIAL ====================*/
+
+.footer-icons{
+
+    display:flex;
+
+    gap:18px;
+
+}
+
+.footer-icons a{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#1d1d1d;
+
+    color:#FFD700;
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    border:1px solid rgba(255,215,0,.18);
+
+    transition:
+        transform .35s ease,
+        background .35s ease,
+        color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+.footer-icons a:hover{
+
+    background:#FFD700;
+
+    color:#111111;
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.45),
+        0 0 35px rgba(255,215,0,.20);
+
+}
+
+/*==================== COPYRIGHT ====================*/
+
+.footer-bottom{
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+    padding-top:25px;
+
+    text-align:center;
+
+}
+
+.footer-bottom p{
+
+    color:#888888;
+
+    font-size:15px;
+
+    letter-spacing:.5px;
+
+}
+
+/* ==========================================
+   TEXT SELECTION
+========================================== */
+
+::selection{
+
+    background:#FFD700;
+
+    color:#121212;
+
+}
+
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#121212;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#FFD700;
+
+    border-radius:10px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#e6c200;
+
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media(max-width:992px){
+
+.hero{
+
+    flex-direction:column-reverse;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:120px 30px 60px;
+
+}
+
+.hero-text{
+
+    max-width:100%;
+
+}
+
+.hero-text h1{
+
+    font-size:50px;
+
+}
+
+.hero-text h2{
+
+    font-size:28px;
+
+}
+
+.hero-text p{
+
+    max-width:600px;
+
+    margin:auto;
+
+    margin-bottom:40px;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+}
+
+.hero-buttons{
+
+    justify-content:center;
+
+}
+
+.hero-image img{
+
+    width:300px;
+
+    height:300px;
+
+}
+
+.navbar{
+
+    padding:0 20px;
+
+}
+
+.nav-links{
+
+    gap:20px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+    .logo{
+
+        font-size:30px;
+
+    }
+
+    .nav-links{
+
+        gap:12px;
+
+    }
+
+    .nav-links a{
+
+        font-size:14px;
+
+    }
+
+    .hero-text h1{
+
+        font-size:46px;
+
+    }
+
+    .hero-text h3{
+
+        font-size:26px;
+
+    }
+
+    .hero-text h2{
+
+        font-size:24px;
+
+    }
+
+    .hero-text p{
+
+        font-size:18px;
+
+    }
+
+    .hero-buttons{
+
+        flex-direction:column;
+
+    }
+
+    .btn{
+
+        width:220px;
+
+        text-align:center;
+
+    }
+
+    .hero-image img{
+
+        width:250px;
+
+        height:250px;
+
+    }
+
+}
+/*================ ABOUT SECTION =================*/
+
+.about{
+
+    width:92%;
+
+    max-width:1400px;
+
+    margin:100px auto;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:70px;
+
+}
+
+.about-image{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:flex-start;
+
+}
+
+.about-image img{
+
+    width:340px;
+
+    height:340px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:6px solid #38BDF8;
+
+    padding:8px;
+
+    background:#1d1d1d;
+
+    box-shadow:
+        0 0 18px rgba(56,189,248,.35),
+        0 0 40px rgba(56,189,248,.25),
+        0 0 70px rgba(56,189,248,.18);
+
+    transition:.4s ease;
+
+}
+
+.about-image img:hover{
+
+    transform:scale(1.04);
+
+    box-shadow:
+        0 0 25px rgba(56,189,248,.5),
+        0 0 55px rgba(56,189,248,.35),
+        0 0 90px rgba(56,189,248,.25);
+
+}
+
+.about-content{
+
+    flex:2;
+
+}
+
+.about-content h2{
+
+    font-size:52px;
+
+    color:#FFD700;
+
+    margin-bottom:12px;
+
+    font-weight:700;
+
+    text-align:left;
+
+}
+
+.about-content h3{
+
+    font-size:34px;
+
+    color:#38BDF8;
+
+    line-height:1.5;
+
+    margin-bottom:25px;
+
+    font-weight:700;
+
+}
+
+.about-content p{
+
+    font-size:22px;
+
+    line-height:1.9;
+
+    color:#e5e5e5;
+
+    margin-bottom:35px;
+
+    max-width:700px;
+
+}
+
+.about-info{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+    margin-top:35px;
+
+}
+
+.info-box{
+
+    background:#1b1b1b;
+
+    padding:22px;
+
+    border-left:4px solid #FFD700;
+
+    border-radius:12px;
+
+    transition:
+        transform .3s ease,
+        background .3s ease,
+        box-shadow .3s ease;
+
+}
+.info-box:hover{
+
+    transform:translateY(-5px);
+
+    background:#232323;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.30),
+        0 0 18px rgba(255,215,0,.10);
+
+}
+.info-box:active{
+
+    transform:translateY(-3px) scale(.98);
+
+    background:#232323;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.30),
+        0 0 15px rgba(255,215,0,.12);
+
+}
+
+.info-box span{
+
+    color:#38BDF8;
+
+    font-weight:600;
+
+}
+
+.info-box p{
+
+    margin-top:10px;
+
+    color:white;
+
+    font-size:17px;
+
+}
+/*================ HERO TEXT ANIMATION ================*/
+
+@keyframes slideLeft{
+
+    from{
+        opacity:0;
+        transform:translateX(-70px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+
+}
+
+/*================ HERO IMAGE ANIMATION ================*/
+
+@keyframes zoomIn{
+
+    from{
+        opacity:0;
+        transform:scale(0.8);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+/*================ NAVBAR ANIMATION ================*/
+
+@keyframes slideDown{
+
+    from{
+        opacity:0;
+        transform:translateY(-50px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+/* ================= Scroll Animation ================= */
+
+.hidden{
+    opacity:0;
+    filter:blur(5px);
+    transform:translateY(80px);
+    transition:all 1s ease;
+}
+
+.show{
+    opacity:1;
+    filter:blur(0);
+    transform:translateY(0);
+}
+@keyframes sparkle{
+
+    0%{
+
+        transform:translateY(-50%) scale(.8);
+
+        opacity:.6;
+
+    }
+
+    50%{
+
+        transform:translateY(-50%) scale(1.3);
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:translateY(-50%) scale(.8);
+
+        opacity:.6;
+
+    }
+
+}
+@keyframes goldShine{
+
+    from{
+
+        left:-40%;
+
+    }
+
+    to{
+
+        left:140%;
+
+    }
+
+}
+/*==================== RESPONSIVE PROJECTS ====================*/
+
+@media (max-width:992px){
+
+    .projects-container{
+
+        grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+        gap:30px;
+
+    }
+
+    .section-title h2{
+
+        font-size:42px;
+
+    }
+
+}
+
+@media (max-width:768px){
+
+    #projects{
+
+        padding:90px 6%;
+
+    }
+
+    .projects-container{
+
+        grid-template-columns:1fr;
+
+        gap:30px;
+
+    }
+
+    .project-content{
+
+        padding:25px;
+
+    }
+
+    .project-content h3{
+
+        font-size:24px;
+
+    }
+
+    .project-buttons{
+
+        flex-direction:column;
+
+    }
+
+    .project-buttons .btn{
+
+        width:100%;
+
+    }
+
+}
+
+@media (max-width:480px){
+
+    .section-title h2{
+
+        font-size:34px;
+
+    }
+
+    .section-title p{
+
+        font-size:16px;
+
+    }
+
+    .project-card img{
+
+        height:220px;
+
+    }
+
+    .project-content{
+
+        padding:20px;
+
+    }
+
+    .tech-stack{
+
+        gap:8px;
+
+    }
+
+    .tech-stack span{
+
+        font-size:12px;
+
+        padding:6px 14px;
+
+    }
+
+}
+/*==================== CONTACT RESPONSIVE ====================*/
+
+@media (max-width:992px){
+
+    .contact-container{
+
+        grid-template-columns:1fr;
+
+        gap:40px;
+
+    }
+
+}
+/*==================== TOAST ====================*/
+
+.toast{
+
+    position:fixed;
+
+    top:30px;
+
+    right:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    background:#1d1d1d;
+
+    color:#ffffff;
+
+    padding:18px 24px;
+
+    border-left:5px solid #FFD700;
+
+    border-radius:14px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.45);
+
+    transform:translateX(150%);
+
+    opacity:0;
+
+    transition:.45s ease;
+
+    z-index:9999;
+
+    min-width:320px;
+
+}
+
+.toast.show{
+
+    transform:translateX(0);
+
+    opacity:1;
+
+}
+
+.toast i{
+
+    font-size:22px;
+
+    color:#FFD700;
+
+}
+
+.toast span{
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+.toast-content{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.toast-progress{
+
+    width:100%;
+
+    height:4px;
+
+    margin-top:12px;
+
+    border-radius:10px;
+
+    background:#FFD700;
+
+}
+/*==================== BACK TO TOP ====================*/
+
+#scroll-top{
+
+    position:fixed;
+
+    right:30px;
+
+    bottom:30px;
+
+    width:58px;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    color:#111111;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.35);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:translateY(20px);
+
+    transition:.35s ease;
+
+    z-index:999;
+
+}
+
+#scroll-top.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:translateY(0);
+
+}
+
+#scroll-top:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.45),
+        0 0 35px rgba(255,215,0,.20);
+
+}
+/*==================================================
+        INTERACTIVE STEM LABORATORY
+==================================================*/
+
+#stem-lab{
+
+    padding:120px 8%;
+
+    background:#121212;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/*==============================================================
+                    STEM CONTAINER
+==============================================================*/
+
+.stem-container {
+
+    width:100%;
+
+    max-width:1400px;
+
+    margin:60px auto 0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:45px;
+
+}
+
+/*==================================================
+                FILTER BUTTONS
+==================================================*/
+
+.stem-filters{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+}
+
+.stem-filter{
+
+    padding:12px 28px;
+
+    background:#1d1d1d;
+
+    color:#d0d0d0;
+
+    border:1px solid rgba(255,215,0,.18);
+
+    border-radius:40px;
+
+    cursor:pointer;
+
+    font-family:'Poppins',sans-serif;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.35s ease;
+
+}
+
+.stem-filter:hover{
+
+    background:#FFD700;
+
+    color:#121212;
+
+    border-color:#FFD700;
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.30),
+        0 0 35px rgba(255,215,0,.12);
+
+}
+
+.stem-filter.active{
+
+    background:#FFD700;
+
+    color:#121212;
+
+    border-color:#FFD700;
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.30);
+
+}
+
+/*==============================================================
+        STEM STEP 2M — FILTER BUTTON POLISH
+==============================================================*/
+
+.stem-filters {
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-bottom:35px;
+
+}
+
+
+/*==================== FILTER BUTTON ====================*/
+
+.stem-filter {
+
+    position:relative;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    border:1px solid rgba(255,215,0,.25);
+
+    background:rgba(255,255,255,.025);
+
+    color:#cfcfcf;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+    cursor:pointer;
+
+    outline:none;
+
+    transition:
+
+        transform .3s ease,
+
+        color .3s ease,
+
+        background .3s ease,
+
+        border-color .3s ease,
+
+        box-shadow .3s ease;
+
+}
+
+/*==============================================================
+        STEM STEP 2N — FILTER RESULT INDICATOR
+==============================================================*/
+
+.stem-filter-result {
+
+    text-align:center;
+
+    margin-top:-20px;
+
+    margin-bottom:28px;
+
+    color:#a9a9a9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    letter-spacing:.3px;
+
+    min-height:20px;
+
+    transition:
+
+        opacity .3s ease,
+
+        transform .3s ease;
+
+}
+
+
+/* Highlight category name */
+
+.stem-filter-result .result-category {
+
+    color:#FFD700;
+
+    font-weight:600;
+
+}
+
+
+/* Number of simulations */
+
+.stem-filter-result .result-count {
+
+    color:#ffffff;
+
+    font-weight:600;
+
+}
+
+
+/* Mobile */
+
+@media (max-width:650px) {
+
+    .stem-filter-result {
+
+        margin-top:-14px;
+
+        margin-bottom:24px;
+
+        font-size:13px;
+
+    }
+
+}
+
+/*==================== HOVER ====================*/
+
+.stem-filter:hover {
+
+    transform:translateY(-3px);
+
+    color:#ffffff;
+
+    background:rgba(255,215,0,.08);
+
+    border-color:rgba(255,215,0,.55);
+
+    box-shadow:
+
+        0 6px 18px rgba(255,215,0,.10);
+
+}
+
+
+/*==================== ACTIVE ====================*/
+
+.stem-filter.active {
+
+    color:#121212;
+
+    background:#FFD700;
+
+    border-color:#FFD700;
+
+    box-shadow:
+
+        0 7px 20px rgba(255,215,0,.20);
+
+}
+
+
+/*==================== ACTIVE HOVER ====================*/
+
+.stem-filter.active:hover {
+
+    color:#121212;
+
+    background:#ffdf32;
+
+    border-color:#ffdf32;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 9px 24px rgba(255,215,0,.25);
+
+}
+
+
+/*==================== CLICK FEEDBACK ====================*/
+
+.stem-filter:active {
+
+    transform:translateY(0);
+
+}
+
+
+/*==================== KEYBOARD ACCESSIBILITY ====================*/
+
+.stem-filter:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*==================== MOBILE ====================*/
+
+@media (max-width:650px) {
+
+    .stem-filters {
+
+        gap:9px;
+
+        margin-bottom:28px;
+
+    }
+
+
+    .stem-filter {
+
+        padding:9px 16px;
+
+        font-size:13px;
+
+    }
+
+}
+
+/*==================== STEM GRID ====================*/
+
+.stem-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:35px;
+
+    margin-top:45px;
+
+}
+
+@media(max-width:1100px){
+
+    .stem-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .stem-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+/*==============================================================
+                STEM LAB CARDS
+==============================================================*/
+
+/*==================== STEM CARDS CONTAINER ====================*/
+
+.stem-cards-container {
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+
+    gap:28px;
+
+    align-items:stretch;
+
+}
+
+
+/*==============================================================
+                STEM CARD
+==============================================================*/
+
+.stem-card {
+
+    width:100%;
+
+    min-width:0;
+
+    background:#1d1d1d;
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+.stem-card:hover {
+
+    transform:translateY(-8px);
+
+    border-color:#FFD700;
+
+    box-shadow:
+
+        0 18px 40px rgba(0,0,0,.35),
+
+        0 0 25px rgba(255,215,0,.15);
+
+}
+
+
+/*==============================================================
+                IMAGE
+==============================================================*/
+
+.stem-image {
+
+    width:100%;
+
+    aspect-ratio:16 / 9;
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#111;
+
+}
+
+
+.stem-image img {
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+
+    transition:
+        transform .45s ease;
+
+}
+
+
+.stem-card:hover .stem-image img {
+
+    transform:scale(1.05);
+
+}
+
+/*==============================================================
+        STEM STEP 2Q — SIMULATION NUMBER
+==============================================================*/
+
+.stem-number {
+    
+    pointer-events:none;
+
+    position:absolute;
+
+    top:14px;
+
+    left:14px;
+
+    z-index:15;
+
+    min-width:42px;
+
+    height:32px;
+
+    padding:0 10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:20px;
+
+    background:rgba(10,10,10,.78);
+
+    border:1px solid rgba(255,215,0,.45);
+
+    color:#FFD700;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    backdrop-filter:blur(6px);
+
+    box-shadow:
+
+        0 4px 12px rgba(0,0,0,.25);
+
+    transition:
+
+        background .35s ease,
+
+        border-color .35s ease,
+
+        color .35s ease,
+
+        transform .35s ease,
+
+        box-shadow .35s ease;
+
+}
+
+
+/* Card hover */
+
+.stem-card:hover .stem-number {
+
+    background:rgba(255,215,0,.12);
+
+    border-color:#FFD700;
+
+    color:#ffffff;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+        0 5px 15px rgba(255,215,0,.12);
+
+}
+
+/*==============================================================
+                CLICKABLE IMAGE OVERLAY
+==============================================================*/
+
+.stem-image-overlay {
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:10;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:linear-gradient(
+
+        rgba(0,0,0,.12),
+
+        rgba(0,0,0,.72)
+
+    );
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:
+
+        opacity .35s ease,
+
+        visibility .35s ease;
+
+}
+
+
+/* Show overlay when image is hovered */
+
+.stem-image:hover .stem-image-overlay {
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/*==============================================================
+        STEM STEP 2R — IMAGE OVERLAY REFINEMENT
+==============================================================*/
+
+/*--------------------------------------------------------------
+    Overlay
+--------------------------------------------------------------*/
+
+.stem-overlay,
+.stem-image-overlay {
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.08) 0%,
+            rgba(0,0,0,.28) 35%,
+            rgba(0,0,0,.78) 100%
+        );
+
+    backdrop-filter:blur(1px);
+
+    transition:
+        opacity .45s ease,
+        background .45s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Overlay content
+--------------------------------------------------------------*/
+
+.stem-overlay span,
+.stem-image-overlay span {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:11px 18px;
+
+    border-radius:30px;
+
+    background:rgba(10,10,10,.72);
+
+    border:1px solid rgba(255,215,0,.45);
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.25);
+
+    transform:translateY(12px) scale(.94);
+
+    opacity:0;
+
+    transition:
+        transform .45s ease,
+        opacity .45s ease,
+        background .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Play icon
+--------------------------------------------------------------*/
+
+.stem-overlay i,
+.stem-image-overlay i {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    font-size:17px;
+
+    box-shadow:
+        0 0 0 6px rgba(255,215,0,.10),
+        0 0 22px rgba(255,215,0,.35);
+
+    transform:scale(.85);
+
+    transition:
+        transform .45s ease,
+        box-shadow .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Hover state
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-overlay span,
+.stem-card:hover .stem-image-overlay span {
+
+    opacity:1;
+
+    transform:translateY(0) scale(1);
+
+}
+
+
+.stem-card:hover .stem-overlay i,
+.stem-card:hover .stem-image-overlay i {
+
+    transform:scale(1);
+
+    box-shadow:
+        0 0 0 7px rgba(255,215,0,.12),
+        0 0 28px rgba(255,215,0,.55);
+
+}
+
+
+/*--------------------------------------------------------------
+    Overlay hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-image-overlay span:hover {
+
+    background:rgba(255,215,0,.12);
+
+    border-color:#FFD700;
+
+    box-shadow:
+        0 10px 28px rgba(255,215,0,.12);
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep clickable overlay above everything
+--------------------------------------------------------------*/
+
+.stem-image-overlay {
+
+    z-index:10;
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-overlay span,
+    .stem-image-overlay span {
+
+        padding:10px 15px;
+
+        font-size:14px;
+
+    }
+
+
+    .stem-overlay i,
+    .stem-image-overlay i {
+
+        width:42px;
+
+        height:42px;
+
+        font-size:15px;
+
+    }
+
+}
+
+/*==============================================================
+                OVERLAY BUTTON
+==============================================================*/
+
+.stem-image-overlay span {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:9px;
+
+    padding:12px 20px;
+
+    border:1px solid #FFD700;
+
+    border-radius:30px;
+
+    background:rgba(10,10,10,.88);
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    letter-spacing:.4px;
+
+    transform:translateY(12px);
+
+    transition:
+
+        transform .35s ease,
+
+        background .25s ease,
+
+        box-shadow .25s ease;
+
+}
+
+
+/* Lift overlay button */
+
+.stem-image:hover .stem-image-overlay span {
+
+    transform:translateY(0);
+
+}
+
+
+/* Play icon */
+
+.stem-image-overlay i {
+
+    color:#FFD700;
+
+    font-size:16px;
+
+}
+
+
+/* Overlay button hover */
+
+.stem-image-overlay:hover span {
+
+    background:rgba(255,215,0,.12);
+
+    box-shadow:
+
+        0 0 18px rgba(255,215,0,.25);
+
+}
+
+/*==============================================================
+        STEM STEP 2L — FILTER ANIMATION
+==============================================================*/
+
+.stem-card.stem-filter-show {
+    animation: stemFilterIn .9s ease forwards;
+}
+
+@keyframes stemFilterIn {
+
+    from {
+        opacity:0;
+        transform:translateY(18px);
+    }
+
+    to {
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+
+/* Keep the normal hover lift after the entrance animation */
+
+.stem-card.stem-filter-show:hover {
+    transform:translateY(-8px);
+}
+
+/*==============================================================
+                CONTENT
+==============================================================*/
+
+.stem-content {
+
+    padding:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+}
+
+/*==============================================================
+        STEM STEP 2G — CARD CONTENT ALIGNMENT
+==============================================================*/
+
+/* Make every card stretch to the same height */
+.stem-card {
+    height:100%;
+}
+
+
+/* Keep content area flexible */
+.stem-content {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+
+/* Keep technology tags toward the bottom */
+.stem-tech {
+    margin-top:auto;
+    margin-bottom:24px;
+}
+
+
+/* Keep buttons aligned at the bottom */
+.stem-buttons {
+    margin-top:0;
+}
+
+
+/* Keep titles visually consistent */
+.stem-title {
+    min-height:3.6em;
+}
+
+
+/* Keep descriptions reasonably balanced */
+.stem-description {
+    min-height:6.8em;
+}
+
+
+/*==============================================================
+        TABLET / MOBILE ADJUSTMENTS
+==============================================================*/
+
+@media (max-width:1000px) {
+
+    .stem-title {
+        min-height:auto;
+    }
+
+    .stem-description {
+        min-height:auto;
+    }
+
+}
+
+
+@media (max-width:650px) {
+
+    .stem-title {
+        min-height:auto;
+    }
+
+    .stem-description {
+        min-height:auto;
+    }
+
+    .stem-tech {
+        margin-top:20px;
+    }
+
+}
+
+
+/*==============================================================
+                CATEGORY
+==============================================================*/
+
+.stem-category {
+
+    display:inline-block;
+
+    align-self:flex-start;
+
+    padding:6px 14px;
+
+    border-radius:30px;
+
+    background:rgba(255,215,0,.08);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    color:#FFD700;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:18px;
+
+}
+
+/*==============================================================
+        STEM STEP 2H — CATEGORY BADGE POLISH
+==============================================================*/
+
+.stem-category {
+
+    position:relative;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    width:fit-content;
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    background:rgba(255,215,0,.08);
+
+    border:1px solid rgba(255,215,0,.28);
+
+    color:#FFD700;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+    line-height:1;
+
+    transition:
+
+        background .3s ease,
+
+        border-color .3s ease,
+
+        box-shadow .3s ease,
+
+        transform .3s ease;
+
+}
+
+
+/* Small glowing marker */
+
+.stem-category::before {
+
+    content:"";
+
+    width:6px;
+
+    height:6px;
+
+    margin-right:8px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    box-shadow:
+
+        0 0 7px rgba(255,215,0,.7);
+
+    transition:
+
+        transform .3s ease,
+
+        box-shadow .3s ease;
+
+}
+
+
+/* Card hover */
+
+.stem-card:hover .stem-category {
+
+    background:rgba(255,215,0,.13);
+
+    border-color:rgba(255,215,0,.55);
+
+    box-shadow:
+
+        0 0 14px rgba(255,215,0,.08);
+
+    transform:translateY(-2px);
+
+}
+
+
+.stem-card:hover .stem-category::before {
+
+    transform:scale(1.35);
+
+    box-shadow:
+
+        0 0 10px rgba(255,215,0,.9);
+
+}
+
+/*==============================================================
+        STEM STEP 2S — CARD HOVER DEPTH
+==============================================================*/
+
+.stem-card {
+
+    position:relative;
+
+    transform:translateY(0);
+
+    transition:
+
+        transform .4s cubic-bezier(.2,.8,.2,1),
+
+        border-color .4s ease,
+
+        box-shadow .4s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Premium hover depth
+--------------------------------------------------------------*/
+
+.stem-card:hover {
+
+    transform:translateY(-9px);
+
+    border-color:rgba(255,215,0,.75);
+
+    box-shadow:
+
+        0 20px 45px rgba(0,0,0,.42),
+
+        0 0 30px rgba(255,215,0,.12);
+
+}
+
+
+/*--------------------------------------------------------------
+    Very subtle inner highlight
+--------------------------------------------------------------*/
+
+.stem-card::after {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:18px;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    border:1px solid rgba(255,215,0,.18);
+
+    transition:opacity .4s ease;
+
+}
+
+
+.stem-card:hover::after {
+
+    opacity:1;
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep image from moving with the card's content
+--------------------------------------------------------------*/
+
+.stem-image {
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep content above decorative layer
+--------------------------------------------------------------*/
+
+.stem-content {
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/*--------------------------------------------------------------
+    Respect reduced-motion preference
+--------------------------------------------------------------*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .stem-card {
+
+        transition:none;
+
+    }
+
+    .stem-card:hover {
+
+        transform:none;
+
+    }
+
+}
+
+/*==============================================================
+                TITLE
+==============================================================*/
+
+.stem-title {
+
+    color:#ffffff;
+
+    font-size:22px;
+
+    line-height:1.35;
+
+    margin:0 0 14px;
+
+}
+
+
+/*==============================================================
+                DESCRIPTION
+==============================================================*/
+
+.stem-description {
+
+    color:#cfcfcf;
+
+    line-height:1.7;
+
+    margin:0 0 20px;
+
+}
+
+
+/*==============================================================
+                TECHNOLOGY TAGS
+==============================================================*/
+
+.stem-tech {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-bottom:24px;
+
+}
+
+
+.stem-tech span {
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    border:1px solid rgba(255,215,0,.25);
+
+    color:#FFD700;
+
+    font-size:13px;
+
+}
+
+/*==============================================================
+        STEM STEP 2I — TECHNOLOGY TAG POLISH
+==============================================================*/
+
+.stem-tech span {
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.025);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    color:#FFD700;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    letter-spacing:.25px;
+
+    line-height:1;
+
+    transition:
+
+        transform .3s ease,
+
+        background .3s ease,
+
+        border-color .3s ease,
+
+        box-shadow .3s ease,
+
+        color .3s ease;
+
+}
+
+
+/* Individual tag hover */
+
+.stem-tech span:hover {
+
+    transform:translateY(-3px);
+
+    background:rgba(255,215,0,.10);
+
+    border-color:rgba(255,215,0,.65);
+
+    color:#ffffff;
+
+    box-shadow:
+
+        0 5px 14px rgba(255,215,0,.10);
+
+}
+
+
+/* Card hover — subtle enhancement */
+
+.stem-card:hover .stem-tech span {
+
+    border-color:rgba(255,215,0,.32);
+
+}
+
+
+/*==============================================================
+                BUTTONS
+==============================================================*/
+
+.stem-buttons {
+
+    display:flex;
+
+    gap:14px;
+
+    margin-top:auto;
+
+}
+
+
+.demo-btn {
+
+    flex:1;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    text-align:center;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:
+
+        transform .35s ease,
+
+        box-shadow .35s ease;
+
+}
+
+
+.demo-btn:hover {
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 8px 20px rgba(255,215,0,.2);
+
+}
+
+
+.github-btn {
+
+    flex:1;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    border:2px solid #FFD700;
+
+    color:#ffffff;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    transition:
+
+        transform .35s ease,
+
+        background .35s ease,
+
+        color .35s ease;
+
+}
+
+
+.github-btn:hover {
+
+    transform:translateY(-3px);
+
+    background:#FFD700;
+
+    color:#121212;
+
+}
+
+/*==============================================================
+        STEM STEP 2K — BUTTON POLISH
+==============================================================*/
+
+/*==================== BUTTON CONTAINER ====================*/
+
+.stem-buttons {
+
+    display:flex;
+
+    align-items:stretch;
+
+    gap:14px;
+
+    margin-top:0;
+
+}
+
+
+/*==================== COMMON BUTTON STYLE ====================*/
+
+.stem-buttons a {
+
+    min-height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    box-sizing:border-box;
+
+    line-height:1.2;
+
+    cursor:pointer;
+
+}
+
+
+/*==================== LIVE DEMO BUTTON ====================*/
+
+.demo-btn {
+
+    flex:1;
+
+    padding:13px 16px;
+
+    border-radius:12px;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    text-align:center;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    border:2px solid #FFD700;
+
+    transition:
+
+        transform .3s ease,
+
+        box-shadow .3s ease,
+
+        background .3s ease;
+
+}
+
+
+.demo-btn i {
+
+    font-size:14px;
+
+    transition:
+
+        transform .3s ease;
+
+}
+
+
+.demo-btn:hover {
+
+    transform:translateY(-4px);
+
+    background:#ffdf32;
+
+    box-shadow:
+
+        0 8px 22px rgba(255,215,0,.25);
+
+}
+
+
+.demo-btn:hover i {
+
+    transform:translateX(2px);
+
+}
+
+
+/*==================== GITHUB BUTTON ====================*/
+
+.github-btn {
+
+    flex:1;
+
+    padding:13px 16px;
+
+    min-height:48px;
+
+    border-radius:12px;
+
+    border:2px solid #FFD700;
+
+    background:transparent;
+
+    color:#ffffff;
+
+    text-align:center;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:
+
+        transform .3s ease,
+
+        background .3s ease,
+
+        color .3s ease,
+
+        box-shadow .3s ease;
+
+}
+
+
+.github-btn i {
+
+    font-size:15px;
+
+    transition:
+
+        transform .3s ease;
+
+}
+
+
+.github-btn:hover {
+
+    transform:translateY(-4px);
+
+    background:#FFD700;
+
+    color:#121212;
+
+    box-shadow:
+
+        0 8px 22px rgba(255,215,0,.18);
+
+}
+
+
+.github-btn:hover i {
+
+    transform:scale(1.08);
+
+}
+
+
+/*==================== CARD HOVER ENHANCEMENT ====================*/
+
+.stem-card:hover .demo-btn {
+
+    box-shadow:
+
+        0 4px 14px rgba(255,215,0,.08);
+
+}
+
+
+/*==================== MOBILE ====================*/
+
+@media (max-width:650px) {
+
+    .stem-buttons {
+
+        flex-direction:column;
+
+        gap:10px;
+
+    }
+
+
+    .stem-buttons a {
+
+        width:100%;
+
+        min-height:48px;
+
+    }
+
+}
+
+
+/*==============================================================
+                TABLET
+==============================================================*/
+
+@media (max-width:1000px) {
+
+    .stem-cards-container {
+
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+
+        gap:24px;
+
+    }
+
+}
+
+
+/*==============================================================
+                MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    .stem-cards-container {
+
+        grid-template-columns:1fr;
+
+        gap:22px;
+
+    }
+
+
+    .stem-content {
+
+        padding:20px;
+
+    }
+
+
+    .stem-title {
+
+        font-size:20px;
+
+    }
+
+
+    .stem-buttons {
+
+        flex-direction:column;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 2O — SECTION LEVEL POLISH
+==============================================================*/
+
+/*==================== STEM LAB SECTION ====================*/
+
+#stem-lab {
+
+    position:relative;
+
+    width:100%;
+
+    padding:100px 6%;
+
+    padding-top:90px;
+
+    padding-bottom:100px;
+
+    background:#111;
+
+    overflow:hidden;
+
+    box-sizing:border-box;
+
+}
+
+/*==============================================================
+        SUBTLE LABORATORY ATMOSPHERE
+==============================================================*/
+
+#stem-lab::before {
+
+    content:"";
+
+    position:absolute;
+
+    width:520px;
+
+    height:520px;
+
+    top:80px;
+
+    left:-260px;
+
+    border-radius:50%;
+
+    background:rgba(255,215,0,.025);
+
+    filter:blur(80px);
+
+    pointer-events:none;
+
+}
+
+
+#stem-lab::after {
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+
+    height:450px;
+
+    right:-220px;
+
+    bottom:40px;
+
+    border-radius:50%;
+
+    background:rgba(255,215,0,.02);
+
+    filter:blur(80px);
+
+    pointer-events:none;
+
+}
+
+
+/* Keep section content above atmosphere */
+
+#stem-lab > * {
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+/*==============================================================
+        FILTER AREA
+==============================================================*/
+
+.stem-filters {
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-top:38px;
+
+    margin-bottom:0;
+
+    padding:18px 20px;
+
+    border:1px solid rgba(255,215,0,.10);
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.015);
+
+    backdrop-filter:blur(8px);
+
+}
+
+
+/*==============================================================
+        FILTER RESULT
+==============================================================*/
+
+.stem-filter-result {
+
+    margin-top:14px;
+
+    margin-bottom:34px;
+
+    text-align:center;
+
+    min-height:20px;
+
+    color:#a9a9a9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+}
+
+
+/*==============================================================
+        CARDS CONTAINER
+==============================================================*/
+
+.stem-cards-container {
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+
+    gap:28px;
+
+    align-items:stretch;
+
+}
+
+
+/*==============================================================
+        TABLET
+==============================================================*/
+
+@media (max-width:1000px) {
+
+    #stem-lab {
+
+        padding-top:75px;
+
+        padding-bottom:80px;
+
+    }
+
+
+    .stem-container {
+
+        width:94%;
+
+    }
+
+
+    .stem-cards-container {
+
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+
+        gap:24px;
+
+    }
+
+}
+
+
+/*==============================================================
+        MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    #stem-lab {
+
+        padding-top:65px;
+
+        padding-bottom:70px;
+
+    }
+
+
+    .stem-container {
+
+        width:92%;
+
+    }
+
+
+    .stem-filters {
+
+        margin-top:30px;
+
+        padding:14px;
+
+        gap:9px;
+
+        border-radius:15px;
+
+    }
+
+
+    .stem-filter-result {
+
+        margin-top:12px;
+
+        margin-bottom:26px;
+
+        font-size:13px;
+
+    }
+
+
+    .stem-cards-container {
+
+        grid-template-columns:1fr;
+
+        gap:22px;
+
+    }
+
+}
+
+
+/*==================== STEM TITLE ====================*/
+
+#stem-lab .section-title {
+
+    position:relative;
+
+    max-width:850px;
+
+    margin:0 auto;
+
+    text-align:center;
+
+}
+
+
+/* Main heading */
+
+#stem-lab .section-title h2 {
+
+    position:relative;
+
+    display:inline-block;
+
+    margin-bottom:18px;
+
+    color:#ffffff;
+
+    font-size:clamp(30px, 4vw, 42px);
+
+    font-weight:700;
+
+    letter-spacing:.4px;
+
+}
+
+
+/* Gold underline */
+
+#stem-lab .section-title h2::after {
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:-9px;
+
+    width:70px;
+
+    height:3px;
+
+    border-radius:10px;
+
+    background:#FFD700;
+
+    box-shadow:
+
+        0 0 10px rgba(255,215,0,.35);
+
+    transform:translateX(-50%);
+
+}
+
+
+/* Description */
+
+#stem-lab .section-title p {
+
+    max-width:760px;
+
+    margin:0 auto;
+
+    color:#bdbdbd;
+
+    font-size:16px;
+
+    line-height:1.8;
+
+    letter-spacing:.15px;
+
+}
+
+
+/*==================== TABLET ====================*/
+
+@media (max-width:1000px) {
+
+    #stem-lab .section-title {
+
+        max-width:720px;
+
+    }
+
+}
+
+
+/*==================== MOBILE ====================*/
+
+@media (max-width:650px) {
+
+    #stem-lab .section-title {
+
+        width:92%;
+
+    }
+
+
+    #stem-lab .section-title h2 {
+
+        font-size:30px;
+
+        margin-bottom:16px;
+
+    }
+
+
+    #stem-lab .section-title p {
+
+        font-size:14px;
+
+        line-height:1.7;
+
+    }
+
+}
+
+
+/* ================= ABOUT RESPONSIVE ================= */
+
+@media (max-width:768px){
+
+    .about{
+
+        width:90%;
+
+        margin:80px auto;
+
+        flex-direction:column;
+
+        align-items:center;
+
+        gap:45px;
+
+    }
+
+
+    .about-image{
+
+        width:100%;
+
+        justify-content:center;
+
+    }
+
+
+    .about-image img{
+
+        width:280px;
+
+        height:280px;
+
+    }
+
+
+    .about-content{
+
+        width:100%;
+
+        text-align:center;
+
+    }
+
+
+    .about-content h2{
+
+        font-size:42px;
+
+        text-align:center;
+
+    }
+
+
+    .about-content h3{
+
+        font-size:26px;
+
+        text-align:center;
+
+    }
+
+
+    .about-content p{
+
+        font-size:18px;
+
+        text-align:left;
+
+    }
+
+
+    .about-info{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+    }
+
+
+    .info-box{
+
+        text-align:left;
+
+    }
+
+}
+/* ================= ABOUT ACTIONS ================= */
+
+.about-actions{
+
+    display:flex;
+
+    gap:18px;
+
+    margin-top:35px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* About action buttons */
+
+.about-actions .btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+}
+
+
+/* About button icons */
+
+.about-actions .btn i{
+
+    transition:transform .3s ease;
+
+}
+
+
+.about-actions .btn:hover i{
+
+    transform:translateX(4px);
+
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width:768px){
+
+    .about-actions{
+
+        justify-content:center;
+
+        flex-direction:column;
+
+        width:100%;
+
+    }
+
+
+    .about-actions .btn{
+
+        width:240px;
+
+    }
+
+}
+
+
+/* ================= PROJECT CARD INTERACTION ================= */
+
+.project-card{
+
+    cursor:pointer;
+
+    transition:
+        transform .45s ease,
+        box-shadow .45s ease,
+        border-color .45s ease;
+
+}
+
+
+/* Highlight project title */
+
+.project-card:hover .project-content h3{
+
+    color:#FFE55C;
+
+}
+
+
+/* Slightly brighten technology tags */
+
+.project-card:hover .tech-stack span{
+
+    border-color:rgba(255,215,0,.55);
+
+}
+/* ================= PROJECT BUTTON POLISH ================= */
+
+.project-buttons .btn{
+
+    min-height:54px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    text-align:center;
+
+}
+
+.project-buttons .btn i{
+
+    flex-shrink:0;
+
+}
+/* ================= COMING SOON BUTTON ================= */
+
+.coming-soon-btn{
+
+    border:none;
+
+    font-family:'Poppins',sans-serif;
+
+    cursor:default;
+
+    opacity:.85;
+
+}
+
+.coming-soon-btn:hover{
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+/* ================= PROJECT CARD ACTIVE ================= */
+
+.project-card.card-active{
+
+    transform:translateY(-6px) scale(1.01);
+
+    border-color:#38BDF8;
+
+    box-shadow:
+        0 18px 40px rgba(56,189,248,.18),
+        0 0 30px rgba(255,215,0,.15);
+
+}
+/* ================= GITHUB COMING SOON ================= */
+
+.github-coming-soon{
+
+    cursor:default;
+
+    font-family:'Poppins',sans-serif;
+
+}
+
+.github-coming-soon:hover{
+
+    transform:translateY(-3px);
+
+}
+/* ================= FACEBOOK COMING SOON ================= */
+
+.social-coming-soon{
+
+    font-family:'Poppins',sans-serif;
+
+    cursor:default;
+
+    border:1px solid rgba(255,215,0,.2);
+
+}
+
+.social-coming-soon:hover{
+
+    background:#FFD700;
+
+    color:#121212;
+
+    transform:
+        translateY(-6px)
+        rotate(8deg)
+        scale(1.08);
+
+}
+/* ================= CONTACT CARD LINKS ================= */
+
+.contact-card{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+/*==================== FOOTER FACEBOOK ====================*/
+
+.footer-facebook{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#1d1d1d;
+
+    color:#FFD700;
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    border:1px solid rgba(255,215,0,.18);
+
+    cursor:default;
+
+    transition:
+        transform .35s ease,
+        background .35s ease,
+        color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+.footer-facebook:hover{
+
+    background:#FFD700;
+
+    color:#111111;
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.45),
+        0 0 35px rgba(255,215,0,.20);
+
+}
+
+
+/* ==================== STEM GRID ==================== */
+
+#stem-lab .stem-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 30px;
+
+    width: 100%;
+}
+
+
+/* ==================== STEM CARD ==================== */
+
+#stem-lab .stem-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    overflow: hidden;
+
+    background: #181818;
+
+    border: 1px solid rgba(255, 215, 0, 0.15);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.35);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+
+/* ==================== CARD HOVER ==================== */
+
+#stem-lab .stem-card:hover {
+    transform: translateY(-8px);
+
+    border-color: rgba(255, 215, 0, 0.55);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 20px rgba(255, 215, 0, 0.08);
+}
+
+
+/* ==================== STEM IMAGE ==================== */
+
+#stem-lab .stem-image {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    overflow: hidden;
+
+    background: #0b0b0b;
+}
+
+
+/* ==================== IMAGE ==================== */
+
+#stem-lab .stem-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.5s ease,
+        filter 0.5s ease;
+}
+
+
+/* ==================== IMAGE HOVER ==================== */
+
+#stem-lab .stem-card:hover .stem-image img {
+    transform: scale(1.06);
+
+    filter: brightness(1.08);
+}
+
+
+/* ==================== STEM CONTENT ==================== */
+
+#stem-lab .stem-content {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    padding: 24px;
+}
+
+
+/* ==================== CATEGORY ==================== */
+
+#stem-lab .stem-category {
+    display: inline-block;
+
+    align-self: flex-start;
+
+    margin-bottom: 10px;
+
+    padding: 5px 11px;
+
+    border: 1px solid rgba(0, 191, 255, 0.35);
+
+    border-radius: 20px;
+
+    color: #00bfff;
+
+    background: rgba(0, 191, 255, 0.08);
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.4px;
+}
+
+
+/* ==================== TITLE ==================== */
+
+#stem-lab .stem-title {
+    margin: 0 0 12px;
+
+    color: #fff;
+
+    font-size: 1.35rem;
+
+    line-height: 1.3;
+
+    font-weight: 700;
+}
+
+
+/* ==================== DESCRIPTION ==================== */
+
+#stem-lab .stem-description {
+    margin: 0 0 20px;
+
+    color: #c8c8c8;
+
+    font-size: 0.95rem;
+
+    line-height: 1.7;
+}
+
+
+/* ==================== TECHNOLOGIES ==================== */
+
+#stem-lab .stem-tech {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: auto;
+
+    margin-bottom: 20px;
+}
+
+
+#stem-lab .stem-tech span {
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    color: #ddd;
+
+    background: #242424;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    font-size: 0.75rem;
+}
+
+
+/* ==================== BUTTON AREA ==================== */
+
+#stem-lab .stem-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    width: 100%;
+}
+
+
+/* ==================== DEMO BUTTON ==================== */
+
+#stem-lab .demo-btn,
+#stem-lab .github-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 42px;
+
+    padding: 9px 15px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+#stem-lab .demo-btn {
+    flex: 1;
+
+    color: #111;
+
+    background: #ffd000;
+
+    border: 1px solid #ffd000;
+}
+
+
+#stem-lab .github-btn {
+    flex: 1;
+
+    color: #00bfff;
+
+    background: transparent;
+
+    border: 1px solid rgba(0, 191, 255, 0.5);
+}
+
+
+/* ==================== BUTTON HOVER ==================== */
+
+#stem-lab .demo-btn:hover,
+#stem-lab .github-btn:hover {
+    transform: translateY(-2px);
+}
+
+
+#stem-lab .demo-btn:hover {
+    background: #ffe34d;
+
+    border-color: #ffe34d;
+}
+
+
+#stem-lab .github-btn:hover {
+    color: #fff;
+
+    background: rgba(0, 191, 255, 0.12);
+
+    border-color: #00bfff;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+    #stem-lab {
+        padding: 85px 5%;
+    }
+
+    #stem-lab .stem-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 25px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 700px) {
+
+    #stem-lab {
+        padding: 70px 20px;
+    }
+
+    #stem-lab .stem-grid {
+        grid-template-columns: 1fr;
+
+        gap: 22px;
+    }
+
+    #stem-lab .stem-content {
+        padding: 20px;
+    }
+
+    #stem-lab .stem-title {
+        font-size: 1.2rem;
+    }
+
+    #stem-lab .stem-description {
+        font-size: 0.9rem;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 450px) {
+
+    #stem-lab .stem-buttons {
+        flex-direction: column;
+    }
+
+    #stem-lab .demo-btn,
+    #stem-lab .github-btn {
+        width: 100%;
+    }
+
+}
+/* =========================================================
+   STEM LAB — STEP 2B
+   Filter Buttons
+   ========================================================= */
+
+#stem-lab .stem-filters {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-bottom: 40px;
+}
+
+
+/* ==================== FILTER BUTTON ==================== */
+
+#stem-lab .stem-filter {
+    position: relative;
+
+    padding: 10px 20px;
+
+    border: 1px solid rgba(255, 215, 0, 0.35);
+
+    border-radius: 25px;
+
+    color: #d5d5d5;
+
+    background: #181818;
+
+    font-family: inherit;
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* ==================== HOVER ==================== */
+
+#stem-lab .stem-filter:hover {
+    color: #fff;
+
+    border-color: #ffd000;
+
+    background: rgba(255, 208, 0, 0.08);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ==================== ACTIVE ==================== */
+
+#stem-lab .stem-filter.active {
+    color: #111;
+
+    background: #ffd000;
+
+    border-color: #ffd000;
+
+    box-shadow:
+        0 5px 18px rgba(255, 208, 0, 0.2);
+}
+
+
+/* ==================== ACTIVE HOVER ==================== */
+
+#stem-lab .stem-filter.active:hover {
+    color: #111;
+
+    background: #ffe34d;
+
+    border-color: #ffe34d;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 20px rgba(255, 208, 0, 0.3);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 700px) {
+
+    #stem-lab .stem-filters {
+        gap: 9px;
+
+        margin-bottom: 30px;
+    }
+
+    #stem-lab .stem-filter {
+        padding: 9px 16px;
+
+        font-size: 0.85rem;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 450px) {
+
+    #stem-lab .stem-filters {
+        gap: 8px;
+    }
+
+    #stem-lab .stem-filter {
+        padding: 8px 13px;
+
+        font-size: 0.8rem;
+    }
+
+}
+/* =========================================================
+   STEM LAB — STEP 2C
+   Filter Animation
+   ========================================================= */
+
+#stem-lab .stem-card {
+    opacity: 1;
+
+    transform: scale(1);
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+
+#stem-lab .stem-card.stem-filter-hidden {
+
+    opacity: 0;
+
+    transform: scale(0.94);
+
+    pointer-events: none;
+
+}
+/* =========================================================
+   STEM LAB — STEP 2D
+   Subject-Based Visual Identity
+   ========================================================= */
+
+
+/* ==================== MATHEMATICS ==================== */
+
+#stem-lab .stem-card[data-category="mathematics"] {
+    border-top: 3px solid #00bfff;
+}
+
+#stem-lab .stem-card[data-category="mathematics"] .stem-category {
+    color: #00bfff;
+    background: rgba(0, 191, 255, 0.08);
+    border-color: rgba(0, 191, 255, 0.35);
+}
+
+#stem-lab .stem-card[data-category="mathematics"]:hover {
+    border-color: rgba(0, 191, 255, 0.65);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 22px rgba(0, 191, 255, 0.10);
+}
+
+
+/* ==================== PHYSICS ==================== */
+
+#stem-lab .stem-card[data-category="physics"] {
+    border-top: 3px solid #4d8dff;
+}
+
+#stem-lab .stem-card[data-category="physics"] .stem-category {
+    color: #6fa3ff;
+    background: rgba(77, 141, 255, 0.08);
+    border-color: rgba(77, 141, 255, 0.35);
+}
+
+#stem-lab .stem-card[data-category="physics"]:hover {
+    border-color: rgba(77, 141, 255, 0.65);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 22px rgba(77, 141, 255, 0.10);
+}
+
+
+/* ==================== CHEMISTRY ==================== */
+
+#stem-lab .stem-card[data-category="chemistry"] {
+    border-top: 3px solid #ff9d00;
+}
+
+#stem-lab .stem-card[data-category="chemistry"] .stem-category {
+    color: #ffad2f;
+    background: rgba(255, 157, 0, 0.08);
+    border-color: rgba(255, 157, 0, 0.35);
+}
+
+#stem-lab .stem-card[data-category="chemistry"]:hover {
+    border-color: rgba(255, 157, 0, 0.65);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 22px rgba(255, 157, 0, 0.10);
+}
+
+
+/* ==================== BIOLOGY ==================== */
+
+#stem-lab .stem-card[data-category="biology"] {
+    border-top: 3px solid #39d98a;
+}
+
+#stem-lab .stem-card[data-category="biology"] .stem-category {
+    color: #4be39a;
+    background: rgba(57, 217, 138, 0.08);
+    border-color: rgba(57, 217, 138, 0.35);
+}
+
+#stem-lab .stem-card[data-category="biology"]:hover {
+    border-color: rgba(57, 217, 138, 0.65);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 22px rgba(57, 217, 138, 0.10);
+}
+
+
+/* ==================== CATEGORY TRANSITION ==================== */
+
+#stem-lab .stem-card .stem-category {
+    transition:
+        color 0.3s ease,
+        background 0.3s ease,
+        border-color 0.3s ease;
+}
+/* =========================================================
+   STEM LAB — STEP 2E
+   CLICKABLE IMAGE OVERLAY
+   ========================================================= */
+
+#stem-lab .stem-image {
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* ==================== OVERLAY ==================== */
+
+#stem-lab .stem-image-overlay {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    opacity: 0;
+
+    z-index: 20;
+
+    text-decoration: none;
+
+    transition: opacity 0.35s ease;
+
+    /* IMPORTANT: overlay must receive clicks */
+    pointer-events: auto;
+}
+
+
+/* ==================== OVERLAY LABEL ==================== */
+
+#stem-lab .stem-image-overlay span {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 11px 18px;
+
+    border: 1px solid #ffd000;
+
+    border-radius: 30px;
+
+    color: #ffffff;
+
+    background: rgba(0, 0, 0, 0.80);
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    transform: translateY(10px);
+
+    transition:
+        transform 0.35s ease,
+        background 0.25s ease;
+}
+
+
+/* ==================== PLAY ICON ==================== */
+
+#stem-lab .stem-image-overlay i {
+    color: #ffd000;
+
+    font-size: 1rem;
+}
+
+
+/* ==================== HOVER ==================== */
+
+#stem-lab .stem-image:hover .stem-image-overlay {
+    opacity: 1;
+}
+
+
+#stem-lab .stem-image:hover .stem-image-overlay span {
+    transform: translateY(0);
+}
+
+
+/* ==================== BUTTON HOVER ==================== */
+
+#stem-lab .stem-image-overlay:hover span {
+    background: rgba(255, 208, 0, 0.15);
+}
+
+/*==============================================================
+        STEM STEP 2T — MOBILE / TOUCH POLISH
+==============================================================*/
+
+/* Disable hover movement on touch devices */
+@media (hover: none), (pointer: coarse) {
+
+    .stem-card:hover {
+
+        transform:none;
+
+        border-color:rgba(255,215,0,.15);
+
+        box-shadow:none;
+
+    }
+
+
+    .stem-card:hover::after {
+
+        opacity:0;
+
+    }
+
+
+    .stem-card:hover img {
+
+        transform:none;
+
+    }
+
+
+    .stem-card:hover .stem-number {
+
+        transform:none;
+
+    }
+
+
+    .stem-card:hover .stem-category {
+
+        transform:none;
+
+    }
+
+
+    .stem-card:hover .stem-tech span {
+
+        transform:none;
+
+    }
+
+
+    /* Keep the overlay available on touch screens */
+    .stem-overlay,
+    .stem-image-overlay {
+
+        opacity:1;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(0,0,0,.05),
+                rgba(0,0,0,.55)
+            );
+
+    }
+
+
+    .stem-overlay span,
+    .stem-image-overlay span {
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+
+    .stem-overlay i,
+    .stem-image-overlay i {
+
+        transform:none;
+
+    }
+
+
+    /* Keep the number badge stable */
+    .stem-number {
+
+        transform:none;
+
+    }
+
+
+    /* Buttons should not visually jump on touch */
+    .stem-buttons a:hover {
+
+        transform:none;
+
+        box-shadow:none;
+
+    }
+
+
+    /* Technology chips */
+    .stem-tech span:hover {
+
+        transform:none;
+
+        box-shadow:none;
+
+    }
+
+}
+
+
+/*==============================================================
+        SMALL MOBILE
+==============================================================*/
+
+@media (max-width:480px) {
+
+    .stem-content {
+
+        padding:18px;
+
+    }
+
+
+    .stem-title {
+
+        font-size:21px;
+
+    }
+
+
+    .stem-description {
+
+        font-size:14px;
+
+        line-height:1.65;
+
+    }
+
+
+    .stem-tech {
+
+        gap:8px;
+
+    }
+
+
+    .stem-tech span {
+
+        padding:6px 11px;
+
+        font-size:12px;
+
+    }
+
+
+    .stem-number {
+
+        top:10px;
+
+        left:10px;
+
+        min-width:38px;
+
+        height:29px;
+
+        font-size:11px;
+
+    }
+
+
+    .stem-overlay i,
+    .stem-image-overlay i {
+
+        width:42px;
+
+        height:42px;
+
+        font-size:15px;
+
+    }
+
+
+    .stem-overlay span,
+    .stem-image-overlay span {
+
+        padding:9px 13px;
+
+        font-size:13px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 2U — ACCESSIBILITY / FOCUS POLISH
+==============================================================*/
+
+/*==================== FILTER BUTTON FOCUS ====================*/
+
+.stem-filter:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:4px;
+
+    box-shadow:
+        0 0 0 5px rgba(255,215,0,.10);
+
+}
+
+
+/*==================== DEMO / GITHUB FOCUS ====================*/
+
+.stem-buttons a:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:4px;
+
+    box-shadow:
+        0 0 0 5px rgba(255,215,0,.10);
+
+}
+
+
+/*==================== IMAGE SIMULATION LINK ====================*/
+
+.stem-image-overlay:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:-4px;
+
+}
+
+
+/*==================== REMOVE DEFAULT OUTLINE ONLY
+                  WHEN NOT KEYBOARD FOCUSED ====================*/
+
+.stem-filter:focus:not(:focus-visible),
+.stem-buttons a:focus:not(:focus-visible),
+.stem-image-overlay:focus:not(:focus-visible) {
+
+    outline:none;
+
+}
+
+
+/*==================== ACCESSIBILITY — REDUCED MOTION ====================*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .stem-filter,
+    .stem-buttons a,
+    .stem-image-overlay,
+    .stem-overlay,
+    .stem-card {
+
+        transition:none !important;
+
+        animation:none !important;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 2Z — CARD CONTENT CONSISTENCY
+==============================================================*/
+
+.stem-card {
+    height:100%;
+}
+
+
+/*--------------------------------------------------------------
+    Content becomes a flexible column
+--------------------------------------------------------------*/
+
+.stem-content {
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
+
+}
+
+
+/*--------------------------------------------------------------
+    Description gets consistent visual space
+--------------------------------------------------------------*/
+
+.stem-description {
+
+    min-height:82px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Technology tags stay together
+--------------------------------------------------------------*/
+
+.stem-tech {
+
+    margin-top:auto;
+
+}
+
+
+/*--------------------------------------------------------------
+    Buttons remain aligned at the bottom
+--------------------------------------------------------------*/
+
+.stem-buttons {
+
+    margin-top:0;
+
+}
+
+
+/*--------------------------------------------------------------
+    Tablet
+--------------------------------------------------------------*/
+
+@media (max-width:1000px) {
+
+    .stem-description {
+
+        min-height:90px;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-description {
+
+        min-height:auto;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3A — SIMULATION COUNTER
+==============================================================*/
+
+.stem-filter-result {
+
+    text-align:center;
+
+    margin:0 auto 30px;
+
+    color:#8f8f8f;
+
+    font-size:13px;
+
+    letter-spacing:.3px;
+
+}
+
+
+.stem-filter-result .result-count {
+
+    color:#FFD700;
+
+    font-weight:700;
+
+}
+
+
+/*==================== MOBILE ====================*/
+
+@media (max-width:650px) {
+
+    .stem-filter-result {
+
+        margin-bottom:24px;
+
+        font-size:12px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3B — FILTER INTERACTION POLISH
+==============================================================*/
+
+.stem-filter {
+    overflow:hidden;
+}
+
+
+/* subtle animated highlight */
+.stem-filter::before {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:linear-gradient(
+        120deg,
+        transparent 25%,
+        rgba(255,255,255,.18) 50%,
+        transparent 75%
+    );
+
+    transform:translateX(-120%);
+
+    transition:transform .6s ease;
+
+    pointer-events:none;
+
+}
+
+
+/* highlight on hover */
+.stem-filter:hover::before {
+
+    transform:translateX(120%);
+
+}
+
+
+/* active filter */
+.stem-filter.active::before {
+
+    display:none;
+
+}
+
+
+/* keep text above highlight */
+.stem-filter {
+
+    isolation:isolate;
+
+}
+
+
+.stem-filter > * {
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/*==============================================================
+        STEM STEP 3C — FILTER BAR SPACING
+==============================================================*/
+
+.stem-filters {
+
+    width:100%;
+
+    max-width:900px;
+
+    margin-left:auto;
+
+    margin-right:auto;
+
+    padding:4px;
+
+}
+
+
+/* Keep buttons visually balanced */
+.stem-filter {
+
+    min-width:105px;
+
+    text-align:center;
+
+}
+
+
+/* Slightly tighter spacing on medium screens */
+@media (max-width:900px) {
+
+    .stem-filters {
+
+        max-width:700px;
+
+        gap:9px;
+
+    }
+
+}
+
+
+/* Mobile */
+@media (max-width:650px) {
+
+    .stem-filters {
+
+        max-width:100%;
+
+        gap:8px;
+
+        padding:2px;
+
+    }
+
+    .stem-filter {
+
+        min-width:auto;
+
+        flex:0 0 auto;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Subtle laboratory glow
+--------------------------------------------------------------*/
+
+#stem-lab::before {
+
+    content:"";
+
+    position:absolute;
+
+    width:520px;
+
+    height:520px;
+
+    top:-220px;
+
+    left:-180px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,215,0,.055) 0%,
+            rgba(255,215,0,.025) 35%,
+            transparent 70%
+        );
+
+    pointer-events:none;
+
+}
+
+
+/*--------------------------------------------------------------
+    Second subtle glow
+--------------------------------------------------------------*/
+
+#stem-lab::after {
+
+    content:"";
+
+    position:absolute;
+
+    width:480px;
+
+    height:480px;
+
+    right:-180px;
+
+    bottom:-220px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,215,0,.045) 0%,
+            rgba(255,215,0,.018) 38%,
+            transparent 70%
+        );
+
+    pointer-events:none;
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep STEM content above background effects
+--------------------------------------------------------------*/
+
+#stem-lab > * {
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+/*==============================================================
+        STEM STEP 3E — CARD HOVER REFINEMENT
+==============================================================*/
+
+.stem-card {
+
+    transform:translateY(0);
+
+    will-change:transform, box-shadow;
+
+}
+
+
+/*--------------------------------------------------------------
+    Enhanced hover depth
+--------------------------------------------------------------*/
+
+.stem-card:hover {
+
+    transform:translateY(-9px);
+
+    box-shadow:
+        0 20px 42px rgba(0,0,0,.38),
+        0 0 28px rgba(255,215,0,.14);
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep image transition smooth
+--------------------------------------------------------------*/
+
+.stem-image img {
+
+    will-change:transform;
+
+}
+
+
+/*--------------------------------------------------------------
+    Slightly refined image zoom
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-image img {
+
+    transform:scale(1.045);
+
+}
+
+
+/*--------------------------------------------------------------
+    Prevent hover effects on touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-card:hover {
+
+        transform:none;
+
+        box-shadow:none;
+
+    }
+
+    .stem-card:hover .stem-image img {
+
+        transform:none;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3F — IMAGE OVERLAY REFINEMENT
+==============================================================*/
+
+.stem-image-overlay {
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.08),
+            rgba(0,0,0,.78)
+        );
+
+    opacity:0;
+
+    transition:
+        opacity .4s ease,
+        background .4s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Show overlay
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-image-overlay {
+
+    opacity:1;
+
+}
+
+
+/*--------------------------------------------------------------
+    Overlay content
+--------------------------------------------------------------*/
+
+.stem-image-overlay span {
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    color:#ffffff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    letter-spacing:.4px;
+
+    transform:translateY(8px);
+
+    transition:transform .4s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Animate content into position
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-image-overlay span {
+
+    transform:translateY(0);
+
+}
+
+
+/*--------------------------------------------------------------
+    Play icon
+--------------------------------------------------------------*/
+
+.stem-image-overlay i {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    color:#121212;
+
+    font-size:21px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.35),
+        0 0 22px rgba(255,215,0,.22);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Play icon hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-image-overlay i {
+
+    transform:scale(1.06);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.4),
+        0 0 28px rgba(255,215,0,.32);
+
+}
+
+
+/*--------------------------------------------------------------
+    Keyboard accessibility
+--------------------------------------------------------------*/
+
+.stem-image-overlay:focus-visible {
+
+    opacity:1;
+
+    outline:2px solid #FFD700;
+
+    outline-offset:-4px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-image-overlay {
+
+        opacity:1;
+
+        background:
+            linear-gradient(
+                180deg,
+                transparent 45%,
+                rgba(0,0,0,.55)
+            );
+
+        align-items:flex-end;
+
+        padding-bottom:16px;
+
+    }
+
+    .stem-image-overlay span {
+
+        transform:none;
+
+        flex-direction:row;
+
+        gap:8px;
+
+        font-size:13px;
+
+    }
+
+    .stem-image-overlay i {
+
+        width:38px;
+
+        height:38px;
+
+        font-size:14px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3G — BUTTON REFINEMENT
+==============================================================*/
+
+.stem-buttons a {
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    overflow:hidden;
+
+}
+
+
+/*--------------------------------------------------------------
+    Icon transition
+--------------------------------------------------------------*/
+
+.stem-buttons a i {
+
+    transition:
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Live Demo hover
+--------------------------------------------------------------*/
+
+.demo-btn:hover i {
+
+    transform:translateX(2px);
+
+}
+
+
+/*--------------------------------------------------------------
+    GitHub hover
+--------------------------------------------------------------*/
+
+.github-btn:hover i {
+
+    transform:scale(1.08);
+
+}
+
+
+/*--------------------------------------------------------------
+    Subtle shine on Live Demo
+--------------------------------------------------------------*/
+
+.demo-btn::before {
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:80%;
+
+    height:100%;
+
+    background:linear-gradient(
+        110deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    transform:skewX(-18deg);
+
+    transition:left .55s ease;
+
+    pointer-events:none;
+
+}
+
+
+.demo-btn:hover::before {
+
+    left:130%;
+
+}
+
+
+/*--------------------------------------------------------------
+    Keep button content above shine
+--------------------------------------------------------------*/
+
+.stem-buttons a i,
+.stem-buttons a {
+
+    isolation:isolate;
+
+}
+
+
+/*--------------------------------------------------------------
+    Keyboard focus
+--------------------------------------------------------------*/
+
+.stem-buttons a:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .demo-btn::before {
+
+        display:none;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3H — CARD NUMBER BADGE
+==============================================================*/
+
+.stem-number {
+
+    position:absolute;
+
+    top:14px;
+
+    left:14px;
+
+    z-index:5;
+
+    min-width:34px;
+
+    height:34px;
+
+    padding:0 9px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:rgba(10,10,10,.78);
+
+    border:1px solid rgba(255,215,0,.55);
+
+    color:#FFD700;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+    line-height:1;
+
+    backdrop-filter:blur(6px);
+
+    -webkit-backdrop-filter:blur(6px);
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,.28);
+
+    transition:
+        background .3s ease,
+        color .3s ease,
+        border-color .3s ease,
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Card hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-number {
+
+    background:#FFD700;
+
+    border-color:#FFD700;
+
+    color:#121212;
+
+    transform:translateY(-2px);
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-card:hover .stem-number {
+
+        background:rgba(10,10,10,.78);
+
+        border-color:rgba(255,215,0,.55);
+
+        color:#FFD700;
+
+        transform:none;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-number {
+
+        top:10px;
+
+        left:10px;
+
+        min-width:31px;
+
+        height:31px;
+
+        padding:0 8px;
+
+        font-size:11px;
+
+        border-radius:8px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3I — CATEGORY BADGE REFINEMENT
+==============================================================*/
+
+.stem-category {
+
+    position:relative;
+
+    transition:
+        background .3s ease,
+        border-color .3s ease,
+        color .3s ease,
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Card hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-category {
+
+    background:rgba(255,215,0,.11);
+
+    border-color:rgba(255,215,0,.42);
+
+    transform:translateY(-1px);
+
+}
+
+
+/*--------------------------------------------------------------
+    Subtle category indicator
+--------------------------------------------------------------*/
+
+.stem-category::before {
+
+    content:"";
+
+    display:inline-block;
+
+    width:5px;
+
+    height:5px;
+
+    margin-right:8px;
+
+    vertical-align:middle;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    box-shadow:
+        0 0 8px rgba(255,215,0,.45);
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-card:hover .stem-category {
+
+        transform:none;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3J — TECHNOLOGY TAG REFINEMENT
+==============================================================*/
+
+.stem-tech span {
+
+    position:relative;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:7px 13px;
+
+    border-radius:30px;
+
+    background:rgba(255,215,0,.025);
+
+    border:1px solid rgba(255,215,0,.22);
+
+    color:#cfcfcf;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:.2px;
+
+    transition:
+        color .3s ease,
+        background .3s ease,
+        border-color .3s ease,
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Small technology indicator
+--------------------------------------------------------------*/
+
+.stem-tech span::before {
+
+    content:"";
+
+    width:4px;
+
+    height:4px;
+
+    margin-right:7px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    opacity:.75;
+
+}
+
+
+/*--------------------------------------------------------------
+    Card hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-tech span {
+
+    color:#FFD700;
+
+    background:rgba(255,215,0,.055);
+
+    border-color:rgba(255,215,0,.32);
+
+}
+
+
+/*--------------------------------------------------------------
+    Individual chip hover
+--------------------------------------------------------------*/
+
+.stem-tech span:hover {
+
+    transform:translateY(-2px);
+
+    border-color:rgba(255,215,0,.55);
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-tech span:hover {
+
+        transform:none;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3K — CARD TITLE REFINEMENT
+==============================================================*/
+
+.stem-title {
+
+    position:relative;
+
+    line-height:1.3;
+
+    letter-spacing:-.2px;
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+    Card hover
+--------------------------------------------------------------*/
+
+.stem-card:hover .stem-title {
+
+    color:#FFD700;
+
+    transform:translateX(2px);
+
+}
+
+
+/*--------------------------------------------------------------
+    Touch devices
+--------------------------------------------------------------*/
+
+@media (hover:none) {
+
+    .stem-card:hover .stem-title {
+
+        color:#ffffff;
+
+        transform:none;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-title {
+
+        font-size:21px;
+
+        line-height:1.35;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3L — DESCRIPTION READABILITY
+==============================================================*/
+
+.stem-description {
+
+    font-size:14px;
+
+    line-height:1.75;
+
+    letter-spacing:.05px;
+
+    color:#bdbdbd;
+
+    text-align:left;
+
+}
+
+
+/*--------------------------------------------------------------
+    First line emphasis
+--------------------------------------------------------------*/
+
+.stem-description::first-line {
+
+    color:#cfcfcf;
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-description {
+
+        font-size:13.5px;
+
+        line-height:1.7;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3M — CARD CONTENT SPACING
+==============================================================*/
+
+.stem-content {
+
+    padding:24px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Category → Title
+--------------------------------------------------------------*/
+
+.stem-category {
+
+    margin-bottom:16px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Title → Description
+--------------------------------------------------------------*/
+
+.stem-title {
+
+    margin-top:0;
+
+    margin-bottom:12px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Description → Technology tags
+--------------------------------------------------------------*/
+
+.stem-description {
+
+    margin-top:0;
+
+    margin-bottom:20px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Technology tags → Buttons
+--------------------------------------------------------------*/
+
+.stem-tech {
+
+    margin-bottom:22px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile spacing
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-content {
+
+        padding:20px;
+
+    }
+
+    .stem-category {
+
+        margin-bottom:14px;
+
+    }
+
+    .stem-title {
+
+        margin-bottom:11px;
+
+    }
+
+    .stem-description {
+
+        margin-bottom:18px;
+
+    }
+
+    .stem-tech {
+
+        margin-bottom:20px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3N — RESPONSIVE GRID REFINEMENT
+==============================================================*/
+
+.stem-cards-container {
+
+    display:grid;
+
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+
+    gap:28px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Large desktop
+--------------------------------------------------------------*/
+
+@media (min-width:1400px) {
+
+    .stem-cards-container {
+
+        gap:30px;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Tablet / small desktop
+--------------------------------------------------------------*/
+
+@media (max-width:1100px) {
+
+    .stem-cards-container {
+
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+
+        gap:24px;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:700px) {
+
+    .stem-cards-container {
+
+        grid-template-columns:1fr;
+
+        gap:20px;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Very small screens
+--------------------------------------------------------------*/
+
+@media (max-width:420px) {
+
+    .stem-cards-container {
+
+        gap:18px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 3O — ACCESSIBILITY FOCUS STATES
+==============================================================*/
+
+.stem-card a:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Image overlay focus
+--------------------------------------------------------------*/
+
+.stem-image-overlay:focus-visible {
+
+    opacity:1;
+
+    outline:2px solid #FFD700;
+
+    outline-offset:-4px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Focused overlay content
+--------------------------------------------------------------*/
+
+.stem-image-overlay:focus-visible span {
+
+    transform:translateY(0);
+
+}
+
+
+/*--------------------------------------------------------------
+    Focused buttons
+--------------------------------------------------------------*/
+
+.demo-btn:focus-visible,
+.github-btn:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*--------------------------------------------------------------
+    Remove browser outline only when NOT keyboard focused
+--------------------------------------------------------------*/
+
+.stem-card a:focus:not(:focus-visible) {
+
+    outline:none;
+
+}
+
+
+/*--------------------------------------------------------------
+    Respect reduced-motion preference
+--------------------------------------------------------------*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .stem-card,
+    .stem-card *,
+    .stem-image-overlay,
+    .stem-image-overlay span,
+    .stem-image-overlay i,
+    .stem-buttons a {
+
+        transition:none !important;
+
+        animation:none !important;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 4C — LIVE DEMO MICRO-INTERACTION
+==============================================================*/
+
+.demo-btn i {
+    transition: transform .3s ease;
+}
+
+.demo-btn:hover i {
+    transform: translateX(3px);
+}
+
+.demo-btn:active {
+    transform:translateY(0) scale(.98);
+}
+
+/*==============================================================
+        STEM STEP 4D — CARD BUTTON PRESS FEEDBACK
+==============================================================*/
+
+.stem-buttons a:active {
+
+    transform:translateY(1px) scale(.985);
+
+}
+
+
+/* Keep focus visible after keyboard interaction */
+.stem-buttons a:focus-visible {
+
+    transform:none;
+
+}
+
+
+/* Touch devices */
+@media (hover:none) {
+
+    .stem-buttons a:active {
+
+        transform:scale(.98);
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 4E — LAB STATUS INDICATOR
+==============================================================*/
+
+.stem-lab-status {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    margin:-18px auto 30px;
+
+    color:#777;
+
+    font-size:11px;
+
+    letter-spacing:.45px;
+
+    text-transform:uppercase;
+
+}
+
+
+/*--------------------------------------------------------------
+    Status dot
+--------------------------------------------------------------*/
+
+.status-dot {
+
+    width:7px;
+
+    height:7px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    box-shadow:
+        0 0 8px rgba(255,215,0,.5);
+
+    animation:stemStatusPulse 2.2s ease-in-out infinite;
+
+}
+
+
+/*--------------------------------------------------------------
+    Subtle pulse
+--------------------------------------------------------------*/
+
+@keyframes stemStatusPulse {
+
+    0%,
+    100% {
+
+        opacity:.45;
+
+        transform:scale(.9);
+
+    }
+
+    50% {
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Reduced motion
+--------------------------------------------------------------*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .status-dot {
+
+        animation:none;
+
+        opacity:1;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Mobile
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    .stem-lab-status {
+
+        margin:-14px auto 24px;
+
+        font-size:10px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 4F — MOBILE INTERACTION REFINEMENT
+==============================================================*/
+
+@media (hover:none) and (max-width:700px) {
+
+    .stem-image-overlay {
+
+        opacity:1;
+
+        align-items:flex-end;
+
+        justify-content:center;
+
+        padding:14px;
+
+        background:
+            linear-gradient(
+                to top,
+                rgba(0,0,0,.72),
+                rgba(0,0,0,.08) 65%,
+                transparent
+            );
+
+    }
+
+
+    .stem-image-overlay span {
+
+        flex-direction:row;
+
+        gap:8px;
+
+        padding:7px 12px;
+
+        border-radius:30px;
+
+        background:rgba(10,10,10,.72);
+
+        border:1px solid rgba(255,215,0,.35);
+
+        backdrop-filter:blur(5px);
+
+        -webkit-backdrop-filter:blur(5px);
+
+        font-size:12px;
+
+        transform:none;
+
+    }
+
+
+    .stem-image-overlay i {
+
+        width:34px;
+
+        height:34px;
+
+        font-size:13px;
+
+        margin:0;
+
+        box-shadow:
+            0 5px 15px rgba(0,0,0,.3);
+
+    }
+
+
+    .stem-card:hover .stem-image-overlay span {
+
+        transform:none;
+
+    }
+
+}
+
+
+/*--------------------------------------------------------------
+    Very small phones
+--------------------------------------------------------------*/
+
+@media (max-width:420px) {
+
+    .stem-image-overlay {
+
+        padding:10px;
+
+    }
+
+
+    .stem-image-overlay span {
+
+        padding:6px 10px;
+
+        font-size:11px;
+
+    }
+
+
+    .stem-image-overlay i {
+
+        width:30px;
+
+        height:30px;
+
+        font-size:12px;
+
+    }
+
+}
+
+/*==============================================================
+        CERTIFICATE SECTION — HEADER & FILTERS
+==============================================================*/
+
+.certificates-section {
+
+    width:100%;
+
+    margin-top:80px;
+
+    padding:70px 0;
+
+}
+
+
+/*==============================================================
+                    SECTION HEADER
+==============================================================*/
+
+.certificates-header {
+
+    max-width:900px;
+
+    margin:0 auto 35px;
+
+    text-align:center;
+
+}
+
+
+.certificates-eyebrow {
+
+    display:inline-block;
+
+    margin-bottom:12px;
+
+    color:#FFD700;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+}
+
+
+.certificates-heading {
+
+    margin:0 0 14px;
+
+    color:#ffffff;
+
+    font-size:clamp(30px, 4vw, 46px);
+
+    line-height:1.15;
+
+    font-weight:700;
+
+    letter-spacing:-.8px;
+
+}
+
+
+.certificates-intro {
+
+    max-width:800px;
+
+    margin:0 auto;
+
+    color:#aaa;
+
+    font-size:15px;
+
+    line-height:1.7;
+
+    font-weight:400;
+
+}
+
+
+/*==============================================================
+                    CERTIFICATE FILTERS
+==============================================================*/
+
+.certificates-filters {
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    margin-bottom:30px;
+
+}
+
+
+/*==============================================================
+                    FILTER BUTTON
+==============================================================*/
+
+.certificate-filter {
+
+    position:relative;
+
+    padding:10px 20px;
+
+    border:1px solid rgba(255,215,0,.25);
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.025);
+
+    color:#cfcfcf;
+
+    font-family:inherit;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+    cursor:pointer;
+
+    outline:none;
+
+    transition:
+
+        transform .3s ease,
+
+        color .3s ease,
+
+        background .3s ease,
+
+        border-color .3s ease,
+
+        box-shadow .3s ease;
+
+}
+
+
+/*==============================================================
+                        HOVER
+==============================================================*/
+
+.certificate-filter:hover {
+
+    transform:translateY(-3px);
+
+    color:#ffffff;
+
+    background:rgba(255,215,0,.08);
+
+    border-color:rgba(255,215,0,.55);
+
+    box-shadow:
+
+        0 6px 18px rgba(255,215,0,.10);
+
+}
+
+
+/*==============================================================
+                        ACTIVE
+==============================================================*/
+
+.certificate-filter.active {
+
+    color:#121212;
+
+    background:#FFD700;
+
+    border-color:#FFD700;
+
+    box-shadow:
+
+        0 7px 20px rgba(255,215,0,.20);
+
+}
+
+
+/*==============================================================
+                    ACTIVE HOVER
+==============================================================*/
+
+.certificate-filter.active:hover {
+
+    color:#121212;
+
+    background:#ffdf32;
+
+    border-color:#ffdf32;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 9px 24px rgba(255,215,0,.25);
+
+}
+
+
+/*==============================================================
+                    CLICK FEEDBACK
+==============================================================*/
+
+.certificate-filter:active {
+
+    transform:translateY(0);
+
+}
+
+
+/*==============================================================
+                KEYBOARD ACCESSIBILITY
+==============================================================*/
+
+.certificate-filter:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*==============================================================
+                FILTER RESULT
+==============================================================*/
+
+.certificate-filter-result {
+
+    text-align:center;
+
+    margin-top:0;
+
+    margin-bottom:30px;
+
+    color:#a9a9a9;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    letter-spacing:.3px;
+
+    min-height:20px;
+
+}
+
+
+.certificate-result-count {
+
+    color:#ffffff;
+
+    font-weight:600;
+
+}
+
+
+/*==============================================================
+                        MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    .certificates-section {
+
+        margin-top:55px;
+
+        padding:55px 0;
+
+    }
+
+
+    .certificates-header {
+
+        margin-bottom:28px;
+
+    }
+
+
+    .certificates-intro {
+
+        padding:0 15px;
+
+        font-size:14px;
+
+    }
+
+
+    .certificates-filters {
+
+        gap:9px;
+
+        margin-bottom:24px;
+
+    }
+
+
+    .certificate-filter {
+
+        padding:9px 16px;
+
+        font-size:13px;
+
+    }
+
+
+    .certificate-filter-result {
+
+        margin-bottom:24px;
+
+        font-size:13px;
+
+    }
+
+}
+
+/*==============================================================
+        CERTIFICATE STEP 3A — CERTIFICATE CARD DESIGN
+==============================================================*/
+
+.certificates-grid {
+
+    display:grid;
+
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+
+    gap:28px;
+
+}
+
+
+/*==============================================================
+                    CERTIFICATE CARD
+==============================================================*/
+
+.certificate-card {
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.025);
+
+    border:1px solid rgba(255,215,0,.12);
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.22);
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CARD HOVER
+--------------------------------------------------------------*/
+
+.certificate-card:hover {
+
+    transform:translateY(-6px);
+
+    border-color:rgba(255,215,0,.35);
+
+    box-shadow:
+        0 18px 42px rgba(0,0,0,.35),
+        0 0 25px rgba(255,215,0,.05);
+
+}
+
+
+/*==============================================================
+                CERTIFICATE IMAGE AREA
+==============================================================*/
+
+.certificate-image {
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:4 / 3;
+
+    overflow:hidden;
+
+    background:#111;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CERTIFICATE IMAGE
+--------------------------------------------------------------*/
+
+.certificate-image img {
+
+    display:block;
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+    transition:
+        transform .5s ease,
+        filter .5s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    IMAGE HOVER
+--------------------------------------------------------------*/
+
+.certificate-card:hover .certificate-image img {
+
+    transform:scale(1.025);
+
+    filter:brightness(1.04);
+
+}
+
+
+/*==============================================================
+                    IMAGE OVERLAY
+==============================================================*/
+
+.certificate-overlay {
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:rgba(0,0,0,.55);
+
+    opacity:0;
+
+    transition:opacity .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    SHOW OVERLAY
+--------------------------------------------------------------*/
+
+.certificate-card:hover .certificate-overlay {
+
+    opacity:1;
+
+}
+
+
+/*==============================================================
+                VIEW CERTIFICATE BUTTON
+==============================================================*/
+
+.certificate-view-btn {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:9px;
+
+    padding:10px 16px;
+
+    border:1px solid rgba(255,215,0,.45);
+
+    border-radius:30px;
+
+    background:rgba(10,10,10,.78);
+
+    color:#FFD700;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:.25px;
+
+    backdrop-filter:blur(6px);
+
+    -webkit-backdrop-filter:blur(6px);
+
+    transform:translateY(8px);
+
+    transition:
+        transform .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                BUTTON ENTERS ON HOVER
+--------------------------------------------------------------*/
+
+.certificate-card:hover .certificate-view-btn {
+
+    transform:translateY(0);
+
+}
+
+
+.certificate-view-btn:hover {
+
+    background:rgba(255,215,0,.1);
+
+    border-color:rgba(255,215,0,.7);
+
+}
+
+
+/*==============================================================
+                    CARD CONTENT
+==============================================================*/
+
+.certificate-content {
+
+    padding:22px 22px 24px;
+
+}
+
+
+/*==============================================================
+                    PROVIDER LABEL
+==============================================================*/
+
+.certificate-provider {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-bottom:12px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:1.2px;
+
+    color:#FFD700;
+
+}
+
+
+/*--------------------------------------------------------------
+                    PROVIDER DOT
+--------------------------------------------------------------*/
+
+.certificate-provider::before {
+
+    content:"";
+
+    width:5px;
+
+    height:5px;
+
+    border-radius:50%;
+
+    background:#FFD700;
+
+    box-shadow:0 0 7px rgba(255,215,0,.45);
+
+}
+
+
+/*==============================================================
+                    CERTIFICATE TITLE
+==============================================================*/
+
+.certificate-title {
+
+    margin:0 0 14px;
+
+    color:#fff;
+
+    font-size:19px;
+
+    line-height:1.4;
+
+    font-weight:650;
+
+    letter-spacing:-.15px;
+
+    transition:
+        color .3s ease,
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    TITLE HOVER
+--------------------------------------------------------------*/
+
+.certificate-card:hover .certificate-title {
+
+    color:#FFD700;
+
+    transform:translateX(2px);
+
+}
+
+
+/*==============================================================
+                    CERTIFICATE TAGS
+==============================================================*/
+
+.certificate-tags {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-bottom:20px;
+
+}
+
+
+.certificate-tags span {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:6px 10px;
+
+    border:1px solid rgba(255,215,0,.18);
+
+    border-radius:20px;
+
+    background:rgba(255,215,0,.025);
+
+    color:#aaa;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    transition:
+        color .3s ease,
+        border-color .3s ease,
+        background .3s ease;
+
+}
+
+
+.certificate-card:hover .certificate-tags span {
+
+    color:#ccc;
+
+    border-color:rgba(255,215,0,.28);
+
+    background:rgba(255,215,0,.045);
+
+}
+
+
+/*==============================================================
+                    CARD ACTION
+==============================================================*/
+
+.certificate-actions {
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+
+.certificate-btn {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:10px 15px;
+
+    border:1px solid rgba(255,215,0,.28);
+
+    border-radius:8px;
+
+    background:rgba(255,215,0,.035);
+
+    color:#ddd;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    transition:
+        color .3s ease,
+        background .3s ease,
+        border-color .3s ease,
+        transform .3s ease;
+
+}
+
+
+.certificate-btn i {
+
+    color:#FFD700;
+
+    transition:transform .3s ease;
+
+}
+
+
+.certificate-btn:hover {
+
+    color:#FFD700;
+
+    background:rgba(255,215,0,.08);
+
+    border-color:rgba(255,215,0,.5);
+
+    transform:translateY(-2px);
+
+}
+
+
+.certificate-btn:hover i {
+
+    transform:translateX(3px);
+
+}
+
+
+/*==============================================================
+                    TABLET
+==============================================================*/
+
+@media (max-width:1100px) {
+
+    .certificates-grid {
+
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+
+        gap:24px;
+
+    }
+
+}
+
+
+/*==============================================================
+                    MOBILE
+==============================================================*/
+
+@media (max-width:700px) {
+
+    .certificates-grid {
+
+        grid-template-columns:1fr;
+
+        gap:20px;
+
+    }
+
+    .certificate-content {
+
+        padding:20px;
+
+    }
+
+    .certificate-title {
+
+        font-size:18px;
+
+    }
+
+}
+
+
+/*==============================================================
+                TOUCH DEVICES
+==============================================================*/
+
+@media (hover:none) {
+
+    .certificate-card:hover {
+
+        transform:none;
+
+    }
+
+    .certificate-card:hover .certificate-image img {
+
+        transform:none;
+
+        filter:none;
+
+    }
+
+    .certificate-card:hover .certificate-title {
+
+        color:#fff;
+
+        transform:none;
+
+    }
+
+}
+
+
+/*==============================================================
+                REDUCED MOTION
+==============================================================*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .certificate-card,
+    .certificate-card *,
+    .certificate-image img {
+
+        transition:none !important;
+
+        animation:none !important;
+
+    }
+
+}
+
+/*==============================================================
+            CERTIFICATE STEP 3C — LIGHTBOX
+==============================================================*/
+
+.certificate-lightbox {
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:99999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px;
+
+    background:rgba(0,0,0,.88);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    pointer-events:none;
+
+    transition:
+        opacity .3s ease,
+        visibility .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    ACTIVE LIGHTBOX
+--------------------------------------------------------------*/
+
+.certificate-lightbox.active {
+
+    opacity:1;
+
+    visibility:visible;
+
+    pointer-events:auto;
+
+}
+
+
+/*--------------------------------------------------------------
+                    BACKDROP
+--------------------------------------------------------------*/
+
+.certificate-lightbox-backdrop {
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(5px);
+
+    -webkit-backdrop-filter:blur(5px);
+
+}
+
+
+/*--------------------------------------------------------------
+                    LIGHTBOX CONTENT
+--------------------------------------------------------------*/
+
+.certificate-lightbox-content {
+
+    position:relative;
+
+    z-index:2;
+
+    max-width:min(1200px, 94vw);
+
+    max-height:92vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transform:scale(.94);
+
+    transition:transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                ACTIVE CONTENT
+--------------------------------------------------------------*/
+
+.certificate-lightbox.active
+.certificate-lightbox-content {
+
+    transform:scale(1);
+
+}
+
+
+/*--------------------------------------------------------------
+                    CERTIFICATE IMAGE
+--------------------------------------------------------------*/
+
+.certificate-lightbox-content img {
+
+    display:block;
+
+    width:auto;
+
+    height:auto;
+
+    max-width:94vw;
+
+    max-height:88vh;
+
+    object-fit:contain;
+
+    border-radius:8px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.65),
+        0 0 35px rgba(255,215,0,.08);
+
+    user-select:none;
+
+    -webkit-user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CLOSE BUTTON
+--------------------------------------------------------------*/
+
+.certificate-lightbox-close {
+
+    position:absolute;
+
+    top:-18px;
+
+    right:-18px;
+
+    z-index:5;
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:1px solid rgba(255,215,0,.4);
+
+    border-radius:50%;
+
+    background:rgba(12,12,12,.9);
+
+    color:#FFD700;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.35);
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        transform .25s ease;
+
+}
+
+
+.certificate-lightbox-close:hover {
+
+    background:rgba(255,215,0,.12);
+
+    border-color:rgba(255,215,0,.75);
+
+    transform:rotate(90deg);
+
+}
+
+
+/*--------------------------------------------------------------
+                PREVENT PAGE SCROLL
+--------------------------------------------------------------*/
+
+body.certificate-lightbox-open {
+
+    overflow:hidden;
+
+}
+
+
+/*==============================================================
+                    TABLET
+==============================================================*/
+
+@media (max-width:700px) {
+
+    .certificate-lightbox {
+
+        padding:18px;
+
+    }
+
+    .certificate-lightbox-content {
+
+        max-width:96vw;
+
+        max-height:90vh;
+
+    }
+
+    .certificate-lightbox-content img {
+
+        max-width:96vw;
+
+        max-height:82vh;
+
+        border-radius:5px;
+
+    }
+
+    .certificate-lightbox-close {
+
+        top:-14px;
+
+        right:-6px;
+
+        width:38px;
+
+        height:38px;
+
+        font-size:15px;
+
+    }
+
+}
+
+
+/*==============================================================
+                    REDUCED MOTION
+==============================================================*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .certificate-lightbox,
+    .certificate-lightbox-content,
+    .certificate-lightbox-close {
+
+        transition:none !important;
+
+    }
+
+}
+
+/*==============================================================
+        CERTIFICATE STEP 3F — VERIFICATION BUTTON
+==============================================================*/
+
+.certificate-actions {
+
+    width:100%;
+
+    margin-top:auto;
+
+}
+
+
+/*--------------------------------------------------------------
+                VERIFICATION BUTTON
+--------------------------------------------------------------*/
+
+.certificate-btn {
+
+    width:100%;
+
+    min-height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:9px;
+
+    box-sizing:border-box;
+
+    padding:10px 16px;
+
+    border:1px solid rgba(255,215,0,.28);
+
+    border-radius:9px;
+
+    background:rgba(255,215,0,.035);
+
+    color:#ddd;
+
+    text-decoration:none;
+
+    font-family:inherit;
+
+    font-size:12px;
+
+    font-weight:650;
+
+    letter-spacing:.25px;
+
+    cursor:pointer;
+
+    transition:
+
+        color .3s ease,
+
+        background .3s ease,
+
+        border-color .3s ease,
+
+        box-shadow .3s ease,
+
+        transform .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                        ICON
+--------------------------------------------------------------*/
+
+.certificate-btn i {
+
+    color:#FFD700;
+
+    font-size:13px;
+
+    transition:
+
+        transform .3s ease,
+
+        color .3s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                        HOVER
+--------------------------------------------------------------*/
+
+.certificate-btn:hover {
+
+    color:#FFD700;
+
+    background:rgba(255,215,0,.09);
+
+    border-color:rgba(255,215,0,.58);
+
+    box-shadow:
+
+        0 7px 20px rgba(255,215,0,.10);
+
+    transform:translateY(-2px);
+
+}
+
+
+.certificate-btn:hover i {
+
+    color:#FFD700;
+
+    transform:translateX(3px);
+
+}
+
+
+/*--------------------------------------------------------------
+                        ACTIVE
+--------------------------------------------------------------*/
+
+.certificate-btn:active {
+
+    transform:translateY(0);
+
+    box-shadow:none;
+
+}
+
+
+/*--------------------------------------------------------------
+                        FOCUS
+--------------------------------------------------------------*/
+
+.certificate-btn:focus-visible {
+
+    outline:2px solid #FFD700;
+
+    outline-offset:3px;
+
+}
+
+
+/*--------------------------------------------------------------
+                    MOBILE
+--------------------------------------------------------------*/
+
+@media (max-width:700px) {
+
+    .certificate-btn {
+
+        min-height:40px;
+
+        padding:9px 14px;
+
+        font-size:11.5px;
+
+    }
+
+}
+
+/*==============================================================
+        CERTIFICATE STEP 3H-2 — LIGHTBOX POSITION FIX
+==============================================================*/
+
+/*
+ * Force the lightbox to cover the entire browser viewport.
+ * !important is intentional here because existing portfolio
+ * CSS may be overriding position/display properties.
+ */
+
+#certificateLightbox {
+
+    position:fixed !important;
+
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+
+    width:100vw !important;
+    height:100vh !important;
+
+    margin:0 !important;
+    padding:30px !important;
+
+    box-sizing:border-box !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    z-index:999999 !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    LIGHTBOX CONTENT
+--------------------------------------------------------------*/
+
+#certificateLightbox
+.certificate-lightbox-content {
+
+    position:relative !important;
+
+    top:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    left:auto !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CERTIFICATE IMAGE
+--------------------------------------------------------------*/
+
+#certificateLightbox
+.certificate-lightbox-content
+#certificateLightboxImage {
+
+    display:block !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    max-width:94vw !important;
+    max-height:88vh !important;
+
+    object-fit:contain !important;
+
+    margin:0 !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CLOSE BUTTON
+--------------------------------------------------------------*/
+
+#certificateLightbox
+.certificate-lightbox-close {
+
+    position:absolute !important;
+
+    top:-18px !important;
+    right:-18px !important;
+
+    z-index:1000000 !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    BACKDROP
+--------------------------------------------------------------*/
+
+#certificateLightbox
+.certificate-lightbox-backdrop {
+
+    position:absolute !important;
+
+    top:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+
+    width:100% !important;
+    height:100% !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    MOBILE
+--------------------------------------------------------------*/
+
+@media (max-width:700px) {
+
+    #certificateLightbox {
+
+        padding:18px !important;
+
+    }
+
+    #certificateLightbox
+    .certificate-lightbox-content
+    #certificateLightboxImage {
+
+        max-width:96vw !important;
+
+        max-height:82vh !important;
+
+    }
+
+}
+
+/*==============================================================
+        SKILLS & EXPERTISE SECTION
+==============================================================*/
+
+.skills-section {
+
+    width:100%;
+
+    padding:80px 0;
+
+    display:block;
+
+    box-sizing:border-box;
+
+}
+
+
+
+/*==============================================================
+                    SECTION HEADER
+==============================================================*/
+
+.skills-header {
+
+    max-width:850px;
+
+    margin:0 auto 45px;
+
+    text-align:center;
+
+}
+
+
+.skills-eyebrow {
+
+    display:inline-block;
+
+    margin-bottom:12px;
+
+    color:#FFD700;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+}
+
+
+.skills-heading {
+
+    margin:0 0 15px;
+
+    color:#ffffff;
+
+    font-size:clamp(30px, 4vw, 46px);
+
+    line-height:1.15;
+
+    font-weight:700;
+
+    letter-spacing:-.8px;
+
+}
+
+
+.skills-intro {
+
+    max-width:780px;
+
+    margin:0 auto;
+
+    color:#aaa;
+
+    font-size:15px;
+
+    line-height:1.7;
+
+}
+
+
+
+/*==============================================================
+                    SKILL ICON
+==============================================================*/
+
+.skills-section .expertise-card .skill-icon {
+
+    width:56px;
+
+    height:56px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-bottom:22px;
+
+    border:1px solid rgba(255,215,0,.22);
+
+    border-radius:14px;
+
+    background:rgba(255,215,0,.055);
+
+    color:#FFD700;
+
+    font-size:23px;
+
+    box-shadow:
+        inset 0 0 20px rgba(255,215,0,.025);
+
+    transition:
+        transform .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+
+}
+
+
+.skills-section .expertise-card:hover .skill-icon {
+
+    transform:translateY(-3px) scale(1.04);
+
+    background:rgba(255,215,0,.10);
+
+    border-color:rgba(255,215,0,.45);
+
+}
+
+
+/*==============================================================
+                    CARD CONTENT
+==============================================================*/
+
+.skills-section .expertise-card .skill-card-content {
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+
+.skills-section .expertise-card .skill-category {
+
+    display:block;
+
+    margin-bottom:9px;
+
+    color:#FFD700;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    letter-spacing:1.5px;
+
+}
+
+
+.skills-section .expertise-card .skill-title {
+
+    margin:0 0 13px;
+
+    color:#ffffff;
+
+    font-size:22px;
+
+    line-height:1.3;
+
+    font-weight:650;
+
+}
+
+
+.skills-section .expertise-card .skill-description {
+
+    margin:0 0 22px;
+
+    color:#a9a9a9;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+}
+
+
+/*==============================================================
+                    SKILL TAGS
+==============================================================*/
+
+.skills-section .expertise-card .skill-tags {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-top:auto;
+
+}
+
+
+.skills-section .expertise-card .skill-tags span {
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:6px 10px;
+
+    border:1px solid rgba(255,255,255,.10);
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.035);
+
+    color:#c8c8c8;
+
+    font-size:11px;
+
+    line-height:1.2;
+
+    white-space:nowrap;
+
+    transition:
+        color .25s ease,
+        background .25s ease,
+        border-color .25s ease;
+
+}
+
+
+.skills-section .expertise-card:hover .skill-tags span {
+
+    border-color:rgba(255,215,0,.18);
+
+}
+
+
+/*==============================================================
+                    TABLET
+==============================================================*/
+
+@media (max-width:950px) {
+
+    .skills-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+/*==============================================================
+                    MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    .skills-section {
+
+        padding:60px 0;
+
+    }
+
+
+    .skills-container {
+
+        width:min(94%, 520px);
+
+    }
+
+
+    .skills-header {
+
+        margin-bottom:32px;
+
+    }
+
+
+    .skills-heading {
+
+        font-size:32px;
+
+    }
+
+
+    .skills-intro {
+
+        font-size:14px;
+
+    }
+
+
+    .skills-grid {
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+
+    .skills-section .expertise-card {
+
+        padding:25px 22px;
+
+    }
+
+
+    .skills-section .expertise-card .skill-title {
+
+        font-size:20px;
+
+    }
+
+}
+
+
+/*==============================================================
+                    REDUCED MOTION
+==============================================================*/
+
+@media (prefers-reduced-motion:reduce) {
+
+    .skills-section .expertise-card,
+    .skills-section .expertise-card .skill-icon,
+    .skills-section .expertise-card .skill-tags span {
+       transition:none !important;
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5C — SKILLS DESKTOP LAYOUT FIX
+==============================================================*/
+
+.skills-section .skills-container {
+    width: min(1600px, 92%);
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.skills-section .skills-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+.skills-section .expertise-card {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+
+/*==============================================================
+                    DESKTOP
+==============================================================*/
+
+@media (min-width: 951px) {
+
+    .skills-section .skills-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/*==============================================================
+                    TABLET
+==============================================================*/
+
+@media (max-width: 950px) {
+
+    .skills-section .skills-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/*==============================================================
+                    MOBILE
+==============================================================*/
+
+@media (max-width: 650px) {
+
+    .skills-section .skills-container {
+        width: 94%;
+    }
+
+    .skills-section .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5H — SKILLS CONTAINER WIDTH FIX
+==============================================================*/
+
+.skills-section .skills-container {
+
+    display: block !important;
+
+    width: min(1600px, 92%) !important;
+
+    max-width: 1600px !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/*--------------------------------------------------------------
+                    HEADER
+--------------------------------------------------------------*/
+
+.skills-section .skills-header {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 850px !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    text-align: center;
+
+    box-sizing: border-box;
+
+}
+
+
+/*--------------------------------------------------------------
+                    SKILLS GRID
+--------------------------------------------------------------*/
+
+.skills-section .skills-grid {
+
+    display: grid !important;
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr)) !important;
+
+    gap: 24px;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box;
+
+}
+
+
+/*--------------------------------------------------------------
+                    SKILL CARDS
+--------------------------------------------------------------*/
+
+.skills-section .expertise-card {
+
+    display: flex !important;
+
+    flex-direction: column;
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    min-width: 0 !important;
+
+    box-sizing: border-box;
+}
+
+
+/*==============================================================
+                    TABLET
+==============================================================*/
+
+@media (max-width:950px) {
+
+    .skills-section .skills-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+    }
+
+}
+
+
+/*==============================================================
+                    MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    .skills-section .skills-container {
+
+        width:94% !important;
+
+    }
+
+
+    .skills-section .skills-grid {
+
+        grid-template-columns:
+            1fr !important;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5C-2 — BACK TO TOP BUTTON FIX
+==============================================================*/
+
+#scroll-top {
+
+    position:fixed !important;
+
+    right:30px !important;
+    bottom:30px !important;
+
+    width:58px !important;
+    min-width:58px !important;
+    max-width:58px !important;
+
+    height:58px !important;
+    min-height:58px !important;
+    max-height:58px !important;
+
+    aspect-ratio:1 / 1 !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    flex:none !important;
+
+    padding:0 !important;
+    margin:0 !important;
+
+    box-sizing:border-box !important;
+
+    border:none !important;
+    border-radius:50% !important;
+
+    background:#FFD700 !important;
+
+    color:#111111 !important;
+
+    font-size:22px !important;
+    line-height:1 !important;
+
+    cursor:pointer !important;
+
+    z-index:2147483647 !important;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:translateY(20px);
+
+    pointer-events:none;
+
+    transition:
+        opacity .35s ease,
+        visibility .35s ease,
+        transform .35s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    VISIBLE STATE
+--------------------------------------------------------------*/
+
+#scroll-top.show {
+
+    opacity:1 !important;
+
+    visibility:visible !important;
+
+    transform:translateY(0) !important;
+
+    pointer-events:auto !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    ICON
+--------------------------------------------------------------*/
+
+#scroll-top i {
+
+    display:block !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    font-size:22px !important;
+
+    line-height:1 !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    HOVER
+--------------------------------------------------------------*/
+
+#scroll-top:hover {
+
+    transform:translateY(-6px) !important;
+
+    background:#FFD700 !important;
+
+    color:#111111 !important;
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.45),
+        0 0 35px rgba(255,215,0,.20) !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    ACTIVE
+--------------------------------------------------------------*/
+
+#scroll-top:active {
+
+    transform:translateY(-2px) !important;
+
+}
+
+
+/*--------------------------------------------------------------
+                    MOBILE
+--------------------------------------------------------------*/
+
+@media (max-width:650px) {
+
+    #scroll-top {
+
+        right:18px !important;
+        bottom:18px !important;
+
+        width:50px !important;
+        min-width:50px !important;
+        max-width:50px !important;
+
+        height:50px !important;
+        min-height:50px !important;
+        max-height:50px !important;
+
+        font-size:19px !important;
+
+    }
+
+
+    #scroll-top i {
+
+        font-size:19px !important;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5D — PROFESSIONAL SKILL HIGHLIGHTS
+==============================================================*/
+
+.skills-section .skill-highlights {
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:24px;
+
+    padding-top:20px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+
+/*--------------------------------------------------------------
+                    HIGHLIGHT ITEM
+--------------------------------------------------------------*/
+
+.skills-section .skill-highlight {
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    color:#bdbdbd;
+
+    font-size:12px;
+
+    line-height:1.55;
+
+}
+
+
+/*--------------------------------------------------------------
+                    CHECK ICON
+--------------------------------------------------------------*/
+
+.skills-section .skill-highlight i {
+
+    flex:0 0 auto;
+
+    margin-top:3px;
+
+    color:#FFD700;
+
+    font-size:11px;
+
+    transition:
+        transform .25s ease,
+        color .25s ease;
+
+}
+
+
+/*--------------------------------------------------------------
+                    HIGHLIGHT HOVER
+--------------------------------------------------------------*/
+
+.skills-section .skill-highlight:hover {
+
+    color:#ffffff;
+
+}
+
+
+.skills-section .skill-highlight:hover i {
+
+    color:#38BDF8;
+
+    transform:scale(1.15);
+
+}
+
+
+/*--------------------------------------------------------------
+                    CARD HOVER
+--------------------------------------------------------------*/
+
+.skills-section .expertise-card:hover
+.skill-highlight i {
+
+    text-shadow:
+        0 0 8px rgba(255,215,0,.35);
+
+}
+
+
+/*--------------------------------------------------------------
+                    MOBILE
+==============================================================*/
+
+@media (max-width:650px) {
+
+    .skills-section .skill-highlights {
+
+        margin-top:20px;
+
+        padding-top:17px;
+
+    }
+
+    .skills-section .skill-highlight {
+
+        font-size:11.5px;
+
+    }
+
+}
+
+/* ==========================================================
+   SKILLS & EXPERTISE — EXPERTISE CARD DESIGN
+   STEM STEP 5E-6
+   ========================================================== */
+
+.skills-section .expertise-card {
+
+    background: linear-gradient(
+        145deg,
+        #1d1d1d 0%,
+        #171717 100%
+    );
+
+    padding: 30px;
+
+    border: 1px solid rgba(255, 215, 0, 0.25);
+
+    border-radius: 18px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+
+}
+
+
+/* ==========================================================
+   CARD HOVER
+   ========================================================== */
+
+.skills-section .expertise-card:hover {
+
+    transform: translateY(-8px);
+
+    border-color: rgba(255, 215, 0, 0.65);
+
+    box-shadow:
+        0 16px 35px rgba(0, 0, 0, 0.40),
+        0 0 25px rgba(255, 215, 0, 0.12);
+
+}
+
+
+/* ==========================================================
+   CARD SHINE
+   ========================================================== */
+
+.skills-section .expertise-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 55%;
+    height: 100%;
+
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.10),
+        transparent
+    );
+
+    transition: left 0.8s ease;
+
+    pointer-events: none;
+
+}
+
+
+.skills-section .expertise-card:hover::before {
+
+    left: 140%;
+
+}
+
+
+/* ==========================================================
+   ICON
+   ========================================================== */
+
+.skills-section .expertise-card .skill-icon {
+
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    background: rgba(255, 215, 0, 0.08);
+
+    border: 1px solid rgba(255, 215, 0, 0.35);
+
+    border-radius: 14px;
+
+}
+
+
+.skills-section .expertise-card .skill-icon i {
+
+    font-size: 27px;
+
+    color: #FFD700;
+
+}
+
+
+/* ==========================================================
+   CARD CONTENT
+   ========================================================== */
+
+.skills-section .expertise-card .skill-card-content {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* ==========================================================
+   CATEGORY
+   ========================================================== */
+
+.skills-section .expertise-card .skill-category {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #FFD700;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+}
+
+
+/* ==========================================================
+   TITLE
+   ========================================================== */
+
+.skills-section .expertise-card .skill-title {
+
+    margin: 0 0 24px;
+
+    color: #38BDF8;
+
+    font-size: 25px;
+
+    line-height: 1.3;
+
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+   ========================================================== */
+
+.skills-section .expertise-card .skill-description {
+
+    margin: 0 0 28px;
+
+    color: #cccccc;
+
+    font-size: 16px;
+
+    line-height: 1.65;
+
+}
+
+
+/* ==========================================================
+   TAGS
+   ========================================================== */
+
+.skills-section .expertise-card .skill-tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+
+    margin-bottom: 28px;
+
+}
+
+
+.skills-section .expertise-card .skill-tags span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    color: #cfcfcf;
+
+    font-size: 12px;
+
+    line-height: 1;
+
+}
+
+
+/* ==========================================================
+   HIGHLIGHTS
+   ========================================================== */
+
+.skills-section .expertise-card .skill-highlights {
+
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+
+}
+
+
+.skills-section .expertise-card .skill-highlight {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-bottom: 13px;
+
+}
+
+
+.skills-section .expertise-card .skill-highlight:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+.skills-section .expertise-card .skill-highlight i {
+
+    flex-shrink: 0;
+
+    margin-top: 4px;
+
+    color: #FFD700;
+
+    font-size: 12px;
+
+}
+
+
+.skills-section .expertise-card .skill-highlight span {
+
+    color: #bdbdbd;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================================
+   SKILLS GRID
+   ========================================================== */
+
+.skills-section .skills-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE — TABLET
+   ========================================================== */
+
+@media (max-width: 1000px) {
+
+    .skills-section .skills-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+/* ==========================================================
+   RESPONSIVE — MOBILE
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    .skills-section .skills-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .skills-section .expertise-card {
+
+        padding: 25px;
+
+    }
+
+    .skills-section .expertise-card .skill-title {
+
+        font-size: 23px;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5H-9 — SKILL CARD ALIGNMENT POLISH
+==============================================================*/
+
+.skills-section .skills-grid {
+    align-items: stretch;
+}
+
+.skills-section .expertise-card { 
+    height: 100%; 
+    min-height: 560px; 
+    box-sizing: border-box; 
+}
+
+
+
+/*==============================================================
+        KEEP TAGS AND HIGHLIGHTS STABLE
+==============================================================*/
+
+.skills-section .skill-tags {
+    margin-top: auto;
+}
+
+
+/*==============================================================
+        HIGHLIGHTS
+==============================================================*/
+
+.skills-section .skill-highlights {
+    margin-top: 28px;
+}
+
+
+/*==============================================================
+        MOBILE OVERRIDE
+==============================================================*/
+
+@media (max-width: 950px) {
+
+    .skills-section .expertise-card {
+        min-height: auto;
+        height: auto;
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5H-10 — SKILLS HEADER SPACING
+==============================================================*/
+
+@media (min-width:951px) {
+
+    .skills-section .skills-container {
+
+        margin-top:35px !important;
+
+    }
+
+}
+
+/*==============================================================
+        STEM STEP 5H-11 — SKILL CARDS EQUAL HEIGHT
+==============================================================*/
+
+@media (min-width:951px) {
+
+    .skills-section .skills-grid {
+        align-items: stretch !important;
+    }
+
+    .skills-section .expertise-card {
+        height: 100% !important;
+        min-height: 560px;
+        box-sizing: border-box;
+    }
+
+}
