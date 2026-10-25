@@ -942,3 +942,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
+
+/*==============================================================
+  CARDIOVASCULAR FEATURE CARD — BRIGHT, CORRECTLY ORDERED STAR TRAIN
+  A large lead star followed by three smaller stars, fully inside the border.
+==============================================================*/
+(function(){
+  function initCardStarTrain(){
+    document.querySelectorAll('.cardiovascular-featured .featured-star-frame').forEach(function(frame){
+      if(frame.dataset.starTrainReady==='true') return;
+      var card=frame.closest('.cardiovascular-featured');
+      var stars=Array.from(frame.querySelectorAll('.orbit-star'));
+      if(!card || stars.length<4) return;
+      frame.dataset.starTrainReady='true';
+      var start=performance.now();
+      var speed=0.000045; // circuit duration about 22 seconds
+      function animate(now){
+        if(!frame.isConnected) return;
+        var w=frame.clientWidth, h=frame.clientHeight;
+        if(w>30 && h>30){
+          // Keep star centers far enough inside the clipped edge to avoid half-hidden glyphs.
+          var pad=15, left=pad, top=pad, right=Math.max(pad+1,w-pad), bottom=Math.max(pad+1,h-pad);
+          var rw=right-left, rh=bottom-top, perimeter=2*(rw+rh);
+          stars.forEach(function(star,i){
+            // Main star leads; following stars trail behind at evenly spaced intervals.
+            var distance=((now-start)*speed*perimeter - i*(perimeter*0.026))%perimeter;
+            if(distance<0) distance+=perimeter;
+            var x,y,d=distance;
+            if(d<rw){x=left+d;y=top;}
+            else if((d-=rw)<rh){x=right;y=top+d;}
+            else if((d-=rh)<rw){x=right-d;y=bottom;}
+            else {d-=rw;x=left;y=bottom-d;}
+            star.style.left=x+'px'; star.style.top=y+'px';
+          });
+        }
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initCardStarTrain);
+  else initCardStarTrain();
+  window.addEventListener('resize',initCardStarTrain);
+})();

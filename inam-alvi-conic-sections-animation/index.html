@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Conic Sections Laboratory: Double-Napped Cone & Plane</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/700.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+  :root{
+    --bg:#121212; --card:#1a1b1b; --card2:#232424; --border:#2e3031;
+    --text:#e6e6e6; --muted:#9aa4ad;
+    --yellow:#ffd400; --blue:#2fb9f5; --red:#ff5252; --green:#3ddc84; --orange:#ff9f1c; --cyan:#22d3ee;
+  }
+  [data-theme="light"]{
+    --bg:#f2f5f8; --card:#ffffff; --card2:#eef2f6; --border:#d8e0e7;
+    --text:#17222b; --muted:#5c6b77;
+    --yellow:#d97706; --blue:#0284c7; --red:#dc2626; --green:#16a34a; --orange:#ea580c; --cyan:#0891b2;
+  }
+  html,body{height:100%;}
+  body{ background:var(--bg); color:var(--text); font-family:'Poppins',system-ui,sans-serif; transition:background .3s ease,color .3s ease; }
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; transition:background .3s,border-color .3s;}
+  .card-accent{border-left:4px solid var(--yellow);}
+  .panel-title{color:var(--blue); font-weight:600; font-size:1.02rem;}
+  .muted-l{color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; font-weight:600;}
+  .pybox{background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;}
+  .pybox p{margin:2px 0;}
+  .pyt{color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:.09em; font-weight:600; margin-bottom:6px !important;}
+  .chip{background:var(--card2); border:1px solid var(--border); color:var(--text); border-radius:9999px; padding:6px 14px; font-size:12.5px; font-weight:600; transition:all .2s; cursor:pointer; font-family:'Poppins',sans-serif; white-space:nowrap;}
+  .chip:hover{border-color:var(--cyan); color:var(--cyan); transform:translateY(-1px);}
+  .chip-on{background:var(--yellow); border-color:var(--yellow); color:#111 !important;}
+  .chip-on:hover{border-color:var(--yellow); color:#111 !important;}
+  .icon-btn{width:44px;height:44px; display:grid; place-items:center; background:var(--card2); border:1px solid var(--border); border-radius:10px; color:var(--text); cursor:pointer; transition:all .2s; font-weight:700; flex:none;}
+  .icon-btn:hover{border-color:var(--yellow); color:var(--yellow);}
+  .pill{display:inline-flex; align-items:center; gap:7px; padding:4px 11px; border-radius:9999px; font-size:11.5px; font-weight:600; background:var(--card); border:1px solid var(--border); opacity:.94;}
+  .dot{width:9px;height:9px;border-radius:9999px;display:inline-block;}
+  .cb{color:var(--blue); font-weight:600;} .cy{color:var(--yellow); font-weight:600;}
+  .cg{color:var(--green); font-weight:600;} .cr{color:var(--red); font-weight:600;}
+  .co{color:var(--orange); font-weight:600;} .cc{color:var(--cyan); font-weight:600;}
+  input[type="range"]{width:100%; cursor:pointer; accent-color:var(--yellow);}
+  .badge-e{display:inline-block; padding:3px 12px; border-radius:9999px; font-weight:800; font-size:13px; border:1px solid var(--cyan); color:var(--cyan); background:rgba(34,211,238,0.10);}
+  ::selection{background:var(--yellow); color:#111;}
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<header class="max-w-7xl mx-auto px-4 pt-8 pb-5 w-full flex items-start justify-between gap-4">
+  <div>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight" style="color:var(--yellow)">3D Conic Sections Laboratory</h1>
+    <p class="mt-3 text-lg md:text-2xl font-semibold" style="color:var(--blue)">Slice a double-napped cone — watch the plane cut, then reveal the conic</p>
+  </div>
+  <button id="themeBtn" class="icon-btn" title="Toggle theme" aria-label="Toggle dark / light theme"></button>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 pb-10 w-full flex-1">
+  <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-6 items-start">
+
+    <!-- LEFT -->
+    <section class="space-y-6 min-w-0">
+      <div class="card overflow-hidden">
+        <div class="relative">
+          <canvas id="gl" class="block w-full h-[460px] md:h-[560px] touch-none select-none"></canvas>
+          <div class="absolute top-3 left-3 flex gap-2 flex-wrap pointer-events-none">
+            <span class="pill"><i class="dot" style="background:var(--blue)"></i>double-napped cone</span>
+            <span class="pill"><i class="dot" style="background:var(--orange)"></i>slicing plane</span>
+            <span class="pill"><i class="dot" style="background:var(--yellow)"></i>conic section</span>
+          </div>
+          <div class="absolute bottom-3 left-3 pointer-events-none">
+            <span class="pill" style="color:var(--muted)" id="statusPill">Idle — full cone. Choose a conic to slice.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-accent p-4 md:p-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4">
+          <div>
+            <div class="flex justify-between"><label class="muted-l cb">cone semi-vertical α</label><span id="rAl" class="text-sm cb"></span></div>
+            <input id="sAl" type="range" min="15" max="60" step="1" value="30" style="accent-color:var(--blue)">
+          </div>
+          <div>
+            <div class="flex justify-between"><label class="muted-l co">plane tilt β (to axis)</label><span id="rBe" class="text-sm co"></span></div>
+            <input id="sBe" type="range" min="0" max="90" step="0.5" value="60" style="accent-color:var(--orange)">
+          </div>
+          <div>
+            <div class="flex justify-between"><label class="muted-l cy">plane height h</label><span id="rH" class="text-sm cy"></span></div>
+            <input id="sH" type="range" min="-3" max="3" step="0.05" value="1.5">
+          </div>
+        </div>
+        <h4 class="muted-l mt-5">Slice presets (plane cuts, then vanishes)</h4>
+        <div id="preRow" class="mt-2 flex flex-wrap gap-2"></div>
+        <h4 class="muted-l mt-4">Degenerate cases (plane through apex)</h4>
+        <div id="degRow" class="mt-2 flex flex-wrap gap-2"></div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button id="fullBtn" class="chip">⟲ Restore full cone</button>
+          <button id="liveBtn" class="chip">✥ Live plane mode</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="space-y-6">
+      <div class="card card-accent p-4 md:p-5">
+        <h3 class="panel-title">Cross-Section View (plane coordinates)</h3>
+        <canvas id="inset" class="mt-3 w-full h-[240px] rounded-lg" style="border:1px solid var(--border)"></canvas>
+        <div class="mt-3 flex items-center justify-between gap-2">
+          <span id="clsName" class="text-[15px] font-bold" style="color:var(--yellow)"></span>
+          <span id="eBadge" class="badge-e"></span>
+        </div>
+      </div>
+      <div class="card card-accent p-4 md:p-5">
+        <h3 class="panel-title">Analytical Readout</h3>
+        <div id="mathPanel" class="mt-4 space-y-3 text-[13px]"></div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer class="border-t py-6 text-center" style="border-color:var(--border)">
+  <p class="text-xl font-bold" style="color:var(--yellow)">Inam Alvi</p>
+  <p class="mt-1 text-sm" style="color:var(--muted)">Mathematics Educator | Science Teacher | Web Developer</p>
+</footer>
+
+<script>
+(function(){
+'use strict';
+if(!window.THREE){ document.getElementById('gl').outerHTML='<p style="padding:20px">Three.js failed to load.</p>'; return; }
+
+var HC=6;
+var alpha=30, beta=60, hh=1.5;
+var mode='idle';           /* idle | seq | live | result */
+var seq=null;
+var theme='dark';
+try{var sv=localStorage.getItem('csl-theme'); if(sv==='light'||sv==='dark') theme=sv;}catch(e){}
+var TP={
+ dark:{bg:0x151719,grid:0x2a3138,gridC:0x3a424a,axis:0x98a2ab,cone:0x2fb9f5,plane:0xff9f1c,curve:0xffd400,cap:0xff9f1c,lab:'#cfd6da',insetBg:'#151719',insetAx:'#3a4148',insetCurve:'#ffd400'},
+ light:{bg:0xf7fafc,grid:0xd7e0e8,gridC:0xb9c6d2,axis:0x5b6770,cone:0x0284c7,plane:0xea580c,curve:0xd97706,cap:0xea580c,lab:'#33404a',insetBg:'#ffffff',insetAx:'#c3ced6',insetCurve:'#eab308'}
+};
+
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function fnum(v,d){ if(!isFinite(v))return '—'; return v.toFixed(d==null?2:d).replace('-','\u2212'); }
+function rad(d){return d*Math.PI/180;}
+function lerp(a,b,k){return a+(b-a)*k;}
+function ease(k){return k<0.5?2*k*k:1-Math.pow(-2*k+2,2)/2;}
+
+/* ---------------- scene ---------------- */
+var canvas=document.getElementById('gl');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(50,1,0.1,300);
+camera.position.set(9,7,11);
+var controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+
+var grid=null, axisMat=null, labelSprites=[];
+function textSprite(txt,cssColor,x,y,z){
+  var cv=document.createElement('canvas'); cv.width=96; cv.height=96;
+  var c2=cv.getContext('2d'); c2.font='700 56px Poppins, sans-serif'; c2.textAlign='center'; c2.textBaseline='middle';
+  c2.fillStyle=cssColor; c2.fillText(txt,48,52);
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),depthTest:false}));
+  sp.position.set(x,y,z); sp.scale.set(1,1,1);
+  return sp;
+}
+function buildEnv(){
+  if(grid){scene.remove(grid);grid.geometry.dispose();grid.material.dispose();}
+  grid=new THREE.GridHelper(16,16,TP[theme].gridC,TP[theme].grid);
+  grid.position.y=-HC-0.6;
+  scene.add(grid);
+  scene.background=new THREE.Color(TP[theme].bg);
+  if(axisMat)axisMat.color.setHex(TP[theme].axis);
+  labelSprites.forEach(function(s){scene.remove(s);});
+  labelSprites=[
+    textSprite('X',TP[theme].lab,8.6,-HC-0.6,0),
+    textSprite('Y',TP[theme].lab,0,HC+1.4,0),
+    textSprite('Z',TP[theme].lab,0,-HC-0.6,8.6)
+  ];
+  labelSprites.forEach(function(s){scene.add(s);});
+}
+function axes(){
+  axisMat=new THREE.LineBasicMaterial({color:TP[theme].axis});
+  function L(a,b){
+    var g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(a[0],a[1],a[2]),new THREE.Vector3(b[0],b[1],b[2])]);
+    scene.add(new THREE.Line(g,axisMat));
+  }
+  L([-8,-HC-0.6,0],[8,-HC-0.6,0]);
+  L([0,-HC-0.6,-8],[0,-HC-0.6,8]);
+  L([0,-HC-0.6,0],[0,HC+1,0]);
+}
+
+/* ---------------- cone with optional planar cut ---------------- */
+var coneSet=null;   /* {group, geos, mats} */
+function disposeSet(s){
+  if(!s)return;
+  scene.remove(s.group);
+  s.geos.forEach(function(g){g.dispose();});
+  s.mats.forEach(function(m){m.dispose();});
+}
+function surfPt(ph,s,a,out){
+  out[0]=s*Math.sin(a)*Math.cos(ph);
+  out[1]=s*Math.cos(a);
+  out[2]=s*Math.sin(a)*Math.sin(ph);
+}
+function buildCone(clipped,bB,bH){
+  disposeSet(coneSet); coneSet=null;
+  var a=rad(alpha);
+  var b=rad(bB);
+  var n=[0,-Math.sin(b),Math.cos(b)];
+  var nC=bH*n[1];
+  var S=(HC-0.05)/Math.cos(a);
+  var PHI=72, ROWS=56, eps=1e-7;
+  var i,j;
+  /* vertex grid */
+  var P=[],D=[];
+  var tmp=[0,0,0];
+  for(i=0;i<=ROWS;i++){
+    var s=-S+2*S*i/ROWS;
+    for(j=0;j<PHI;j++){
+      surfPt(j/PHI*2*Math.PI,s,a,tmp);
+      P.push([tmp[0],tmp[1],tmp[2]]);
+      D.push(n[0]*tmp[0]+n[1]*tmp[1]+n[2]*tmp[2]-nC);
+    }
+  }
+  var mainPos=[], capPos=[];
+  function proj(p,d){ return [p[0]-n[0]*d, p[1]-n[1]*d, p[2]-n[2]*d]; }
+  function tri(arr,i0,i1,i2,useProjForPos){
+    var ps=[P[i0],P[i1],P[i2]], ds=[D[i0],D[i1],D[i2]];
+    for(var q=0;q<3;q++){
+      var p=ps[q];
+      if(useProjForPos==='main'&&ds[q]>0)p=proj(ps[q],ds[q]);
+      if(useProjForPos==='cap'&&ds[q]<0)p=proj(ps[q],ds[q]);
+      arr.push(p[0],p[1],p[2]);
+    }
+  }
+  for(i=0;i<ROWS;i++){
+    for(j=0;j<PHI;j++){
+      var j2=(j+1)%PHI;
+      var v0=i*PHI+j, v1=i*PHI+j2, v2=(i+1)*PHI+j, v3=(i+1)*PHI+j2;
+      var tris=[[v0,v1,v2],[v1,v3,v2]];
+      tris.forEach(function(tr){
+        var d0=D[tr[0]],d1=D[tr[1]],d2=D[tr[2]];
+        if(!clipped){ tri(mainPos,tr[0],tr[1],tr[2],null); return; }
+        var allNeg=(d0<-eps&&d1<-eps&&d2<-eps);
+        var allPos=(d0>eps&&d1>eps&&d2>eps);
+        if(allNeg){ tri(mainPos,tr[0],tr[1],tr[2],null); }
+        else if(allPos){ tri(capPos,tr[0],tr[1],tr[2],null); }
+        else{ tri(mainPos,tr[0],tr[1],tr[2],'main'); tri(capPos,tr[0],tr[1],tr[2],'cap'); }
+      });
+    }
+  }
+  var group=new THREE.Group(), geos=[], mats=[];
+  var gMain=new THREE.BufferGeometry();
+  gMain.setAttribute('position',new THREE.BufferAttribute(new Float32Array(mainPos),3));
+  geos.push(gMain);
+  var mSolid=new THREE.MeshBasicMaterial({color:TP[theme].cone,transparent:true,opacity:0.10,side:THREE.DoubleSide,depthWrite:false});
+  var mWire=new THREE.MeshBasicMaterial({color:TP[theme].cone,wireframe:true,transparent:true,opacity:0.28});
+  mats.push(mSolid,mWire);
+  group.add(new THREE.Mesh(gMain,mSolid));
+  group.add(new THREE.Mesh(gMain,mWire));
+  var capMesh=null;
+  if(clipped&&capPos.length){
+    var gCap=new THREE.BufferGeometry();
+    gCap.setAttribute('position',new THREE.BufferAttribute(new Float32Array(capPos),3));
+    geos.push(gCap);
+    var mCap=new THREE.MeshBasicMaterial({color:TP[theme].cap,transparent:true,opacity:0.30,side:THREE.DoubleSide,depthWrite:false});
+    mats.push(mCap);
+    capMesh=new THREE.Mesh(gCap,mCap);
+    group.add(capMesh);
+  }
+  group.add(new THREE.Mesh(new THREE.SphereGeometry(0.09,12,12),new THREE.MeshBasicMaterial({color:0xffffff})));
+  scene.add(group);
+  coneSet={group:group,geos:geos,mats:mats,cap:capMesh};
+}
+
+/* ---------------- plane & curve ---------------- */
+var planeMesh=new THREE.Mesh(new THREE.PlaneGeometry(17,17),
+  new THREE.MeshBasicMaterial({color:TP[theme].plane,transparent:true,opacity:0.22,side:THREE.DoubleSide,depthWrite:false}));
+planeMesh.visible=false;
+scene.add(planeMesh);
+var planeEdge=new THREE.LineSegments(new THREE.EdgesGeometry(planeMesh.geometry),
+  new THREE.LineBasicMaterial({color:TP[theme].plane,transparent:true,opacity:0.8}));
+planeMesh.add(planeEdge);
+
+var curveObj=null, insetPts=[];
+function buildCurve(){
+  if(curveObj){ scene.remove(curveObj); curveObj.geometry.dispose(); curveObj.material.dispose(); curveObj=null; }
+  insetPts=[];
+  var a=rad(alpha), b=rad(beta);
+  var ny=-Math.sin(b), nz=Math.cos(b);
+  var e2y=Math.cos(b), e2z=Math.sin(b);
+  var nC=hh*ny;
+  var sMax=(HC-0.05)/Math.cos(a);
+  var pts=[], run=0, pos=-1, prevValid=false;
+  var N=480, i;
+  var deg=Math.abs(hh)<0.05;
+  if(!deg){
+    for(i=0;i<=N;i++){
+      var ph=i/N*2*Math.PI;
+      var D=Math.sin(a)*Math.sin(ph)*nz + Math.cos(a)*ny;
+      var s=Math.abs(D)<1e-4?NaN:(-nC)/D;
+      var ok=isFinite(s)&&Math.abs(s)<=sMax;
+      if(ok){
+        var px=s*Math.sin(a)*Math.cos(ph), py=s*Math.cos(a), pz=s*Math.sin(a)*Math.sin(ph);
+        pts.push(px,py,pz);
+        var u=px, v=(py-hh)*e2y + pz*e2z;
+        if(prevValid)pos++; else {run++;pos=0;}
+        insetPts.push([u,v,run*100000+pos]);
+        prevValid=true;
+      }else{
+        if(prevValid)pts.push(NaN,NaN,NaN);
+        prevValid=false;
+      }
+    }
+  }else{
+    var r0=(-Math.cos(a)*ny)/(Math.sin(a)*nz);
+    r0=clamp(r0,-1.0001,1.0001);
+    var roots=[];
+    if(Math.abs(r0)<=1){
+      var p1=Math.asin(r0);
+      roots=(Math.abs(Math.abs(r0)-1)<1e-3)?[p1]:[p1,Math.PI-p1];
+    }
+    roots.forEach(function(ph2){
+      var dx=Math.sin(a)*Math.cos(ph2), dy=Math.cos(a), dz=Math.sin(a)*Math.sin(ph2);
+      var M=sMax, s2;
+      pts.push(-dx*M,-dy*M,-dz*M, dx*M,dy*M,dz*M);
+      run++; pos=-1;
+      for(s2=-M;s2<=M;s2+=M/40){ pos++; insetPts.push([s2*dx, s2*(dy*e2y+dz*e2z), run*100000+pos]); }
+    });
+    if(!roots.length) insetPts.push([0,0,0]);
+  }
+  var seg=[], last=null;
+  for(i=0;i<pts.length;i+=3){
+    var x=pts[i], y=pts[i+1], z=pts[i+2];
+    if(isFinite(x)){
+      if(last)seg.push(last[0],last[1],last[2],x,y,z);
+      last=[x,y,z];
+    }else last=null;
+  }
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(seg),3));
+  curveObj=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:TP[theme].curve}));
+  curveObj.visible=(mode!=='idle');
+  scene.add(curveObj);
+}
+
+/* ---------------- classification ---------------- */
+function classify(){
+  var eps=0.75;
+  var e=Math.cos(rad(beta))/Math.cos(rad(alpha));
+  if(Math.abs(hh)<0.05){
+    if(beta>alpha+eps)return{name:'Degenerate — Point',eq:'x² + y² = 0',e:0};
+    if(Math.abs(beta-alpha)<=eps)return{name:'Degenerate — Single Line',eq:'y² = 0 (one generator)',e:1};
+    return{name:'Degenerate — Intersecting Lines',eq:'x²/a² − y²/b² = 0 (an “X”)',e:e};
+  }
+  if(beta>=90-eps)return{name:'Circle',eq:'x² + y² = r², r = h·tan α',e:0};
+  if(beta>alpha+eps)return{name:'Ellipse',eq:'x²/a² + y²/b² = 1',e:e};
+  if(Math.abs(beta-alpha)<=eps)return{name:'Parabola',eq:'y = x²/(4p)',e:1};
+  return{name:'Hyperbola',eq:'x²/a² − y²/b² = 1',e:e};
+}
+
+/* ---------------- inset ---------------- */
+var IC=document.getElementById('inset'), ixc=IC.getContext('2d');
+var idpr=1,IW=0,IH=0;
+function drawInset(){
+  if(!IW)return;
+  ixc.fillStyle=TP[theme].insetBg; ixc.fillRect(0,0,IW,IH);
+  ixc.strokeStyle=TP[theme].insetAx; ixc.lineWidth=Math.max(1,idpr);
+  ixc.beginPath(); ixc.moveTo(0,IH/2); ixc.lineTo(IW,IH/2); ixc.moveTo(IW/2,0); ixc.lineTo(IW/2,IH); ixc.stroke();
+  if(!insetPts.length||mode==='idle'){
+    ixc.fillStyle=TP[theme].insetAx; ixc.font='600 '+(12*idpr)+'px Poppins, sans-serif'; ixc.textAlign='center';
+    ixc.fillText('awaiting a slice…', IW/2, IH/2-10*idpr);
+    return;
+  }
+  var mR=1;
+  insetPts.forEach(function(p){ mR=Math.max(mR,Math.abs(p[0]),Math.abs(p[1])); });
+  var sc=(Math.min(IW,IH)/2-14*idpr)/mR;
+  ixc.strokeStyle=TP[theme].insetCurve; ixc.lineWidth=2.6*idpr;
+  ixc.shadowColor=TP[theme].insetCurve; ixc.shadowBlur=10*idpr;
+  ixc.beginPath();
+  var prevId=null;
+  insetPts.forEach(function(p){
+    var X=IW/2+p[0]*sc, Y=IH/2-p[1]*sc;
+    if(prevId!==null&&p[2]===prevId+1)ixc.lineTo(X,Y); else ixc.moveTo(X,Y);
+    prevId=p[2];
+  });
+  ixc.stroke(); ixc.shadowBlur=0;
+}
+
+/* ---------------- panels ---------------- */
+function renderMath(){
+  var c=classify();
+  document.getElementById('clsName').textContent=c.name;
+  document.getElementById('eBadge').textContent='e = '+fnum(c.e,3);
+  var cond;
+  if(Math.abs(hh)<0.05)cond='plane passes through the apex ⇒ degenerate';
+  else if(beta>alpha)cond='β > α ⇒ closed curve on one nappe';
+  else if(Math.abs(beta-alpha)<0.75)cond='β = α ⇒ parallel to a generator';
+  else cond='β < α ⇒ cuts both nappes';
+  document.getElementById('mathPanel').innerHTML=
+   '<div class="pybox"><p class="pyt">Standard equation</p><p class="text-[15px] font-semibold" style="color:var(--cyan)">'+c.eq+'</p></div>'+
+   '<div class="pybox"><p class="pyt">Angles</p><p>cone semi-vertical α = <span class="cb">'+fnum(alpha,1)+'°</span> · plane tilt β = <span class="co">'+fnum(beta,1)+'°</span></p><p style="color:var(--muted)">'+cond+'</p></div>'+
+   '<div class="pybox"><p class="pyt">Eccentricity</p><p>e = cos β / cos α = '+fnum(Math.cos(rad(beta)),3)+' / '+fnum(Math.cos(rad(alpha)),3)+' = <span class="cc">'+fnum(c.e,3)+'</span></p>'+
+   '<p style="color:var(--muted)">'+(c.e<0.01?'e = 0 ⇒ circle':(c.e<0.99?'0 < e < 1 ⇒ ellipse':(c.e<=1.01?'e = 1 ⇒ parabola':'e > 1 ⇒ hyperbola')))+'</p></div>';
+}
+function setStatus(t){document.getElementById('statusPill').textContent=t;}
+
+/* ---------------- state handling ---------------- */
+function syncUI(){
+  document.getElementById('sAl').value=alpha; document.getElementById('rAl').textContent=fnum(alpha,0)+'°';
+  document.getElementById('sBe').value=beta;  document.getElementById('rBe').textContent=fnum(beta,1)+'°';
+  document.getElementById('sH').value=hh;     document.getElementById('rH').textContent=fnum(hh,2);
+}
+function placePlane(bB,bH,extra,opac){
+  planeMesh.rotation.x=rad(bB);
+  planeMesh.position.set(0,bH+extra,0);
+  planeMesh.material.opacity=opac;
+  planeEdge.material.opacity=Math.min(0.9,opac*4);
+  planeMesh.visible=opac>0.005;
+}
+function goIdle(){
+  mode='idle'; seq=null;
+  planeMesh.visible=false;
+  buildCone(false,beta,hh);
+  buildCurve(); curveObj.visible=false;
+  renderMath(); drawInset(); syncUI();
+  setStatus('Idle — full cone. Choose a conic to slice.');
+}
+function goLive(){
+  mode='live'; seq=null;
+  buildCone(false,beta,hh);
+  buildCurve(); curveObj.visible=true;
+  placePlane(beta,hh,0,0.22);
+  renderMath(); drawInset(); syncUI();
+  setStatus('Live mode — plane & curve update with sliders.');
+}
+function startSeq(toB,toH){
+  seq={t0:performance.now(),fB:beta,fH:hh,tB:toB,tH:toH,cut:false};
+  mode='seq';
+  buildCone(false,beta,hh);      /* whole cone while plane approaches */
+  if(curveObj)curveObj.visible=false;
+  setStatus('Plane approaching…');
+}
+function applyCut(){
+  buildCone(true,beta,hh);       /* cone clipped at plane + cap piece */
+  buildCurve(); curveObj.visible=true;
+  renderMath(); drawInset();
+}
+
+/* sliders */
+document.getElementById('sAl').addEventListener('input',function(e){
+  alpha=+e.target.value;
+  if(mode==='idle'){buildCone(false,beta,hh);}
+  else goLive();
+});
+document.getElementById('sBe').addEventListener('input',function(e){
+  beta=+e.target.value;
+  if(mode==='idle'){mode='live';}
+  goLive();
+});
+document.getElementById('sH').addEventListener('input',function(e){
+  hh=+e.target.value;
+  if(mode==='idle'){mode='live';}
+  goLive();
+});
+document.getElementById('fullBtn').addEventListener('click',goIdle);
+document.getElementById('liveBtn').addEventListener('click',goLive);
+
+/* presets */
+var PRE=[
+ {name:'⭕ Circle',b:90,h:1.5},
+ {name:'⬮ Ellipse',b:60,h:1.5},
+ {name:'⬔ Parabola',b:30,h:1.6},
+ {name:'⌗ Hyperbola',b:12,h:0.6}
+];
+var DEG=[
+ {name:'• Point',b:70,h:0},
+ {name:'— Single Line',b:30,h:0},
+ {name:'✕ Intersecting Lines',b:12,h:0}
+];
+PRE.concat(DEG).forEach(function(pr,i){
+  var b=document.createElement('button');
+  b.className='chip'; b.textContent=pr.name;
+  b.addEventListener('click',function(){ startSeq(pr.b,pr.h); });
+  (i<4?document.getElementById('preRow'):document.getElementById('degRow')).appendChild(b);
+});
+
+/* ---------------- theme ---------------- */
+var SUN='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.4 4.4l1.8 1.8M17.8 17.8l1.8 1.8M4.4 19.6l1.8-1.8M17.8 6.2l1.8-1.8"/></svg>';
+var MOON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function applyTheme(t){
+  theme=t;
+  document.documentElement.dataset.theme=t;
+  document.getElementById('themeBtn').innerHTML=(t==='dark')?SUN:MOON;
+  try{localStorage.setItem('csl-theme',t);}catch(e){}
+  planeMesh.material.color.setHex(TP[t].plane);
+  planeEdge.material.color.setHex(TP[t].plane);
+  buildEnv();
+  if(mode==='idle')goIdle(); else if(mode==='live')goLive(); else {buildCone(false,beta,hh);buildCurve();}
+  drawInset();
+}
+document.getElementById('themeBtn').addEventListener('click',function(){applyTheme(theme==='dark'?'light':'dark');});
+
+/* ---------------- resize & loop ---------------- */
+function resize(){
+  var r=canvas.getBoundingClientRect();
+  var w=Math.max(1,Math.round(r.width)), h2=Math.max(1,Math.round(r.height));
+  renderer.setSize(w,h2,false); renderer.setPixelRatio(window.devicePixelRatio||1);
+  camera.aspect=w/h2; camera.updateProjectionMatrix();
+  var ri=IC.getBoundingClientRect();
+  idpr=window.devicePixelRatio||1;
+  IW=IC.width=Math.max(1,Math.round(ri.width*idpr)); IH=IC.height=Math.max(1,Math.round(ri.height*idpr));
+  drawInset();
+}
+new ResizeObserver(resize).observe(canvas);
+new ResizeObserver(resize).observe(IC);
+
+function loop(ts){
+  requestAnimationFrame(loop);
+  if(seq){
+    var el=(ts-seq.t0)/1000;
+    if(el<0.9){
+      var k=ease(clamp(el/0.9,0,1));
+      beta=lerp(seq.fB,seq.tB,k);
+      hh=lerp(seq.fH,seq.tH,k);
+      placePlane(beta,hh,(1-k)*6,0.22*k);
+      syncUI(); renderMath();
+      setStatus('Plane approaching…');
+    }else if(el<2.1){
+      beta=seq.tB; hh=seq.tH;
+      if(!seq.cut){ seq.cut=true; applyCut(); }
+      placePlane(beta,hh,0,0.22);
+      if(coneSet&&coneSet.cap)coneSet.cap.material.opacity=0.30;
+      syncUI();
+      setStatus('Cut! The sliced cap & plane now vanish…');
+    }else if(el<2.9){
+      var k2=clamp((el-2.1)/0.8,0,1);
+      placePlane(beta,hh,0,0.22*(1-k2));
+      if(coneSet&&coneSet.cap)coneSet.cap.material.opacity=0.30*(1-k2);
+    }else{
+      seq=null; mode='result';
+      planeMesh.visible=false;
+      if(coneSet&&coneSet.cap)coneSet.cap.visible=false;
+      setStatus('Result — the conic section left on the cone. Slice again or restore the full cone.');
+    }
+  }
+  controls.update();
+  renderer.render(scene,camera);
+}
+
+document.documentElement.dataset.theme=theme;
+document.getElementById('themeBtn').innerHTML=(theme==='dark')?SUN:MOON;
+buildEnv(); axes(); resize();
+goIdle();
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

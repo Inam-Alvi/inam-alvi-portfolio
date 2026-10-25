@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Periodic Table | Inam Alvi</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161920;
+            --border-color: #242936;
+            --text-white: #ffffff;
+            --text-secondary: #94a3b8;
+            --heading-yellow: #ffd000;
+            --subheading-blue: #00aeef;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-white: #0f172a;
+            --text-secondary: #475569;
+            --heading-yellow: #d97706;
+            --subheading-blue: #0284c7;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--heading-yellow);
+        }
+
+        .header-left p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.65rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--heading-yellow);
+            color: var(--heading-yellow);
+        }
+
+        .filter-btn.active {
+            border-color: var(--heading-yellow);
+            color: var(--heading-yellow);
+            background: rgba(255, 208, 0, 0.08);
+        }
+
+        .heatmap-toggle {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.65rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .heatmap-toggle:hover {
+            border-color: var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .heatmap-toggle.active {
+            border-color: var(--heading-yellow);
+            color: var(--heading-yellow);
+            background: rgba(255, 208, 0, 0.08);
+        }
+
+        /* Temperature Slider */
+        .temp-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .temp-control label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .temp-control input[type="range"] {
+            width: 80px;
+            accent-color: var(--heading-yellow);
+            cursor: pointer;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--border-color);
+            -webkit-appearance: none;
+        }
+
+        .temp-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--heading-yellow);
+            cursor: pointer;
+        }
+
+        .temp-control .temp-value {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--heading-yellow);
+            min-width: 40px;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 16px;
+        }
+
+        .table-wrapper {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--heading-yellow);
+            border-radius: 3px;
+        }
+
+        /* Periodic Table Grid */
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            gap: 3px;
+            min-width: 800px;
+        }
+
+        .element-cell {
+            aspect-ratio: 1 / 1.1;
+            border-radius: 6px;
+            padding: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+            min-height: 55px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .element-cell:hover {
+            transform: scale(1.08);
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            border-color: var(--heading-yellow);
+        }
+
+        .element-cell.dim {
+            opacity: 0.2;
+            transform: scale(0.95);
+        }
+
+        .element-cell .symbol {
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-white);
+        }
+
+        .element-cell .number {
+            font-size: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1;
+        }
+
+        .element-cell .mass {
+            font-size: 0.45rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1;
+        }
+
+        .element-cell .state-indicator {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        /* Category Colors */
+        .cat-alkali { background: #ff2a6d; }
+        .cat-alkaline { background: #ff6b35; }
+        .cat-transition { background: #ffd000; color: #000; }
+        .cat-transition .symbol { color: #000; }
+        .cat-transition .number { color: rgba(0,0,0,0.5); }
+        .cat-transition .mass { color: rgba(0,0,0,0.4); }
+        .cat-metalloid { background: #10b981; }
+        .cat-nonmetal { background: #00aeef; }
+        .cat-halogen { background: #a855f7; }
+        .cat-noble { background: #ec4899; }
+        .cat-lanthanide { background: #f97316; }
+        .cat-actinide { background: #ef4444; }
+        .cat-post-transition { background: #8b5cf6; }
+        .cat-unknown { background: #475569; }
+
+        /* Lanthanide/Actinide rows */
+        .lanthanide-row, .actinide-row {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 3px;
+            margin-top: 4px;
+        }
+
+        .row-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding-right: 6px;
+            min-width: 30px;
+        }
+
+        .lanthanide-container, .actinide-container {
+            display: grid;
+            grid-template-columns: 30px 1fr;
+            gap: 3px;
+            margin-top: 4px;
+            align-items: start;
+        }
+
+        .section-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            position: sticky;
+            top: 16px;
+        }
+
+        .info-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+        .info-panel::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        .info-panel::-webkit-scrollbar-thumb {
+            background: var(--heading-yellow);
+            border-radius: 2px;
+        }
+
+        .info-panel .placeholder {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 30px 10px;
+            font-size: 0.85rem;
+        }
+
+        .info-panel .placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .element-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .element-header .big-symbol {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .element-header .big-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .element-header .big-number {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .element-header .big-mass {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 12px;
+            font-size: 0.78rem;
+        }
+
+        .info-grid .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-grid .item .label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .info-grid .item .value {
+            color: var(--text-white);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .info-grid .item .value.highlight {
+            color: var(--heading-yellow);
+        }
+
+        .info-description {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            padding: 8px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4px;
+        }
+
+        .info-description strong {
+            color: var(--text-white);
+        }
+
+        /* Heatmap overlay */
+        .element-cell.heatmap {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-panel {
+                max-height: 400px;
+                position: static;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-controls {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .header { padding: 10px; }
+            .header-left h1 { font-size: 1.2rem; }
+            .element-cell { min-height: 40px; padding: 2px; }
+            .element-cell .symbol { font-size: 0.65rem; }
+            .element-cell .number { font-size: 0.4rem; }
+            .element-cell .mass { display: none; }
+            .periodic-table { gap: 2px; min-width: 600px; }
+            .lanthanide-row, .actinide-row { gap: 2px; }
+            .info-panel { padding: 14px; }
+            .element-header .big-symbol { font-size: 2rem; min-width: 40px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .temp-control input[type="range"] { width: 60px; }
+        }
+
+        @media (max-width: 400px) {
+            .periodic-table { min-width: 480px; }
+            .element-cell .symbol { font-size: 0.5rem; }
+            .element-cell .number { font-size: 0.35rem; }
+            .element-cell .state-indicator { width: 4px; height: 4px; }
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            padding: 8px 0;
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.6rem;
+            color: var(--subheading-blue);
+            font-weight: 400;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1>⚛️ Periodic Table</h1>
+            <p>Interactive Element Explorer</p>
+        </div>
+        <div class="header-controls">
+            <!-- Temperature Slider -->
+            <div class="temp-control">
+                <label>🌡️</label>
+                <input type="range" id="tempSlider" min="0" max="5000" value="298" step="1">
+                <span class="temp-value" id="tempDisplay">298 K</span>
+            </div>
+
+            <!-- Heatmap Toggle -->
+            <select class="heatmap-toggle" id="heatmapSelect">
+                <option value="none">📊 No Heatmap</option>
+                <option value="electronegativity">⚡ Electronegativity</option>
+                <option value="atomicRadius">📏 Atomic Radius</option>
+                <option value="meltingPoint">🔥 Melting Point</option>
+            </select>
+
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" id="themeToggleBtn">
+                <span id="themeIcon">☀️</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+        <!-- Periodic Table -->
+        <div class="table-wrapper">
+            <div id="periodicTableContainer">
+                <!-- Generated by JavaScript -->
+                <div class="loading">Loading elements...</div>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="infoPanel">
+            <div class="placeholder">
+                <div class="icon">🔬</div>
+                <p>Click an element<br>to explore its properties</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Designed & Developed by <span class="signature">Inam Alvi</span>
+    </footer>
+</div>
+
+<script>
+    // ================================================================
+    // ELEMENT DATA (All 118 Elements)
+    // ================================================================
+    const ELEMENTS = [
+        // Period 1
+        { number: 1, symbol: "H", name: "Hydrogen", mass: 1.008, category: "nonmetal", electronConfig: "1s¹", electronegativity: 2.20, state: "gas", meltingPoint: 14.01, boilingPoint: 20.28, description: "The lightest and most abundant chemical element in the universe. It forms water when combusted with oxygen." },
+        { number: 2, symbol: "He", name: "Helium", mass: 4.003, category: "noble", electronConfig: "1s²", electronegativity: null, state: "gas", meltingPoint: 0.95, boilingPoint: 4.22, description: "A colorless, odorless, tasteless, non-toxic, inert gas. It is the second most abundant element in the universe." },
+
+        // Period 2
+        { number: 3, symbol: "Li", name: "Lithium", mass: 6.941, category: "alkali", electronConfig: "[He] 2s¹", electronegativity: 0.98, state: "solid", meltingPoint: 453.7, boilingPoint: 1615, description: "The lightest solid element. Used in lithium-ion batteries and as a mood-stabilizing drug." },
+        { number: 4, symbol: "Be", name: "Beryllium", mass: 9.012, category: "alkaline", electronConfig: "[He] 2s²", electronegativity: 1.57, state: "solid", meltingPoint: 1560, boilingPoint: 2744, description: "A hard, brittle, gray metal used as an alloying agent in aerospace and defense." },
+        { number: 5, symbol: "B", name: "Boron", mass: 10.81, category: "metalloid", electronConfig: "[He] 2s² 2p¹", electronegativity: 2.04, state: "solid", meltingPoint: 2349, boilingPoint: 4200, description: "A poor conductor of electricity at room temperature. Used in fiberglass and as a neutron absorber." },
+        { number: 6, symbol: "C", name: "Carbon", mass: 12.011, category: "nonmetal", electronConfig: "[He] 2s² 2p²", electronegativity: 2.55, state: "solid", meltingPoint: 3823, boilingPoint: 4300, description: "The basis of all known life. Can form more compounds than any other element." },
+        { number: 7, symbol: "N", name: "Nitrogen", mass: 14.007, category: "nonmetal", electronConfig: "[He] 2s² 2p³", electronegativity: 3.04, state: "gas", meltingPoint: 63.15, boilingPoint: 77.36, description: "Makes up 78% of Earth's atmosphere. Essential for all life as a component of proteins and DNA." },
+        { number: 8, symbol: "O", name: "Oxygen", mass: 15.999, category: "nonmetal", electronConfig: "[He] 2s² 2p⁴", electronegativity: 3.44, state: "gas", meltingPoint: 54.36, boilingPoint: 90.20, description: "The third most abundant element in the universe. Essential for respiration in most living organisms." },
+        { number: 9, symbol: "F", name: "Fluorine", mass: 18.998, category: "halogen", electronConfig: "[He] 2s² 2p⁵", electronegativity: 3.98, state: "gas", meltingPoint: 53.53, boilingPoint: 85.03, description: "The most electronegative element. Used in toothpaste and as a fluorinating agent." },
+        { number: 10, symbol: "Ne", name: "Neon", mass: 20.180, category: "noble", electronConfig: "[He] 2s² 2p⁶", electronegativity: null, state: "gas", meltingPoint: 24.56, boilingPoint: 27.07, description: "A noble gas that glows reddish-orange when excited. Used in neon signs and high-voltage indicators." },
+
+        // Period 3
+        { number: 11, symbol: "Na", name: "Sodium", mass: 22.990, category: "alkali", electronConfig: "[Ne] 3s¹", electronegativity: 0.93, state: "solid", meltingPoint: 371.0, boilingPoint: 1156, description: "A soft, silvery-white metal. Essential for nerve function and as table salt (NaCl)." },
+        { number: 12, symbol: "Mg", name: "Magnesium", mass: 24.305, category: "alkaline", electronConfig: "[Ne] 3s²", electronegativity: 1.31, state: "solid", meltingPoint: 923.0, boilingPoint: 1363, description: "A shiny gray solid. Used in fireworks and as an essential mineral for living organisms." },
+        { number: 13, symbol: "Al", name: "Aluminum", mass: 26.982, category: "post-transition", electronConfig: "[Ne] 3s² 3p¹", electronegativity: 1.61, state: "solid", meltingPoint: 933.5, boilingPoint: 2792, description: "A lightweight, silvery-white metal. The most abundant metal in Earth's crust." },
+        { number: 14, symbol: "Si", name: "Silicon", mass: 28.086, category: "metalloid", electronConfig: "[Ne] 3s² 3p²", electronegativity: 1.90, state: "solid", meltingPoint: 1687, boilingPoint: 3538, description: "The second most abundant element in Earth's crust. Essential for modern electronics." },
+        { number: 15, symbol: "P", name: "Phosphorus", mass: 30.974, category: "nonmetal", electronConfig: "[Ne] 3s² 3p³", electronegativity: 2.19, state: "solid", meltingPoint: 317.3, boilingPoint: 553.0, description: "A highly reactive element. Essential for DNA, RNA, and ATP in living organisms." },
+        { number: 16, symbol: "S", name: "Sulfur", mass: 32.065, category: "nonmetal", electronConfig: "[Ne] 3s² 3p⁴", electronegativity: 2.58, state: "solid", meltingPoint: 388.4, boilingPoint: 717.8, description: "A yellow, brittle solid. Used in gunpowder and as a fungicide." },
+        { number: 17, symbol: "Cl", name: "Chlorine", mass: 35.453, category: "halogen", electronConfig: "[Ne] 3s² 3p⁵", electronegativity: 3.16, state: "gas", meltingPoint: 171.6, boilingPoint: 239.1, description: "A yellow-green gas. Used as a disinfectant and in water treatment." },
+        { number: 18, symbol: "Ar", name: "Argon", mass: 39.948, category: "noble", electronConfig: "[Ne] 3s² 3p⁶", electronegativity: null, state: "gas", meltingPoint: 83.80, boilingPoint: 87.30, description: "The third most abundant gas in Earth's atmosphere. Used in incandescent light bulbs." },
+
+        // Period 4 (Selected)
+        { number: 19, symbol: "K", name: "Potassium", mass: 39.098, category: "alkali", electronConfig: "[Ar] 4s¹", electronegativity: 0.82, state: "solid", meltingPoint: 336.5, boilingPoint: 1032, description: "A soft, silvery-white metal. Essential for nerve function and plant growth." },
+        { number: 20, symbol: "Ca", name: "Calcium", mass: 40.078, category: "alkaline", electronConfig: "[Ar] 4s²", electronegativity: 1.00, state: "solid", meltingPoint: 1115, boilingPoint: 1757, description: "The most abundant metal in the human body. Essential for bones and teeth." },
+        { number: 21, symbol: "Sc", name: "Scandium", mass: 44.956, category: "transition", electronConfig: "[Ar] 3d¹ 4s²", electronegativity: 1.36, state: "solid", meltingPoint: 1814, boilingPoint: 3109, description: "A silvery-white metal. Used in aluminum-scandium alloys for aerospace." },
+        { number: 22, symbol: "Ti", name: "Titanium", mass: 47.867, category: "transition", electronConfig: "[Ar] 3d² 4s²", electronegativity: 1.54, state: "solid", meltingPoint: 1941, boilingPoint: 3560, description: "A strong, lightweight metal. Used in aerospace, medical implants, and pigments." },
+        { number: 23, symbol: "V", name: "Vanadium", mass: 50.942, category: "transition", electronConfig: "[Ar] 3d³ 4s²", electronegativity: 1.63, state: "solid", meltingPoint: 2183, boilingPoint: 3680, description: "A hard, silvery-gray metal. Used in steel alloys and as a catalyst." },
+        { number: 24, symbol: "Cr", name: "Chromium", mass: 51.996, category: "transition", electronConfig: "[Ar] 3d⁵ 4s¹", electronegativity: 1.66, state: "solid", meltingPoint: 2180, boilingPoint: 2944, description: "A hard, lustrous metal. Used in stainless steel and as a pigment." },
+        { number: 25, symbol: "Mn", name: "Manganese", mass: 54.938, category: "transition", electronConfig: "[Ar] 3d⁵ 4s²", electronegativity: 1.55, state: "solid", meltingPoint: 1519, boilingPoint: 2334, description: "A silvery-gray metal. Essential for human health and used in steel production." },
+        { number: 26, symbol: "Fe", name: "Iron", mass: 55.845, category: "transition", electronConfig: "[Ar] 3d⁶ 4s²", electronegativity: 1.83, state: "solid", meltingPoint: 1811, boilingPoint: 3134, description: "The most common element on Earth by mass. Essential for hemoglobin in blood." },
+        { number: 27, symbol: "Co", name: "Cobalt", mass: 58.933, category: "transition", electronConfig: "[Ar] 3d⁷ 4s²", electronegativity: 1.88, state: "solid", meltingPoint: 1768, boilingPoint: 3200, description: "A hard, brittle metal. Used in superalloys and as a pigment in glass." },
+        { number: 28, symbol: "Ni", name: "Nickel", mass: 58.693, category: "transition", electronConfig: "[Ar] 3d⁸ 4s²", electronegativity: 1.91, state: "solid", meltingPoint: 1728, boilingPoint: 3186, description: "A silvery-white metal. Used in coins, stainless steel, and batteries." },
+        { number: 29, symbol: "Cu", name: "Copper", mass: 63.546, category: "transition", electronConfig: "[Ar] 3d¹⁰ 4s¹", electronegativity: 1.90, state: "solid", meltingPoint: 1357.8, boilingPoint: 2835, description: "A reddish metal. Excellent conductor of electricity and heat. Used in wiring." },
+        { number: 30, symbol: "Zn", name: "Zinc", mass: 65.380, category: "post-transition", electronConfig: "[Ar] 3d¹⁰ 4s²", electronegativity: 1.65, state: "solid", meltingPoint: 692.7, boilingPoint: 1180, description: "A brittle, bluish-white metal. Used to galvanize steel and in batteries." },
+        { number: 31, symbol: "Ga", name: "Gallium", mass: 69.723, category: "post-transition", electronConfig: "[Ar] 3d¹⁰ 4s² 4p¹", electronegativity: 1.81, state: "solid", meltingPoint: 302.9, boilingPoint: 2673, description: "A soft, silvery metal. Melts at a low temperature and is used in semiconductors." },
+        { number: 32, symbol: "Ge", name: "Germanium", mass: 72.630, category: "metalloid", electronConfig: "[Ar] 3d¹⁰ 4s² 4p²", electronegativity: 2.01, state: "solid", meltingPoint: 1211.4, boilingPoint: 3106, description: "A lustrous, hard metalloid. Used in semiconductors and infrared optics." },
+        { number: 33, symbol: "As", name: "Arsenic", mass: 74.922, category: "metalloid", electronConfig: "[Ar] 3d¹⁰ 4s² 4p³", electronegativity: 2.18, state: "solid", meltingPoint: 1090, boilingPoint: 887, description: "A toxic metalloid. Used in wood preservatives and semiconductors." },
+        { number: 34, symbol: "Se", name: "Selenium", mass: 78.971, category: "nonmetal", electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁴", electronegativity: 2.55, state: "solid", meltingPoint: 494, boilingPoint: 958, description: "An essential trace element. Used in photocells and as a pigment." },
+        { number: 35, symbol: "Br", name: "Bromine", mass: 79.904, category: "halogen", electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁵", electronegativity: 2.96, state: "liquid", meltingPoint: 265.8, boilingPoint: 331.9, description: "A reddish-brown liquid. Used in flame retardants and pesticides." },
+        { number: 36, symbol: "Kr", name: "Krypton", mass: 83.798, category: "noble", electronConfig: "[Ar] 3d¹⁰ 4s² 4p⁶", electronegativity: 3.00, state: "gas", meltingPoint: 115.8, boilingPoint: 119.9, description: "A noble gas. Used in lighting and high-speed photography." },
+
+        // Period 5 (Selected)
+        { number: 37, symbol: "Rb", name: "Rubidium", mass: 85.468, category: "alkali", electronConfig: "[Kr] 5s¹", electronegativity: 0.82, state: "solid", meltingPoint: 312.5, boilingPoint: 961, description: "A soft, silvery-white metal. Used in research and as a getter in vacuum tubes." },
+        { number: 38, symbol: "Sr", name: "Strontium", mass: 87.620, category: "alkaline", electronConfig: "[Kr] 5s²", electronegativity: 0.95, state: "solid", meltingPoint: 1050, boilingPoint: 1655, description: "A silvery metal. Used in fireworks and as a radioactive tracer." },
+        { number: 39, symbol: "Y", name: "Yttrium", mass: 88.906, category: "transition", electronConfig: "[Kr] 4d¹ 5s²", electronegativity: 1.22, state: "solid", meltingPoint: 1799, boilingPoint: 3609, description: "A silvery metal. Used in LEDs and as a phosphor in televisions." },
+        { number: 40, symbol: "Zr", name: "Zirconium", mass: 91.224, category: "transition", electronConfig: "[Kr] 4d² 5s²", electronegativity: 1.33, state: "solid", meltingPoint: 2128, boilingPoint: 4682, description: "A corrosion-resistant metal. Used in nuclear reactors and dental implants." },
+        { number: 41, symbol: "Nb", name: "Niobium", mass: 92.906, category: "transition", electronConfig: "[Kr] 4d⁴ 5s¹", electronegativity: 1.60, state: "solid", meltingPoint: 2750, boilingPoint: 5017, description: "A shiny, ductile metal. Used in superconducting materials and alloys." },
+        { number: 42, symbol: "Mo", name: "Molybdenum", mass: 95.950, category: "transition", electronConfig: "[Kr] 4d⁵ 5s¹", electronegativity: 2.16, state: "solid", meltingPoint: 2896, boilingPoint: 4912, description: "A silvery metal. Used in steel alloys and as a catalyst." },
+        { number: 43, symbol: "Tc", name: "Technetium", mass: 98.000, category: "transition", electronConfig: "[Kr] 4d⁵ 5s²", electronegativity: 1.90, state: "solid", meltingPoint: 2430, boilingPoint: 4538, description: "The first artificially produced element. Used in medical imaging." },
+        { number: 44, symbol: "Ru", name: "Ruthenium", mass: 101.070, category: "transition", electronConfig: "[Kr] 4d⁷ 5s¹", electronegativity: 2.20, state: "solid", meltingPoint: 2607, boilingPoint: 4423, description: "A hard, silvery metal. Used as a catalyst and in electrical contacts." },
+        { number: 45, symbol: "Rh", name: "Rhodium", mass: 102.906, category: "transition", electronConfig: "[Kr] 4d⁸ 5s¹", electronegativity: 2.28, state: "solid", meltingPoint: 2237, boilingPoint: 3968, description: "A rare, silvery metal. Used in catalytic converters and jewelry." },
+        { number: 46, symbol: "Pd", name: "Palladium", mass: 106.420, category: "transition", electronConfig: "[Kr] 4d¹⁰", electronegativity: 2.20, state: "solid", meltingPoint: 1828, boilingPoint: 3236, description: "A rare, silvery-white metal. Used in catalytic converters and electronics." },
+        { number: 47, symbol: "Ag", name: "Silver", mass: 107.868, category: "transition", electronConfig: "[Kr] 4d¹⁰ 5s¹", electronegativity: 1.93, state: "solid", meltingPoint: 1234.9, boilingPoint: 2435, description: "A lustrous white metal. Best conductor of electricity and heat." },
+        { number: 48, symbol: "Cd", name: "Cadmium", mass: 112.414, category: "post-transition", electronConfig: "[Kr] 4d¹⁰ 5s²", electronegativity: 1.69, state: "solid", meltingPoint: 594.2, boilingPoint: 1040, description: "A soft, bluish-white metal. Used in batteries and as a pigment." },
+        { number: 49, symbol: "In", name: "Indium", mass: 114.818, category: "post-transition", electronConfig: "[Kr] 4d¹⁰ 5s² 5p¹", electronegativity: 1.78, state: "solid", meltingPoint: 429.7, boilingPoint: 2345, description: "A soft, silvery metal. Used in touchscreens and as a transparent conductor." },
+        { number: 50, symbol: "Sn", name: "Tin", mass: 118.710, category: "post-transition", electronConfig: "[Kr] 4d¹⁰ 5s² 5p²", electronegativity: 1.96, state: "solid", meltingPoint: 505.1, boilingPoint: 2875, description: "A silvery metal. Used as a coating for steel (tin cans) and in solder." },
+        { number: 51, symbol: "Sb", name: "Antimony", mass: 121.760, category: "metalloid", electronConfig: "[Kr] 4d¹⁰ 5s² 5p³", electronegativity: 2.05, state: "solid", meltingPoint: 903.8, boilingPoint: 1860, description: "A brittle, silvery metalloid. Used in flame retardants and alloys." },
+        { number: 52, symbol: "Te", name: "Tellurium", mass: 127.600, category: "metalloid", electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁴", electronegativity: 2.10, state: "solid", meltingPoint: 722.7, boilingPoint: 1261, description: "A brittle metalloid. Used in solar cells and as a semiconductor." },
+        { number: 53, symbol: "I", name: "Iodine", mass: 126.904, category: "halogen", electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁵", electronegativity: 2.66, state: "solid", meltingPoint: 386.9, boilingPoint: 457.4, description: "A dark purple solid. Essential for thyroid function in humans." },
+        { number: 54, symbol: "Xe", name: "Xenon", mass: 131.293, category: "noble", electronConfig: "[Kr] 4d¹⁰ 5s² 5p⁶", electronegativity: 2.60, state: "gas", meltingPoint: 161.4, boilingPoint: 165.0, description: "A noble gas. Used in flash lamps and as an anesthetic." },
+
+        // Period 6 (Selected)
+        { number: 55, symbol: "Cs", name: "Cesium", mass: 132.905, category: "alkali", electronConfig: "[Xe] 6s¹", electronegativity: 0.79, state: "solid", meltingPoint: 301.6, boilingPoint: 944, description: "A soft, silvery-gold metal. Used in atomic clocks and as a getter." },
+        { number: 56, symbol: "Ba", name: "Barium", mass: 137.327, category: "alkaline", electronConfig: "[Xe] 6s²", electronegativity: 0.89, state: "solid", meltingPoint: 1000, boilingPoint: 2170, description: "A soft, silvery metal. Used as a getter and in medical imaging." },
+        { number: 57, symbol: "La", name: "Lanthanum", mass: 138.905, category: "lanthanide", electronConfig: "[Xe] 5d¹ 6s²", electronegativity: 1.10, state: "solid", meltingPoint: 1193, boilingPoint: 3737, description: "The first lanthanide. Used in camera lenses and as a catalyst." },
+        { number: 58, symbol: "Ce", name: "Cerium", mass: 140.116, category: "lanthanide", electronConfig: "[Xe] 4f¹ 5d¹ 6s²", electronegativity: 1.12, state: "solid", meltingPoint: 1068, boilingPoint: 3716, description: "The most abundant lanthanide. Used in polishing compounds and catalysts." },
+        { number: 59, symbol: "Pr", name: "Praseodymium", mass: 140.908, category: "lanthanide", electronConfig: "[Xe] 4f³ 6s²", electronegativity: 1.13, state: "solid", meltingPoint: 1208, boilingPoint: 3793, description: "A soft, silvery metal. Used in rare-earth magnets and as a pigment." },
+        { number: 60, symbol: "Nd", name: "Neodymium", mass: 144.243, category: "lanthanide", electronConfig: "[Xe] 4f⁴ 6s²", electronegativity: 1.14, state: "solid", meltingPoint: 1297, boilingPoint: 3347, description: "Used in the strongest permanent magnets and in lasers." },
+        { number: 61, symbol: "Pm", name: "Promethium", mass: 145.000, category: "lanthanide", electronConfig: "[Xe] 4f⁵ 6s²", electronegativity: 1.13, state: "solid", meltingPoint: 1315, boilingPoint: 3273, description: "The only lanthanide without stable isotopes. Used in nuclear batteries." },
+        { number: 62, symbol: "Sm", name: "Samarium", mass: 150.362, category: "lanthanide", electronConfig: "[Xe] 4f⁶ 6s²", electronegativity: 1.17, state: "solid", meltingPoint: 1345, boilingPoint: 2067, description: "Used in magnets and as a neutron absorber in nuclear reactors." },
+        { number: 63, symbol: "Eu", name: "Europium", mass: 151.964, category: "lanthanide", electronConfig: "[Xe] 4f⁷ 6s²", electronegativity: 1.20, state: "solid", meltingPoint: 1099, boilingPoint: 1802, description: "Used in phosphors for televisions and as a neutron absorber." },
+        { number: 64, symbol: "Gd", name: "Gadolinium", mass: 157.250, category: "lanthanide", electronConfig: "[Xe] 4f⁷ 5d¹ 6s²", electronegativity: 1.20, state: "solid", meltingPoint: 1586, boilingPoint: 3273, description: "Used in MRI contrast agents and as a neutron absorber." },
+        { number: 65, symbol: "Tb", name: "Terbium", mass: 158.925, category: "lanthanide", electronConfig: "[Xe] 4f⁹ 6s²", electronegativity: 1.20, state: "solid", meltingPoint: 1629, boilingPoint: 3503, description: "Used in green phosphors and as a magnetostrictive material." },
+        { number: 66, symbol: "Dy", name: "Dysprosium", mass: 162.500, category: "lanthanide", electronConfig: "[Xe] 4f¹⁰ 6s²", electronegativity: 1.22, state: "solid", meltingPoint: 1680, boilingPoint: 2840, description: "Used in nuclear control rods and in the manufacture of magnets." },
+        { number: 67, symbol: "Ho", name: "Holmium", mass: 164.930, category: "lanthanide", electronConfig: "[Xe] 4f¹¹ 6s²", electronegativity: 1.23, state: "solid", meltingPoint: 1734, boilingPoint: 2993, description: "Used in lasers and as a magnetic material." },
+        { number: 68, symbol: "Er", name: "Erbium", mass: 167.259, category: "lanthanide", electronConfig: "[Xe] 4f¹² 6s²", electronegativity: 1.24, state: "solid", meltingPoint: 1770, boilingPoint: 3141, description: "Used in fiber optics and as a laser material." },
+        { number: 69, symbol: "Tm", name: "Thulium", mass: 168.934, category: "lanthanide", electronConfig: "[Xe] 4f¹³ 6s²", electronegativity: 1.25, state: "solid", meltingPoint: 1818, boilingPoint: 2223, description: "Used in X-ray machines and as a laser material." },
+        { number: 70, symbol: "Yb", name: "Ytterbium", mass: 173.045, category: "lanthanide", electronConfig: "[Xe] 4f¹⁴ 6s²", electronegativity: 1.10, state: "solid", meltingPoint: 1097, boilingPoint: 1469, description: "Used in atomic clocks and as a dopant in lasers." },
+        { number: 71, symbol: "Lu", name: "Lutetium", mass: 174.967, category: "lanthanide", electronConfig: "[Xe] 4f¹⁴ 5d¹ 6s²", electronegativity: 1.27, state: "solid", meltingPoint: 1925, boilingPoint: 3675, description: "The heaviest lanthanide. Used in petroleum cracking catalysts." },
+        { number: 72, symbol: "Hf", name: "Hafnium", mass: 178.490, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d² 6s²", electronegativity: 1.30, state: "solid", meltingPoint: 2506, boilingPoint: 4876, description: "Used in nuclear control rods and as a neutron absorber." },
+        { number: 73, symbol: "Ta", name: "Tantalum", mass: 180.948, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d³ 6s²", electronegativity: 1.50, state: "solid", meltingPoint: 3290, boilingPoint: 5731, description: "A corrosion-resistant metal. Used in electronics and surgical implants." },
+        { number: 74, symbol: "W", name: "Tungsten", mass: 183.840, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d⁴ 6s²", electronegativity: 2.36, state: "solid", meltingPoint: 3695, boilingPoint: 5828, description: "Has the highest melting point of all metals. Used in filaments and alloys." },
+        { number: 75, symbol: "Re", name: "Rhenium", mass: 186.207, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d⁵ 6s²", electronegativity: 1.90, state: "solid", meltingPoint: 3459, boilingPoint: 5869, description: "One of the rarest elements. Used in superalloys and as a catalyst." },
+        { number: 76, symbol: "Os", name: "Osmium", mass: 190.230, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d⁶ 6s²", electronegativity: 2.20, state: "solid", meltingPoint: 3306, boilingPoint: 5285, description: "The densest metal. Used in fountain pen tips and electrical contacts." },
+        { number: 77, symbol: "Ir", name: "Iridium", mass: 192.217, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d⁷ 6s²", electronegativity: 2.20, state: "solid", meltingPoint: 2739, boilingPoint: 4701, description: "The most corrosion-resistant metal. Used in spark plugs and as a catalyst." },
+        { number: 78, symbol: "Pt", name: "Platinum", mass: 195.084, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d⁹ 6s¹", electronegativity: 2.28, state: "solid", meltingPoint: 2041.4, boilingPoint: 4098, description: "A precious metal. Used in catalytic converters, jewelry, and as a catalyst." },
+        { number: 79, symbol: "Au", name: "Gold", mass: 196.967, category: "transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹", electronegativity: 2.54, state: "solid", meltingPoint: 1337.3, boilingPoint: 3129, description: "A precious metal. Used in jewelry, electronics, and as a monetary standard." },
+        { number: 80, symbol: "Hg", name: "Mercury", mass: 200.592, category: "post-transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s²", electronegativity: 2.00, state: "liquid", meltingPoint: 234.3, boilingPoint: 629.9, description: "The only metal that is liquid at room temperature. Used in thermometers." },
+        { number: 81, symbol: "Tl", name: "Thallium", mass: 204.380, category: "post-transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹", electronegativity: 1.80, state: "solid", meltingPoint: 577, boilingPoint: 1746, description: "A soft, gray metal. Used in electronics and as a poison." },
+        { number: 82, symbol: "Pb", name: "Lead", mass: 207.200, category: "post-transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²", electronegativity: 2.33, state: "solid", meltingPoint: 600.6, boilingPoint: 2022, description: "A dense, soft metal. Used in batteries, radiation shielding, and pipes." },
+        { number: 83, symbol: "Bi", name: "Bismuth", mass: 208.980, category: "post-transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³", electronegativity: 2.02, state: "solid", meltingPoint: 544.7, boilingPoint: 1837, description: "A brittle, crystalline metal. Used in cosmetics and as a lead substitute." },
+        { number: 84, symbol: "Po", name: "Polonium", mass: 209.000, category: "post-transition", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴", electronegativity: 2.00, state: "solid", meltingPoint: 527, boilingPoint: 1235, description: "A radioactive metal. Used as a heat source in space probes." },
+        { number: 85, symbol: "At", name: "Astatine", mass: 210.000, category: "halogen", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵", electronegativity: 2.20, state: "solid", meltingPoint: 575, boilingPoint: 610, description: "The rarest naturally occurring element. Highly radioactive." },
+        { number: 86, symbol: "Rn", name: "Radon", mass: 222.000, category: "noble", electronConfig: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶", electronegativity: null, state: "gas", meltingPoint: 202, boilingPoint: 211, description: "A colorless, odorless, radioactive noble gas. A leading cause of lung cancer." },
+
+        // Period 7 (Selected)
+        { number: 87, symbol: "Fr", name: "Francium", mass: 223.000, category: "alkali", electronConfig: "[Rn] 7s¹", electronegativity: 0.70, state: "solid", meltingPoint: 300, boilingPoint: 950, description: "The second rarest naturally occurring element. Highly radioactive." },
+        { number: 88, symbol: "Ra", name: "Radium", mass: 226.000, category: "alkaline", electronConfig: "[Rn] 7s²", electronegativity: 0.90, state: "solid", meltingPoint: 1233, boilingPoint: 2010, description: "A radioactive metal. Used in luminous paints and as a cancer treatment." },
+        { number: 89, symbol: "Ac", name: "Actinium", mass: 227.000, category: "actinide", electronConfig: "[Rn] 6d¹ 7s²", electronegativity: 1.10, state: "solid", meltingPoint: 1323, boilingPoint: 3471, description: "The first actinide. Used as a neutron source and in cancer treatment." },
+        { number: 90, symbol: "Th", name: "Thorium", mass: 232.038, category: "actinide", electronConfig: "[Rn] 6d² 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 2115, boilingPoint: 5061, description: "A radioactive metal. Used as a nuclear fuel alternative to uranium." },
+        { number: 91, symbol: "Pa", name: "Protactinium", mass: 231.036, category: "actinide", electronConfig: "[Rn] 5f² 6d¹ 7s²", electronegativity: 1.50, state: "solid", meltingPoint: 1873, boilingPoint: 4300, description: "A dense, radioactive metal. Used in nuclear research." },
+        { number: 92, symbol: "U", name: "Uranium", mass: 238.029, category: "actinide", electronConfig: "[Rn] 5f³ 6d¹ 7s²", electronegativity: 1.38, state: "solid", meltingPoint: 1405, boilingPoint: 4404, description: "The most commonly used nuclear fuel. Used in nuclear power and weapons." },
+        { number: 93, symbol: "Np", name: "Neptunium", mass: 237.000, category: "actinide", electronConfig: "[Rn] 5f⁴ 6d¹ 7s²", electronegativity: 1.36, state: "solid", meltingPoint: 912, boilingPoint: 4275, description: "The first transuranic element. Used in nuclear research." },
+        { number: 94, symbol: "Pu", name: "Plutonium", mass: 244.000, category: "actinide", electronConfig: "[Rn] 5f⁶ 7s²", electronegativity: 1.28, state: "solid", meltingPoint: 913, boilingPoint: 3505, description: "A radioactive metal. Used in nuclear weapons and as a fuel for space probes." },
+        { number: 95, symbol: "Am", name: "Americium", mass: 243.000, category: "actinide", electronConfig: "[Rn] 5f⁷ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1449, boilingPoint: 2880, description: "Used in smoke detectors and as a neutron source." },
+        { number: 96, symbol: "Cm", name: "Curium", mass: 247.000, category: "actinide", electronConfig: "[Rn] 5f⁷ 6d¹ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1613, boilingPoint: 3383, description: "A highly radioactive metal. Used in nuclear research and as a power source." },
+        { number: 97, symbol: "Bk", name: "Berkelium", mass: 247.000, category: "actinide", electronConfig: "[Rn] 5f⁹ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1259, boilingPoint: 2900, description: "A synthetic radioactive element. Used in nuclear research." },
+        { number: 98, symbol: "Cf", name: "Californium", mass: 251.000, category: "actinide", electronConfig: "[Rn] 5f¹⁰ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1173, boilingPoint: 1743, description: "Used as a neutron source in cancer treatment and material analysis." },
+        { number: 99, symbol: "Es", name: "Einsteinium", mass: 252.000, category: "actinide", electronConfig: "[Rn] 5f¹¹ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1133, boilingPoint: 1500, description: "A synthetic radioactive element. Used only in basic research." },
+        { number: 100, symbol: "Fm", name: "Fermium", mass: 257.000, category: "actinide", electronConfig: "[Rn] 5f¹² 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1800, boilingPoint: null, description: "A synthetic radioactive element. Used only in basic research." },
+        { number: 101, symbol: "Md", name: "Mendelevium", mass: 258.000, category: "actinide", electronConfig: "[Rn] 5f¹³ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1100, boilingPoint: null, description: "A synthetic radioactive element. Used only in basic research." },
+        { number: 102, symbol: "No", name: "Nobelium", mass: 259.000, category: "actinide", electronConfig: "[Rn] 5f¹⁴ 7s²", electronegativity: 1.30, state: "solid", meltingPoint: 1100, boilingPoint: null, description: "A synthetic radioactive element. Used only in basic research." },
+        { number: 103, symbol: "Lr", name: "Lawrencium", mass: 266.000, category: "actinide", electronConfig: "[Rn] 5f¹⁴ 7s² 7p¹", electronegativity: 1.30, state: "solid", meltingPoint: 1900, boilingPoint: null, description: "The last actinide. A synthetic radioactive element." },
+        { number: 104, symbol: "Rf", name: "Rutherfordium", mass: 267.000, category: "transition", electronConfig: "[Rn] 5f¹⁴ 6d² 7s²", electronegativity: null, state: "solid", meltingPoint: 2400, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 105, symbol: "Db", name: "Dubnium", mass: 268.000, category: "transition", electronConfig: "[Rn] 5f¹⁴ 6d³ 7s²", electronegativity: null, state: "solid", meltingPoint: 2400, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 106, symbol: "Sg", name: "Seaborgium", mass: 269.000, category: "transition", electronConfig: "[Rn] 5f¹⁴ 6d⁴ 7s²", electronegativity: null, state: "solid", meltingPoint: 2400, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 107, symbol: "Bh", name: "Bohrium", mass: 270.000, category: "transition", electronConfig: "[Rn] 5f¹⁴ 6d⁵ 7s²", electronegativity: null, state: "solid", meltingPoint: 2400, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 108, symbol: "Hs", name: "Hassium", mass: 277.000, category: "transition", electronConfig: "[Rn] 5f¹⁴ 6d⁶ 7s²", electronegativity: null, state: "solid", meltingPoint: 2400, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 109, symbol: "Mt", name: "Meitnerium", mass: 278.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d⁷ 7s²", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 110, symbol: "Ds", name: "Darmstadtium", mass: 281.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d⁸ 7s²", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 111, symbol: "Rg", name: "Roentgenium", mass: 282.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d⁹ 7s²", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 112, symbol: "Cn", name: "Copernicium", mass: 285.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s²", electronegativity: null, state: "liquid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 113, symbol: "Nh", name: "Nihonium", mass: 286.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 114, symbol: "Fl", name: "Flerovium", mass: 289.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 115, symbol: "Mc", name: "Moscovium", mass: 290.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 116, symbol: "Lv", name: "Livermorium", mass: 293.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 117, symbol: "Ts", name: "Tennessine", mass: 294.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵", electronegativity: null, state: "solid", meltingPoint: null, boilingPoint: null, description: "A synthetic radioactive element." },
+        { number: 118, symbol: "Og", name: "Oganesson", mass: 294.000, category: "unknown", electronConfig: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶", electronegativity: null, state: "gas", meltingPoint: null, boilingPoint: null, description: "The heaviest element. A synthetic radioactive noble gas." }
+    ];
+
+    // Category mapping
+    const CATEGORY_COLORS = {
+        'alkali': 'cat-alkali',
+        'alkaline': 'cat-alkaline',
+        'transition': 'cat-transition',
+        'post-transition': 'cat-post-transition',
+        'metalloid': 'cat-metalloid',
+        'nonmetal': 'cat-nonmetal',
+        'halogen': 'cat-halogen',
+        'noble': 'cat-noble',
+        'lanthanide': 'cat-lanthanide',
+        'actinide': 'cat-actinide',
+        'unknown': 'cat-unknown'
+    };
+
+    const CATEGORY_NAMES = {
+        'alkali': 'Alkali Metals',
+        'alkaline': 'Alkaline Earth Metals',
+        'transition': 'Transition Metals',
+        'post-transition': 'Post-Transition Metals',
+        'metalloid': 'Metalloids',
+        'nonmetal': 'Nonmetals',
+        'halogen': 'Halogens',
+        'noble': 'Noble Gases',
+        'lanthanide': 'Lanthanides',
+        'actinide': 'Actinides',
+        'unknown': 'Unknown'
+    };
+
+    // Periodic table layout (row, column for each element number)
+    const PERIODIC_LAYOUT = {
+        1: [1, 1], 2: [1, 18],
+        3: [2, 1], 4: [2, 2], 5: [2, 13], 6: [2, 14], 7: [2, 15], 8: [2, 16], 9: [2, 17], 10: [2, 18],
+        11: [3, 1], 12: [3, 2], 13: [3, 13], 14: [3, 14], 15: [3, 15], 16: [3, 16], 17: [3, 17], 18: [3, 18],
+        19: [4, 1], 20: [4, 2], 21: [4, 3], 22: [4, 4], 23: [4, 5], 24: [4, 6], 25: [4, 7], 26: [4, 8],
+        27: [4, 9], 28: [4, 10], 29: [4, 11], 30: [4, 12], 31: [4, 13], 32: [4, 14], 33: [4, 15], 34: [4, 16],
+        35: [4, 17], 36: [4, 18],
+        37: [5, 1], 38: [5, 2], 39: [5, 3], 40: [5, 4], 41: [5, 5], 42: [5, 6], 43: [5, 7], 44: [5, 8],
+        45: [5, 9], 46: [5, 10], 47: [5, 11], 48: [5, 12], 49: [5, 13], 50: [5, 14], 51: [5, 15], 52: [5, 16],
+        53: [5, 17], 54: [5, 18],
+        55: [6, 1], 56: [6, 2], 57: [6, 3], 72: [6, 4], 73: [6, 5], 74: [6, 6], 75: [6, 7], 76: [6, 8],
+        77: [6, 9], 78: [6, 10], 79: [6, 11], 80: [6, 12], 81: [6, 13], 82: [6, 14], 83: [6, 15], 84: [6, 16],
+        85: [6, 17], 86: [6, 18],
+        87: [7, 1], 88: [7, 2], 89: [7, 3], 104: [7, 4], 105: [7, 5], 106: [7, 6], 107: [7, 7], 108: [7, 8],
+        109: [7, 9], 110: [7, 10], 111: [7, 11], 112: [7, 12], 113: [7, 13], 114: [7, 14], 115: [7, 15],
+        116: [7, 16], 117: [7, 17], 118: [7, 18]
+    };
+
+    // Lanthanides (57-71) and Actinides (89-103)
+    const LANTHANIDES = [57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71];
+    const ACTINIDES = [89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103];
+
+    // ================================================================
+    // STATE
+    // ================================================================
+    let currentFilter = 'all';
+    let heatmapMode = 'none';
+    let temperature = 298;
+    let selectedElement = null;
+
+    // ================================================================
+    // BUILD PERIODIC TABLE
+    // ================================================================
+    function buildPeriodicTable() {
+        const container = document.getElementById('periodicTableContainer');
+        let html = '';
+
+        // Main grid
+        html += '<div class="periodic-table">';
+
+        // Create 18 columns × 7 rows
+        for (let row = 1; row <= 7; row++) {
+            for (let col = 1; col <= 18; col++) {
+                // Find element at this position
+                let element = null;
+                for (const e of ELEMENTS) {
+                    const pos = PERIODIC_LAYOUT[e.number];
+                    if (pos && pos[0] === row && pos[1] === col) {
+                        element = e;
+                        break;
+                    }
+                }
+
+                if (element) {
+                    const catClass = CATEGORY_COLORS[element.category] || 'cat-unknown';
+                    const stateColor = getStateColor(element, temperature);
+                    html += `
+                        <div class="element-cell ${catClass}" 
+                             data-number="${element.number}"
+                             data-symbol="${element.symbol}"
+                             data-category="${element.category}"
+                             onclick="selectElement(${element.number})"
+                             title="${element.name} (${element.symbol})">
+                            <span class="number">${element.number}</span>
+                            <span class="symbol">${element.symbol}</span>
+                            <span class="mass">${element.mass}</span>
+                            <span class="state-indicator" style="background:${stateColor};"></span>
+                        </div>
+                    `;
+                } else {
+                    // Empty cell
+                    html += `<div class="element-cell" style="background:transparent;border-color:transparent;cursor:default;box-shadow:none;"></div>`;
+                }
+            }
+        }
+
+        html += '</div>';
+
+        // Lanthanides
+        html += '<div class="lanthanide-container">';
+        html += '<div class="row-label">La-Lu</div>';
+        html += '<div class="lanthanide-row">';
+        for (const num of LANTHANIDES) {
+            const el = ELEMENTS.find(e => e.number === num);
+            if (el) {
+                const catClass = CATEGORY_COLORS[el.category] || 'cat-unknown';
+                const stateColor = getStateColor(el, temperature);
+                html += `
+                    <div class="element-cell ${catClass}" 
+                         data-number="${el.number}"
+                         data-symbol="${el.symbol}"
+                         data-category="${el.category}"
+                         onclick="selectElement(${el.number})"
+                         title="${el.name} (${el.symbol})">
+                        <span class="number">${el.number}</span>
+                        <span class="symbol">${el.symbol}</span>
+                        <span class="mass">${el.mass}</span>
+                        <span class="state-indicator" style="background:${stateColor};"></span>
+                    </div>
+                `;
+            }
+        }
+        html += '</div></div>';
+
+        // Actinides
+        html += '<div class="actinide-container">';
+        html += '<div class="row-label">Ac-Lr</div>';
+        html += '<div class="actinide-row">';
+        for (const num of ACTINIDES) {
+            const el = ELEMENTS.find(e => e.number === num);
+            if (el) {
+                const catClass = CATEGORY_COLORS[el.category] || 'cat-unknown';
+                const stateColor = getStateColor(el, temperature);
+                html += `
+                    <div class="element-cell ${catClass}" 
+                         data-number="${el.number}"
+                         data-symbol="${el.symbol}"
+                         data-category="${el.category}"
+                         onclick="selectElement(${el.number})"
+                         title="${el.name} (${el.symbol})">
+                        <span class="number">${el.number}</span>
+                        <span class="symbol">${el.symbol}</span>
+                        <span class="mass">${el.mass}</span>
+                        <span class="state-indicator" style="background:${stateColor};"></span>
+                    </div>
+                `;
+            }
+        }
+        html += '</div></div>';
+
+        container.innerHTML = html;
+        applyFilter();
+        applyHeatmap();
+    }
+
+    // ================================================================
+    // STATE COLOR
+    // ================================================================
+    function getStateColor(element, temp) {
+        const mp = element.meltingPoint;
+        const bp = element.boilingPoint;
+
+        if (!mp || !bp) return '#888888';
+
+        if (temp < mp) return '#4fc3f7'; // solid - blue
+        if (temp >= mp && temp < bp) return '#ffd54f'; // liquid - yellow
+        return '#ef5350'; // gas - red
+    }
+
+    // ================================================================
+    // FILTERS
+    // ================================================================
+    function applyFilter() {
+        const cells = document.querySelectorAll('.element-cell');
+        const filter = currentFilter;
+
+        cells.forEach(cell => {
+            const category = cell.dataset.category;
+            if (filter === 'all' || category === filter) {
+                cell.classList.remove('dim');
+            } else {
+                cell.classList.add('dim');
+            }
+        });
+
+        // Update filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+    }
+
+    // ================================================================
+    // HEATMAP
+    // ================================================================
+    function applyHeatmap() {
+        const cells = document.querySelectorAll('.element-cell');
+        const mode = heatmapMode;
+
+        if (mode === 'none') {
+            cells.forEach(cell => {
+                cell.style.background = '';
+                cell.classList.remove('heatmap');
+            });
+            return;
+        }
+
+        // Find min/max values
+        let values = [];
+        for (const cell of cells) {
+            const num = parseInt(cell.dataset.number);
+            const el = ELEMENTS.find(e => e.number === num);
+            if (el) {
+                let val = null;
+                if (mode === 'electronegativity') val = el.electronegativity;
+                else if (mode === 'atomicRadius') val = el.atomicRadius || 0;
+                else if (mode === 'meltingPoint') val = el.meltingPoint || 0;
+                if (val !== null && val !== undefined && !isNaN(val)) {
+                    values.push({ cell, val, el });
+                }
+            }
+        }
+
+        if (values.length === 0) return;
+
+        const maxVal = Math.max(...values.map(v => v.val));
+        const minVal = Math.min(...values.map(v => v.val));
+        const range = maxVal - minVal || 1;
+
+        values.forEach(({ cell, val }) => {
+            const norm = (val - minVal) / range;
+            // Blue (cold) to Yellow (hot)
+            const r = Math.round(255 * norm);
+            const g = Math.round(255 * (1 - Math.abs(norm - 0.5) * 2));
+            const b = Math.round(255 * (1 - norm));
+            const bg = `rgba(${r}, ${g}, ${b}, 0.25)`;
+            cell.style.background = bg;
+            cell.classList.add('heatmap');
+            // Reset any category color overlay
+        });
+    }
+
+    // ================================================================
+    // SELECT ELEMENT
+    // ================================================================
+    function selectElement(number) {
+        const el = ELEMENTS.find(e => e.number === number);
+        if (!el) return;
+
+        selectedElement = el;
+        updateInfoPanel(el);
+
+        // Highlight selected cell
+        document.querySelectorAll('.element-cell').forEach(cell => {
+            cell.style.borderColor = 'transparent';
+            if (parseInt(cell.dataset.number) === number) {
+                cell.style.borderColor = 'var(--heading-yellow)';
+                cell.style.boxShadow = '0 0 20px rgba(255,208,0,0.3)';
+            } else {
+                cell.style.boxShadow = '';
+            }
+        });
+    }
+
+    // ================================================================
+    // UPDATE INFO PANEL
+    // ================================================================
+    function updateInfoPanel(el) {
+        const panel = document.getElementById('infoPanel');
+        const catName = CATEGORY_NAMES[el.category] || el.category;
+
+        const stateNames = { solid: 'Solid', liquid: 'Liquid', gas: 'Gas' };
+        const state = stateNames[el.state] || el.state;
+
+        const html = `
+            <div class="element-header" style="border-color:${CATEGORY_COLORS[el.category] || '#475569'};">
+                <div class="big-symbol" style="color:var(--heading-yellow);">${el.symbol}</div>
+                <div>
+                    <div class="big-name">${el.name}</div>
+                    <div class="big-number">Atomic #${el.number} · ${catName}</div>
+                    <div class="big-mass">Mass: ${el.mass} u</div>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div class="item"><span class="label">Electron Config</span><span class="value highlight">${el.electronConfig}</span></div>
+                <div class="item"><span class="label">State (298 K)</span><span class="value">${state}</span></div>
+                <div class="item"><span class="label">Electronegativity</span><span class="value">${el.electronegativity || '—'}</span></div>
+                <div class="item"><span class="label">Melting Point</span><span class="value">${el.meltingPoint ? el.meltingPoint + ' K' : '—'}</span></div>
+                <div class="item"><span class="label">Boiling Point</span><span class="value">${el.boilingPoint ? el.boilingPoint + ' K' : '—'}</span></div>
+                <div class="item"><span class="label">Category</span><span class="value">${catName}</span></div>
+            </div>
+            <div class="info-description">
+                <strong>ℹ️</strong> ${el.description}
+            </div>
+        `;
+
+        panel.innerHTML = html;
+    }
+
+    // ================================================================
+    // TEMPERATURE UPDATE
+    // ================================================================
+    function updateTemperature(temp) {
+        temperature = temp;
+        document.getElementById('tempDisplay').textContent = Math.round(temp) + ' K';
+
+        // Update state indicators
+        document.querySelectorAll('.element-cell').forEach(cell => {
+            const num = parseInt(cell.dataset.number);
+            const el = ELEMENTS.find(e => e.number === num);
+            if (el) {
+                const color = getStateColor(el, temp);
+                const indicator = cell.querySelector('.state-indicator');
+                if (indicator) indicator.style.background = color;
+            }
+        });
+    }
+
+    // ================================================================
+    // THEME TOGGLE
+    // ================================================================
+    document.getElementById('themeToggleBtn').addEventListener('click', function() {
+        const body = document.body;
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            body.setAttribute('data-theme', 'light');
+            document.getElementById('themeIcon').textContent = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+    });
+
+    // ================================================================
+    // EVENT LISTENERS
+    // ================================================================
+
+    // Temperature slider
+    document.getElementById('tempSlider').addEventListener('input', function() {
+        updateTemperature(parseFloat(this.value));
+    });
+
+    // Heatmap selector
+    document.getElementById('heatmapSelect').addEventListener('change', function() {
+        heatmapMode = this.value;
+        applyHeatmap();
+    });
+
+    // Category filter buttons (dynamically added)
+    function createFilterButtons() {
+        const headerControls = document.querySelector('.header-controls');
+        const filterGroup = document.createElement('div');
+        filterGroup.className = 'filter-group';
+
+        const categories = ['all', ...Object.keys(CATEGORY_NAMES)];
+        const labels = {
+            'all': '🔬 All',
+            'alkali': '🧪 Alkali',
+            'alkaline': '🧪 Alkaline',
+            'transition': '⚙️ Transition',
+            'post-transition': '⚙️ Post-Transition',
+            'metalloid': '💎 Metalloid',
+            'nonmetal': '🌿 Nonmetal',
+            'halogen': '🧪 Halogen',
+            'noble': '🎈 Noble Gas',
+            'lanthanide': '🔮 Lanthanide',
+            'actinide': '☢️ Actinide',
+            'unknown': '❓ Unknown'
+        };
+
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = `filter-btn ${cat === 'all' ? 'active' : ''}`;
+            btn.dataset.filter = cat;
+            btn.textContent = labels[cat] || cat;
+            btn.addEventListener('click', function() {
+                currentFilter = this.dataset.filter;
+                applyFilter();
+            });
+            filterGroup.appendChild(btn);
+        });
+
+        // Insert after temperature control
+        const tempControl = document.querySelector('.temp-control');
+        headerControls.insertBefore(filterGroup, tempControl.nextSibling);
+    }
+
+    // ================================================================
+    // INIT
+    // ================================================================
+    window.onload = function() {
+        createFilterButtons();
+        buildPeriodicTable();
+        updateTemperature(298);
+
+        // Select Hydrogen by default
+        setTimeout(() => {
+            selectElement(1);
+        }, 300);
+    };
+
+    console.log('⚛️ Advanced Periodic Table loaded!');
+    console.log(`📊 ${ELEMENTS.length} elements loaded`);
+    console.log('🔬 Click any element to explore its properties');
+</script>
+</body>
+</html>

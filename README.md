@@ -150,3 +150,8 @@ The source code is available for learning and reference. Please respect the orig
 
 Mathematics Teacher | STEM Educator | Interactive Learning Developer
 
+
+
+## Featured STEM Simulation: Cardiovascular Explorer
+
+The portfolio includes a live demo at `Simulations/Cardiovascular-Explorer/Cardiovascular-Explorer.html` and a downloadable offline package at `downloads/Cardiovascular-Explorer-Offline.zip`. The offline ZIP includes the 3D heart model and local Three.js/Draco dependencies.

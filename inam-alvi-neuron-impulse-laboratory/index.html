@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuron Structure & Impulse Propagation Laboratory</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/800.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:  '#181818',
+        card: '#212121',
+        card2:'#1d1d1d',
+        gold: '#FFD700',
+        sky:  '#2BA8E0',
+        body: '#E8E8E8',
+        mut:  '#9CA3AF'
+      },
+      fontFamily: { poppins: ['Poppins','ui-sans-serif','system-ui','sans-serif'] }
+    }
+  }
+}
+</script>
+<style>
+  html{background:#181818}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:#1d1d1d}
+  ::-webkit-scrollbar-thumb{background:#3a3a3a;border-radius:8px}
+  .part{transition:all .25s}
+  .part.on{border-color:#FFD700;box-shadow:0 0 0 1px #FFD700, 0 0 18px rgba(255,215,0,.22)}
+  button:active{transform:scale(.97)}
+</style>
+</head>
+<body class="bg-ink text-body font-poppins min-h-screen flex flex-col">
+
+<!-- ============ HEADER ============ -->
+<header class="max-w-7xl mx-auto w-full px-6 pt-8 pb-2">
+  <h1 class="text-gold font-extrabold text-3xl md:text-4xl tracking-tight">Neuron Structure &amp; Impulse Propagation Laboratory</h1>
+  <p class="text-sky font-bold text-lg md:text-2xl mt-3">Interactive Biology Simulation | Action Potential | Saltatory Conduction | Synaptic Transmission</p>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="max-w-7xl mx-auto w-full px-6 py-6 flex flex-col gap-6 flex-1">
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <!-- ===== Main viewport ===== -->
+    <section class="lg:col-span-2 bg-card border border-white/10 rounded-2xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <h2 class="text-gold font-bold text-lg">Anatomical Viewport <span class="text-mut text-xs font-semibold">(click any structure)</span></h2>
+        <span class="text-sky text-xs font-bold">Motor Neuron — realistic model</span>
+      </div>
+      <canvas id="neuro" width="960" height="520" class="w-full h-auto block rounded-xl border border-white/10 bg-[#161616] cursor-pointer"></canvas>
+
+      <!-- Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btnTrig"  type="button" class="bg-gold text-black font-bold px-4 py-2 rounded-lg hover:brightness-110">⚡ Trigger Stimulus</button>
+        <button id="btnPlay"  type="button" class="bg-sky text-black font-bold px-4 py-2 rounded-lg hover:brightness-110">▶ Play</button>
+        <button id="btnPause" type="button" class="bg-[#2a2a2a] border border-white/15 font-semibold px-4 py-2 rounded-lg hover:bg-[#333]">⏸ Pause</button>
+        <button id="btnStep"  type="button" class="bg-[#2a2a2a] border border-white/15 font-semibold px-4 py-2 rounded-lg hover:bg-[#333]"> Step</button>
+        <button id="btnReset" type="button" class="bg-[#2a2a2a] border border-white/15 font-semibold px-4 py-2 rounded-lg hover:bg-[#333]">↺ Reset</button>
+        <div class="ml-auto flex items-center gap-2 text-xs text-mut">
+          <span>Stimulus Intensity</span>
+          <input id="intensity" type="range" min="0" max="100" step="5" value="60" class="w-28 accent-[#FFD700]">
+          <span id="intVal" class="text-gold font-bold w-9">60</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 text-[11px] font-semibold">
+        <span class="px-3 py-1 rounded-full border border-white/15 bg-card2 text-mut">Resting: <span class="text-sky">−70 mV</span></span>
+        <span class="px-3 py-1 rounded-full border border-white/15 bg-card2 text-mut">Threshold: <span class="text-gold">−55 mV</span></span>
+        <span class="px-3 py-1 rounded-full border border-white/15 bg-card2 text-mut">Peak: <span class="text-gold">+40 mV</span></span>
+        <span class="px-3 py-1 rounded-full border border-white/15 bg-card2 text-mut">Conduction: <span class="text-sky">Saltatory</span></span>
+        <span class="px-3 py-1 rounded-full border border-white/15 bg-card2 text-mut">APs fired: <span id="roAPs" class="text-gold">0</span></span>
+      </div>
+
+      <div id="status" class="bg-card2 border-l-4 border-sky rounded-lg p-3 text-sm leading-relaxed min-h-[3rem]"></div>
+    </section>
+
+    <!-- ===== Structure explorer ===== -->
+    <aside class="bg-card border border-white/10 rounded-2xl p-4 flex flex-col gap-3">
+      <h2 class="text-gold font-bold text-lg">Anatomical Structure Explorer</h2>
+      <div class="grid grid-cols-2 gap-2" id="partList">
+        <button type="button" data-part="dendrites" class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Dendrites</button>
+        <button type="button" data-part="soma"      class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Cell Body (Soma)</button>
+        <button type="button" data-part="hillock"   class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Axon Hillock</button>
+        <button type="button" data-part="axon"      class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Axon</button>
+        <button type="button" data-part="myelin"    class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Myelin / Schwann</button>
+        <button type="button" data-part="node"      class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold">Nodes of Ranvier</button>
+        <button type="button" data-part="terminal"  class="part text-left rounded-lg border border-white/15 bg-card2 p-2 text-xs font-semibold col-span-2">Axon Terminals / Synaptic Knobs</button>
+      </div>
+      <canvas id="thumb" width="260" height="150" class="w-full h-auto rounded-lg border border-white/10 bg-black"></canvas>
+      <div class="bg-card2 border border-white/10 rounded-xl p-3">
+        <h3 id="infoTitle" class="text-sky font-bold text-sm mb-1"></h3>
+        <p id="infoText" class="text-xs leading-relaxed text-body/90"></p>
+      </div>
+      <p class="text-[11px] text-mut leading-relaxed mt-auto">
+        <span class="text-sky font-semibold">All-or-None Law:</span> stimuli below threshold produce <b>no</b> action potential; stimuli above threshold always produce a <b>full-size</b> AP — intensity is coded by firing <b>frequency</b>, not amplitude.
+      </p>
+    </aside>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <!-- ===== Oscilloscope ===== -->
+    <section class="bg-card border border-white/10 rounded-2xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-gold font-bold text-lg">Oscilloscope — Membrane Potential</h2>
+        <span class="text-mut text-xs font-semibold">probe @ Node of Ranvier #2</span>
+      </div>
+      <canvas id="scope" width="460" height="260" class="w-full h-auto block rounded-xl border border-white/10 bg-[#161616]"></canvas>
+      <p class="text-[11px] text-mut leading-relaxed">Real-time voltage trace: <span class="text-sky">depolarization</span> (Na⁺ in) → spike <span class="text-gold">+40 mV</span> → <span class="text-sky">repolarization</span> (K⁺ out) → brief <span class="text-gold">hyperpolarization</span> → return to resting −70 mV.</p>
+    </section>
+
+    <!-- ===== Synapse zoom ===== -->
+    <section class="bg-card border border-white/10 rounded-2xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <h2 class="text-gold font-bold text-lg">Synaptic Transmission — Zoom-In</h2>
+        <span id="synState" class="text-mut text-xs font-semibold">idle</span>
+      </div>
+      <!-- Synapse animation controls -->
+      <div class="flex items-center gap-2">
+        <button id="btnSynPlay"  type="button" class="bg-gold text-black font-bold px-4 py-2 rounded-lg hover:brightness-110">▶ Animate Synapse</button>
+        <button id="btnSynReset" type="button" class="bg-[#2a2a2a] border border-white/15 font-semibold px-4 py-2 rounded-lg hover:bg-[#333]">↺ Reset</button>
+        <span class="text-[11px] text-mut ml-auto">runs independently of the main sim</span>
+      </div>
+      <canvas id="syn" width="460" height="300" class="w-full h-auto block rounded-xl border border-white/10 bg-[#161616]"></canvas>
+      <div id="synCap" class="bg-card2 border-l-4 border-sky rounded-lg p-3 text-sm leading-relaxed min-h-[3rem]">Press “▶ Animate Synapse” (or fire an impulse) to watch vesicles release neurotransmitter.</div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-white/10 mt-4 py-8 text-center">
+  <p class="text-mut text-xs mb-1">Developed by</p>
+  <p class="text-gold font-extrabold text-2xl">Inam Alvi</p>
+  <p class="text-sky font-bold mt-2 text-sm md:text-base">Mathematics Educator | Science Teacher | Web Developer</p>
+</footer>
+
+<!-- ============ SIMULATION ============ -->
+<script>
+(function(){
+"use strict";
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeO=t=>1-Math.pow(1-t,2);
+const easeIO=t=>t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+
+/* ---------- images ---------- */
+const IMG={};
+function load(k,u){const i=new Image();i.crossOrigin='anonymous';i.src=u;IMG[k]=i;}
+load('neuron','https://image.qwenlm.ai/public_source/a627e193-64c3-4ed3-ad20-b242fc856445/121899714-6ecd-4dac-82ae-7f87810b21c9.png');
+load('syn','https://image.qwenlm.ai/public_source/a627e193-64c3-4ed3-ad20-b242fc856445/124a5dd27-6342-4ff1-8dd9-82ebfff4b831.png');
+load('myelin','https://image.qwenlm.ai/public_source/a627e193-64c3-4ed3-ad20-b242fc856445/1b3b3606c-7a49-48d2-a68e-22d7606fd377.png');
+load('membrane','https://image.qwenlm.ai/public_source/a627e193-64c3-4ed3-ad20-b242fc856445/1365b3c69-d3b7-49d2-bc4c-3c0303c29cea.png');
+const ready=k=>IMG[k]&&IMG[k].complete&&IMG[k].naturalWidth>0;
+
+/* ---------- canvases ---------- */
+function setup(id){
+  const c=document.getElementById(id), x=c.getContext('2d');
+  const W=+c.getAttribute('width'), H=+c.getAttribute('height');
+  const d=Math.min(window.devicePixelRatio||1,2);
+  c.width=W*d; c.height=H*d; x.setTransform(d,0,0,d,0,0);
+  return {c,x,W,H};
+}
+const NM=setup('neuro'), SC=setup('scope'), SY=setup('syn'), TH=setup('thumb');
+
+function cover(x,img,W,H){
+  const s=Math.max(W/img.naturalWidth,H/img.naturalHeight);
+  const w=img.naturalWidth*s,h=img.naturalHeight*s;
+  x.save(); x.globalCompositeOperation='screen';
+  x.drawImage(img,(W-w)/2,(H-h)/2,w,h); x.restore();
+}
+
+/* ---------- anatomy data ---------- */
+const AXON_Y=260, X=[390,504,592,686,850], HOP=[0,26,26,20];
+const SEGS=[[413,500],[509,588],[596,682],[690,768]], NODES=[504,592,686];
+const SPOTS={
+  dendrites:{x:135,y:260,r:115}, soma:{x:262,y:260,r:52}, hillock:{x:390,y:262,r:22},
+  axon:{x:450,y:260,r:20}, myelin:{x:548,y:262,r:32}, node:{x:686,y:260,r:16}, terminal:{x:872,y:262,r:58}
+};
+const PARTS={
+  dendrites:{n:'Dendrites',d:'Highly branched extensions that receive chemical signals from neighbouring neurons and convert them into tiny electrical signals, conducting them toward the cell body.',th:{img:'neuron',f:[0,0.08,0.32,0.84]}},
+  soma:{n:'Cell Body (Soma)',d:'Contains the nucleus and organelles; keeps the neuron alive and integrates (sums) all incoming excitatory and inhibitory signals.',th:{img:'neuron',f:[0.14,0.28,0.28,0.46]}},
+  hillock:{n:'Axon Hillock (Trigger Zone)',d:'The decision point. If the summed signal exceeds threshold (≈ −55 mV), an action potential is launched here — the All-or-None law.',th:{img:'neuron',f:[0.32,0.38,0.16,0.26]}},
+  axon:{n:'Axon (Nerve Fiber)',d:'A long fiber that conducts the action potential away from the soma. Its membrane is packed with Na⁺/K⁺ ion channels that regenerate the spike.',th:{img:'membrane',f:null}},
+  myelin:{n:'Myelin Sheath & Schwann Cells',d:'Schwann cells wrap fatty myelin layers around the axon, electrically insulating it and preventing ion leakage — greatly increasing conduction speed.',th:{img:'myelin',f:null}},
+  node:{n:'Nodes of Ranvier',d:'Tiny unmyelinated gaps rich in ion channels. The impulse regenerates here and “jumps” node-to-node — saltatory conduction.',th:{img:'neuron',f:[0.49,0.38,0.16,0.26]}},
+  terminal:{n:'Axon Terminals (Synaptic Knobs)',d:'When the impulse arrives, the electrical signal is converted into a chemical one: vesicles release neurotransmitter (e.g., acetylcholine) into the synaptic cleft.',th:{img:'syn',f:null}}
+};
+
+/* ---------- state ---------- */
+const S={sel:'soma',playing:false,stepping:false,stepTarget:0,time:0,intensity:60,
+         pulses:[],apEvents:[],subEvents:[],trace:[],synActive:false,synT:0,synVia:false,fired:0,doneFlag:false};
+
+function pathPos(p){
+  const seg=clamp(Math.floor(p),0,3), f=clamp(p-seg,0,1);
+  return {x:lerp(X[seg],X[seg+1],f), y:AXON_Y-Math.sin(f*Math.PI)*HOP[seg]};
+}
+const apDelta=u=>{ if(u<0||u>1.8)return 0;
+  if(u<0.35)return 110*easeO(u/0.35);
+  if(u<0.9)return 110-120*easeIO((u-0.35)/0.55);
+  return -10*(1-easeIO((u-0.9)/0.9)); };
+const blip=u=>{ if(u<0||u>1)return 0;
+  if(u<0.3)return 12*easeO(u/0.3);
+  return 12*(1-easeIO((u-0.3)/0.7)); };
+function currentV(){
+  let v=-70+Math.sin(S.time*3)*0.8;
+  for(const t of S.apEvents)v+=apDelta(S.time-t);
+  for(const t of S.subEvents)v+=blip(S.time-t);
+  return clamp(v,-95,50);
+}
+
+/* ---------- LARGE classroom labels ---------- */
+function lab(x,t,tx,ty,lx,ly){
+  x.save();
+  x.font='700 17px Poppins, sans-serif';
+  const w=x.measureText(t).width;
+  x.strokeStyle='#9ca3af'; x.lineWidth=1.5; x.setLineDash([5,4]);
+  x.beginPath(); x.moveTo(tx+w/2,ty+8); x.lineTo(lx,ly); x.stroke(); x.setLineDash([]);
+  x.fillStyle='rgba(8,8,8,.78)';
+  x.beginPath(); x.roundRect(tx-9,ty-17,w+18,28,9); x.fill();
+  x.strokeStyle='rgba(255,215,0,.35)'; x.lineWidth=1; x.stroke();
+  x.fillStyle='#F9FAFB';
+  x.fillText(t,tx,ty+4);
+  x.restore();
+}
+
+/* ---------- main viewport ---------- */
+function drawMain(now){
+  const x=NM.x; x.clearRect(0,0,NM.W,NM.H);
+  x.fillStyle='#161616'; x.fillRect(0,0,NM.W,NM.H);
+  if(ready('neuron')) cover(x,IMG.neuron,NM.W,NM.H);
+
+  /* myelin segment overlays + nodes */
+  x.save();
+  for(const s of SEGS){
+    x.fillStyle='rgba(56,189,248,.10)'; x.strokeStyle='rgba(56,189,248,.45)'; x.lineWidth=1.5;
+    x.beginPath(); x.roundRect(s[0],AXON_Y-13,s[1]-s[0],26,12); x.fill(); x.stroke();
+  }
+  NODES.forEach((nx,i)=>{
+    let glow=0;
+    for(const p of S.pulses){ const d=Math.abs(p.p-(i+1)); glow=Math.max(glow,1-d/0.22); }
+    x.shadowColor='#FFD700'; x.shadowBlur=16*glow+4;
+    x.fillStyle='#FFD700';
+    x.beginPath(); x.arc(nx,AXON_Y,4+2*glow,0,7); x.fill();
+    x.shadowBlur=0;
+  });
+  x.restore();
+
+  /* recording probe */
+  x.save(); x.strokeStyle='#9ca3af'; x.lineWidth=2;
+  x.beginPath(); x.moveTo(592,34); x.lineTo(592,236); x.stroke();
+  x.fillStyle='#e8e8e8'; x.beginPath(); x.arc(592,238,4,0,7); x.fill();
+  x.font='700 13px Poppins, sans-serif'; x.fillStyle='#d1d5db';
+  x.fillText('recording probe',602,44);
+  x.restore();
+
+  /* impulses (saltatory hops) */
+  for(const p of S.pulses){
+    if(p.delay>0)continue;
+    for(let i=9;i>=0;i--){
+      const pp=p.p-i*0.05; if(pp<0)continue;
+      const pos=pathPos(pp);
+      x.save(); x.globalAlpha=(1-i/10)*0.5; x.fillStyle='#FFD700';
+      x.beginPath(); x.arc(pos.x,pos.y,6*(1-i/12),0,7); x.fill(); x.restore();
+    }
+    const pos=pathPos(p.p);
+    x.save(); x.shadowColor='#FFD700'; x.shadowBlur=22;
+    x.fillStyle='#FFD700'; x.beginPath(); x.arc(pos.x,pos.y,8,0,7); x.fill();
+    x.fillStyle='#ffffff'; x.beginPath(); x.arc(pos.x,pos.y,4,0,7); x.fill();
+    x.restore();
+    if(p.p>3.7){
+      x.save(); x.strokeStyle='#FFD700'; x.shadowColor='#FFD700'; x.shadowBlur=14; x.lineWidth=2;
+      for(let k=0;k<8;k++){ const a=k*Math.PI/4+now*3;
+        x.beginPath(); x.moveTo(872+Math.cos(a)*8,262+Math.sin(a)*8); x.lineTo(872+Math.cos(a)*20,262+Math.sin(a)*20); x.stroke(); }
+      x.restore();
+    }
+  }
+
+  /* selection highlight */
+  const sp=SPOTS[S.sel];
+  if(sp){
+    x.save(); x.strokeStyle='#FFD700'; x.setLineDash([4,6]); x.lineWidth=2.5;
+    x.shadowColor='#FFD700'; x.shadowBlur=14; x.globalAlpha=0.9;
+    x.beginPath(); x.arc(sp.x,sp.y,sp.r,0,7); x.stroke(); x.restore();
+  }
+
+  /* LARGE labels */
+  lab(x,'Dendrites',52,84,120,170);
+  lab(x,'Cell body (soma)',168,124,252,212);
+  lab(x,'Axon',446,124,450,246);
+  lab(x,'Node of Ranvier',628,124,686,246);
+  lab(x,'Axon hillock',286,492,388,280);
+  lab(x,'Myelin sheath (Schwann cell)',436,492,548,282);
+  lab(x,'Axon terminals',788,492,870,312);
+}
+
+/* ---------- oscilloscope ---------- */
+function drawScope(){
+  const x=SC.x,W=SC.W,H=SC.H;
+  x.clearRect(0,0,W,H); x.fillStyle='#161616'; x.fillRect(0,0,W,H);
+  const L=48,R=10,Tp=14,Bm=26;
+  const yV=v=>Tp+(H-Tp-Bm)*(1-(v-(-95))/(50-(-95)));
+  const pps=(W-L-R)/7.5;
+  x.strokeStyle='#242424'; x.lineWidth=1;
+  [-90,-70,-55,0,40].forEach(v=>{x.beginPath();x.moveTo(L,yV(v));x.lineTo(W-R,yV(v));x.stroke();});
+  x.save(); x.setLineDash([5,5]);
+  x.strokeStyle='#2BA8E0'; x.beginPath(); x.moveTo(L,yV(-70)); x.lineTo(W-R,yV(-70)); x.stroke();
+  x.strokeStyle='#FFD700'; x.beginPath(); x.moveTo(L,yV(-55)); x.lineTo(W-R,yV(-55)); x.stroke();
+  x.setLineDash([]); x.restore();
+  x.font='600 11px Poppins, sans-serif'; x.fillStyle='#9ca3af'; x.textAlign='right';
+  x.fillText('+40',L-5,yV(40)+3); x.fillText('0',L-5,yV(0)+3);
+  x.fillStyle='#FFD700'; x.fillText('−55',L-5,yV(-55)+3);
+  x.fillStyle='#2BA8E0'; x.fillText('−70',L-5,yV(-70)+3);
+  x.textAlign='center'; x.fillStyle='#9ca3af';
+  x.fillText('Time (s) →',(L+W-R)/2,H-8);
+  x.save(); x.translate(12,(Tp+H-Bm)/2); x.rotate(-Math.PI/2); x.fillText('mV',0,0); x.restore();
+  x.save(); x.strokeStyle='#FFD700'; x.lineWidth=2; x.shadowColor='#FFD700'; x.shadowBlur=6;
+  x.beginPath();
+  let started=false;
+  for(const s of S.trace){
+    const X=W-R-(S.time-s.t)*pps;
+    if(X<L)continue;
+    const Y=yV(s.v);
+    started?x.lineTo(X,Y):(x.moveTo(X,Y),started=true);
+  }
+  x.stroke(); x.restore();
+  const lv=currentV();
+  x.save(); x.shadowColor='#FFD700'; x.shadowBlur=12; x.fillStyle='#ffffff';
+  x.beginPath(); x.arc(W-R,yV(lv),4,0,7); x.fill(); x.restore();
+}
+
+/* ---------- synapse zoom (self-running animation) ---------- */
+const VES=[{x:170,y0:110},{x:230,y0:95},{x:290,y0:115}];
+const RX=[150,230,310];
+function drawSyn(){
+  const x=SY.x,W=SY.W,H=SY.H;
+  x.clearRect(0,0,W,H); x.fillStyle='#161616'; x.fillRect(0,0,W,H);
+  if(ready('syn')) cover(x,IMG.syn,W,H);
+  const t=S.synT, act=S.synActive;
+  if(act){
+    const a=clamp(t/1,0,1);
+    const fade=1-clamp((t-1)/0.4,0,1);
+    if(fade>0){
+      x.save(); x.globalAlpha=fade; x.shadowColor='#38bdf8'; x.shadowBlur=12; x.fillStyle='#38bdf8';
+      for(const v of VES){ x.beginPath(); x.arc(v.x,lerp(v.y0,163,easeIO(a)),9,0,7); x.fill(); }
+      x.restore();
+    }
+    VES.forEach((v,i)=>{
+      for(let k=0;k<4;k++){
+        const d=1+i*0.15+k*0.12, tt=clamp((t-d)/0.8,0,1);
+        if(tt<=0)continue;
+        const nx=v.x+(k-1.5)*11+Math.sin(tt*7+k)*3, ny=lerp(172,236,tt);
+        x.save(); x.shadowColor='#FFD700'; x.shadowBlur=10; x.fillStyle='#FFD700';
+        x.beginPath(); x.arc(nx,ny,3.2,0,7); x.fill(); x.restore();
+      }
+    });
+    const bind=clamp((t-2.2)/0.6,0,1);
+    x.save();
+    RX.forEach(rx=>{
+      x.shadowColor='#e879f9'; x.shadowBlur=6+18*bind;
+      x.fillStyle=bind>0.5?'#e879f9':'#a21caf';
+      x.beginPath(); x.roundRect(rx-6,238,12,18,4); x.fill();
+    });
+    x.restore();
+    if(t>2.8){
+      x.save(); x.globalAlpha=0.35*clamp((t-2.8)/0.8,0,1);
+      const g=x.createLinearGradient(0,240,0,300);
+      g.addColorStop(0,'#e879f9'); g.addColorStop(1,'rgba(232,121,249,0)');
+      x.fillStyle=g; x.fillRect(0,240,W,60); x.restore();
+    }
+  } else {
+    x.save(); x.fillStyle='rgba(0,0,0,.55)'; x.fillRect(0,0,W,H);
+    x.fillStyle='#e5e7eb'; x.font='700 15px Poppins, sans-serif'; x.textAlign='center';
+    x.fillText('Press “▶ Animate Synapse” to start',W/2,H/2);
+    x.restore();
+  }
+  const cap=document.getElementById('synCap'), st=document.getElementById('synState');
+  if(!act){ cap.textContent='Press “▶ Animate Synapse” (or fire an impulse) to watch vesicles release neurotransmitter.'; st.textContent='idle'; }
+  else if(t<1){ cap.textContent='Impulse arrives — Ca²⁺ channels open; synaptic vesicles move toward the presynaptic membrane.'; st.textContent='Ca²⁺ influx'; }
+  else if(t<2){ cap.textContent='Exocytosis — vesicles fuse and release acetylcholine into the synaptic cleft.'; st.textContent='exocytosis'; }
+  else if(t<2.8){ cap.textContent='Neurotransmitters diffuse across the cleft and bind to receptors on the postsynaptic membrane.'; st.textContent='binding'; }
+  else { cap.textContent='Receptors activated — ion channels open and a new signal begins in the next cell. (Later: ACh is broken down by acetylcholinesterase.)'; st.textContent='postsynaptic response'; }
+}
+
+/* ---------- thumbnail & panel ---------- */
+function drawThumb(){
+  const x=TH.x,W=TH.W,H=TH.H;
+  x.clearRect(0,0,W,H); x.fillStyle='#000'; x.fillRect(0,0,W,H);
+  const p=PARTS[S.sel]; if(!p)return;
+  const img=IMG[p.th.img]; if(!ready(p.th.img))return;
+  x.save(); x.globalCompositeOperation='screen';
+  if(p.th.f){
+    const f=p.th.f;
+    x.drawImage(img,f[0]*img.naturalWidth,f[1]*img.naturalHeight,f[2]*img.naturalWidth,f[3]*img.naturalHeight,0,0,W,H);
+  } else {
+    const s=Math.max(W/img.naturalWidth,H/img.naturalHeight);
+    const w=img.naturalWidth*s,h=img.naturalHeight*s;
+    x.drawImage(img,(W-w)/2,(H-h)/2,w,h);
+  }
+  x.restore();
+}
+function selectPart(k){
+  S.sel=k;
+  document.querySelectorAll('#partList .part').forEach(b=>b.classList.toggle('on',b.dataset.part===k));
+  document.getElementById('infoTitle').textContent=PARTS[k].n;
+  document.getElementById('infoText').textContent=PARTS[k].d;
+  drawThumb();
+}
+
+/* ---------- controls ---------- */
+const $=id=>document.getElementById(id);
+function setStatus(t){ $('status').textContent=t; }
+function trigger(){
+  const I=S.intensity;
+  if(I<30){
+    S.subEvents.push(S.time);
+    setStatus('Sub-threshold stimulus ('+I+') — local blip only, NO action potential (All-or-None law).');
+  } else {
+    const n=Math.min(3,1+Math.floor((I-30)/25));
+    for(let k=0;k<n;k++) S.pulses.push({p:0,delay:k*1.1,probed:false,done:false});
+    S.fired+=n; S.doneFlag=false;
+    setStatus('Threshold exceeded — '+n+' full action potential(s) launched. Stronger stimulus = higher firing FREQUENCY (not amplitude).');
+  }
+  S.playing=true;
+}
+$('btnTrig').addEventListener('click',trigger);
+$('btnPlay').addEventListener('click',()=>{ if(S.pulses.length||S.synActive) S.playing=true; });
+$('btnPause').addEventListener('click',()=>{S.playing=false;S.stepping=false;});
+$('btnStep').addEventListener('click',()=>{
+  if(!S.pulses.length) trigger();
+  const f=S.pulses.find(p=>!p.done); if(!f)return;
+  S.stepTarget=Math.floor(f.p+0.001)+1; S.stepping=true; S.playing=true;
+});
+$('btnReset').addEventListener('click',()=>{
+  S.pulses=[];S.apEvents=[];S.subEvents=[];S.synActive=false;S.synT=0;S.synVia=false;S.fired=0;S.playing=false;S.stepping=false;S.doneFlag=false;
+  $('roAPs').textContent='0';
+  setStatus('Ready. Adjust intensity, then press “Trigger Stimulus”.');
+});
+/* synapse animation buttons */
+$('btnSynPlay').addEventListener('click',()=>{ S.synActive=true; S.synT=0; S.synVia=false; });
+$('btnSynReset').addEventListener('click',()=>{ S.synActive=false; S.synT=0; });
+$('intensity').addEventListener('input',e=>{S.intensity=+e.target.value;$('intVal').textContent=S.intensity;});
+document.querySelectorAll('#partList .part').forEach(b=>b.addEventListener('click',()=>selectPart(b.dataset.part)));
+
+/* canvas click → pick structure */
+NM.c.addEventListener('click',e=>{
+  const r=NM.c.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*NM.W/r.width, my=(e.clientY-r.top)*NM.H/r.height;
+  let best=null,bd=1e9;
+  for(const k in SPOTS){ const s=SPOTS[k]; const d=Math.hypot(mx-s.x,my-s.y); if(d<s.r&&d<bd){bd=d;best=k;} }
+  if(best) selectPart(best);
+});
+NM.c.addEventListener('mousemove',e=>{
+  const r=NM.c.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*NM.W/r.width, my=(e.clientY-r.top)*NM.H/r.height;
+  let hit=false;
+  for(const k in SPOTS){ const s=SPOTS[k]; if(Math.hypot(mx-s.x,my-s.y)<s.r){hit=true;break;} }
+  NM.c.style.cursor=hit?'pointer':'default';
+});
+
+/* ---------- main loop ---------- */
+selectPart('soma');
+setStatus('Ready. Adjust intensity, then press “Trigger Stimulus”.');
+let last=performance.now();
+function loop(t){
+  const dt=clamp((t-last)/1000,0,0.05); last=t;
+  const now=t/1000;
+  if(S.playing){
+    for(const p of S.pulses){
+      if(p.delay>0){p.delay-=dt;continue;}
+      p.p+=dt*2.2;
+      if(!p.probed&&p.p>=2){p.probed=true;S.apEvents.push(S.time);}
+      if(p.p>=4&&!p.done){p.done=true;if(!S.synActive){S.synActive=true;S.synT=0;S.synVia=true;}}
+    }
+    S.pulses=S.pulses.filter(p=>!p.done||p.p<=4.4);
+    if(S.stepping){ const f=S.pulses.find(p=>!p.done); if(!f||f.p>=S.stepTarget){S.playing=false;S.stepping=false;} }
+    if(S.synVia&&S.synActive&&S.synT>3.2&&!S.doneFlag){S.doneFlag=true;setStatus('Impulse complete — neurotransmitters bound at the postsynaptic membrane. Trigger again or Reset.');}
+  }
+  /* synapse animation runs on its own clock */
+  if(S.synActive) S.synT+=dt;
+
+  S.time+=dt;
+  S.trace.push({t:S.time,v:currentV()});
+  while(S.trace.length&&S.trace[0].t<S.time-8.2)S.trace.shift();
+  $('roAPs').textContent=S.fired;
+
+  drawMain(now);
+  drawScope();
+  drawSyn();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

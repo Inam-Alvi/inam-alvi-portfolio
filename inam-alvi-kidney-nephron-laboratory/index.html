@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kidney &amp; Nephron Laboratory</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/poppins@latest/800.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { ink:'#1a1a1a', panel:'#212121', card:'#2a2a2a', gold:'#FFD400', sky:'#29ABE2' },
+      fontFamily: { poppins:['Poppins','ui-sans-serif','system-ui','sans-serif'] }
+    }
+  }
+};
+</script>
+<style>
+  html,body{background:#1a1a1a;font-family:'Poppins',sans-serif;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:9999px;background:#3a3a3a;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:#FFD400;border:3px solid #1a1a1a;box-shadow:0 0 0 2px #FFD400;cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#FFD400;border:3px solid #1a1a1a;box-shadow:0 0 0 2px #FFD400;cursor:pointer;}
+  .lbl-tick{font-size:10px;color:#9ca3af;}
+  table.cmp td,table.cmp th{padding:6px 8px;}
+</style>
+</head>
+<body class="bg-ink text-gray-200 font-poppins min-h-screen flex flex-col">
+
+<!-- ============ HEADER ============ -->
+<header class="max-w-7xl mx-auto w-full px-6 pt-10 pb-2">
+  <h1 class="text-4xl md:text-5xl font-extrabold text-gold tracking-tight">The Kidney &amp; Nephron Laboratory</h1>
+  <h2 class="text-lg md:text-2xl font-bold text-sky mt-4 leading-relaxed">Ultrafiltration | Selective Reabsorption | Urine Formation</h2>
+  <p class="mt-5 text-gray-300 text-base md:text-lg leading-loose max-w-4xl">
+    Trace how blood is filtered through a realistic nephron. Watch ultrafiltration in the glomerulus, follow the selective
+    reabsorption of water, glucose and salts back into the peritubular capillaries, and observe urine forming in the collecting
+    duct. Adjust hydration, blood pressure and blood glucose — including diabetic conditions — and read the live laboratory data.
+  </p>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="max-w-7xl mx-auto w-full px-6 py-6 grid lg:grid-cols-3 gap-6 flex-1">
+
+  <!-- Nephron viewport -->
+  <section class="lg:col-span-2 bg-panel border border-neutral-800 rounded-xl p-5">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+      <h3 class="text-gold font-bold text-lg">Nephron Structural Viewport <span class="text-sky text-xs font-semibold ml-1">(realistic anatomy + live particle overlay)</span></h3>
+      <div class="flex gap-2">
+        <button id="btnPause" class="px-4 py-1.5 rounded-lg bg-gold text-ink font-bold text-sm hover:brightness-110 transition"> Pause</button>
+        <button id="btnReset" class="px-4 py-1.5 rounded-lg bg-sky text-ink font-bold text-sm hover:brightness-110 transition">↺ Reset</button>
+      </div>
+    </div>
+    <canvas id="sim" class="w-full h-auto rounded-lg border border-neutral-800 bg-black mx-auto block" style="aspect-ratio:1/1;max-width:760px"></canvas>
+
+    <!-- Legend -->
+    <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-gray-300">
+      <span class="font-bold text-sky">Particle Legend:</span>
+      <span class="flex items-center gap-1.5"><i class="w-3 h-3 rounded-full inline-block" style="background:#38bdf8"></i>Water</span>
+      <span class="flex items-center gap-1.5"><i class="w-3 h-3 rounded-full inline-block" style="background:#fbbf24"></i>Urea</span>
+      <span class="flex items-center gap-1.5"><i class="w-3 h-3 rounded-full inline-block" style="background:#4ade80"></i>Salts</span>
+      <span class="flex items-center gap-1.5"><i class="w-3 h-3 rounded-full inline-block" style="background:#f472b6"></i>Glucose</span>
+      <span class="flex items-center gap-1.5"><i class="w-3 h-3 rounded-full inline-block" style="background:#ef4444"></i>Blood cells (never filtered)</span>
+    </div>
+    <p class="mt-2 text-xs text-gray-400 leading-relaxed">
+      <span class="text-sky font-semibold">Colour-coded fate:</span> particles that <span class="text-green-400 font-semibold">fade sideways into the capillary network are reabsorbed into the bloodstream</span>;
+      particles that survive the full tubule journey drop into the test tube and are <span class="text-gold font-semibold">excreted as urine</span>.
+      Red blood cells circulate only inside the glomerulus &amp; peritubular capillaries — too large to cross the filtration barrier.
+    </p>
+  </section>
+
+  <!-- Controls + readouts -->
+  <aside class="bg-panel border border-neutral-800 rounded-xl p-5 flex flex-col gap-5">
+    <h3 class="text-gold font-bold text-lg">Lab Controls</h3>
+
+    <div>
+      <div class="flex justify-between items-baseline mb-1">
+        <label class="text-sm font-semibold text-sky" for="sH">Hydration / Water Intake</label>
+        <span id="vH" class="text-gold font-bold text-sm">50%</span>
+      </div>
+      <input id="sH" type="range" min="0" max="100" value="50">
+      <div class="flex justify-between mt-1"><span class="lbl-tick">Dehydrated (ADH ↑)</span><span class="lbl-tick">Over-hydrated (ADH ↓)</span></div>
+    </div>
+
+    <div>
+      <div class="flex justify-between items-baseline mb-1">
+        <label class="text-sm font-semibold text-sky" for="sBP">Blood Pressure</label>
+        <span id="vBP" class="text-gold font-bold text-sm">120 mmHg</span>
+      </div>
+      <input id="sBP" type="range" min="80" max="200" value="120">
+      <div class="flex justify-between mt-1"><span class="lbl-tick">Hypotension</span><span class="lbl-tick">Hypertension</span></div>
+    </div>
+
+    <div>
+      <div class="flex justify-between items-baseline mb-1">
+        <label class="text-sm font-semibold text-sky" for="sG">Blood Glucose Level</label>
+        <span id="vG" class="text-gold font-bold text-sm">100 mg/dL</span>
+      </div>
+      <input id="sG" type="range" min="60" max="420" value="100">
+      <div class="flex justify-between mt-1"><span class="lbl-tick">Normal</span><span class="lbl-tick">Diabetic range</span></div>
+      <p id="gNote" class="mt-2 text-[11px] text-gray-400 leading-relaxed">Renal threshold ≈ <span class="text-gold font-semibold">180 mg/dL</span> — above this, PCT transporters saturate and glucose spills into urine.</p>
+    </div>
+
+    <hr class="border-neutral-800">
+    <h3 class="text-gold font-bold text-lg">Live Data Readout</h3>
+
+    <div class="grid grid-cols-2 gap-3 text-center">
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Filtration Rate (GFR)</p><p id="roGFR" class="text-gold font-extrabold text-xl mt-1">125 mL/min</p></div>
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Pressure Status</p><p id="roBP" class="text-sky font-bold text-sm mt-2 leading-tight">Normal</p></div>
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Urine Output</p><p id="roVol" class="text-gold font-extrabold text-xl mt-1">1.6 L/day</p></div>
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Urine Osmolarity</p><p id="roOsm" class="text-gold font-extrabold text-xl mt-1">700 mOsm</p></div>
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Urine Glucose</p><p id="roGlu" class="text-green-400 font-bold text-sm mt-2">Negative</p></div>
+      <div class="bg-card rounded-lg p-3"><p class="text-[10px] uppercase tracking-wider text-gray-400">Urine Colour</p><div class="flex items-center justify-center gap-2 mt-1"><span id="roChip" class="w-6 h-6 rounded-full border border-neutral-600 inline-block"></span><span id="roColTxt" class="text-xs text-gray-300">normal</span></div></div>
+    </div>
+
+    <div>
+      <p class="text-xs font-bold text-sky mb-2 uppercase tracking-wider">Reabsorbed → Blood vs Excreted → Urine (particle counts)</p>
+      <div class="space-y-1.5 text-xs">
+        <div class="grid grid-cols-[70px_1fr_1fr] gap-2 items-center"><span class="flex items-center gap-1.5 text-gray-300"><i class="w-2.5 h-2.5 rounded-full" style="background:#38bdf8"></i>Water</span><span class="text-green-400">↦ blood: <b id="nWr">0</b></span><span class="text-gold">↦ urine: <b id="nWe">0</b></span></div>
+        <div class="grid grid-cols-[70px_1fr_1fr] gap-2 items-center"><span class="flex items-center gap-1.5 text-gray-300"><i class="w-2.5 h-2.5 rounded-full" style="background:#fbbf24"></i>Urea</span><span class="text-green-400">↦ blood: <b id="nUr">0</b></span><span class="text-gold">↦ urine: <b id="nUe">0</b></span></div>
+        <div class="grid grid-cols-[70px_1fr_1fr] gap-2 items-center"><span class="flex items-center gap-1.5 text-gray-300"><i class="w-2.5 h-2.5 rounded-full" style="background:#4ade80"></i>Salts</span><span class="text-green-400">↦ blood: <b id="nSr">0</b></span><span class="text-gold">↦ urine: <b id="nSe">0</b></span></div>
+        <div class="grid grid-cols-[70px_1fr_1fr] gap-2 items-center"><span class="flex items-center gap-1.5 text-gray-300"><i class="w-2.5 h-2.5 rounded-full" style="background:#f472b6"></i>Glucose</span><span class="text-green-400">↦ blood: <b id="nGr">0</b></span><span class="text-gold">↦ urine: <b id="nGe">0</b></span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Checkpoint meters -->
+  <section class="lg:col-span-2 bg-panel border border-neutral-800 rounded-xl p-5">
+    <h3 class="text-gold font-bold text-lg mb-1">Filtrate Composition Checkpoints</h3>
+    <p class="text-xs text-gray-400 mb-4">% of filtered amount <span class="text-sky font-semibold">remaining in the tubule</span> at each station (live).</p>
+    <div class="grid grid-cols-[92px_repeat(4,1fr)] gap-x-3 gap-y-3 items-center text-[11px]">
+      <span></span>
+      <span class="text-sky font-bold text-center">Bowman's<br>(filtrate)</span>
+      <span class="text-sky font-bold text-center">After<br>PCT</span>
+      <span class="text-sky font-bold text-center">After<br>Loop of Henle</span>
+      <span class="text-sky font-bold text-center">Final<br>Urine</span>
+
+      <span class="text-gray-300 font-semibold">Water</span>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mW0" class="h-2.5 rounded" style="width:100%;background:#38bdf8"></div></div><span id="mW0t" class="text-gray-400">100%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mW1" class="h-2.5 rounded" style="width:35%;background:#38bdf8"></div></div><span id="mW1t" class="text-gray-400">35%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mW2" class="h-2.5 rounded" style="width:20%;background:#38bdf8"></div></div><span id="mW2t" class="text-gray-400">20%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mW3" class="h-2.5 rounded" style="width:8%;background:#38bdf8"></div></div><span id="mW3t" class="text-gray-400">8%</span></div>
+
+      <span class="text-gray-300 font-semibold">Glucose</span>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mG0" class="h-2.5 rounded" style="width:100%;background:#f472b6"></div></div><span id="mG0t" class="text-gray-400">100%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mG1" class="h-2.5 rounded" style="width:0%;background:#f472b6"></div></div><span id="mG1t" class="text-gray-400">0%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mG2" class="h-2.5 rounded" style="width:0%;background:#f472b6"></div></div><span id="mG2t" class="text-gray-400">0%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mG3" class="h-2.5 rounded" style="width:0%;background:#f472b6"></div></div><span id="mG3t" class="text-gray-400">0%</span></div>
+
+      <span class="text-gray-300 font-semibold">Salts</span>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mS0" class="h-2.5 rounded" style="width:100%;background:#4ade80"></div></div><span id="mS0t" class="text-gray-400">100%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mS1" class="h-2.5 rounded" style="width:35%;background:#4ade80"></div></div><span id="mS1t" class="text-gray-400">35%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mS2" class="h-2.5 rounded" style="width:15%;background:#4ade80"></div></div><span id="mS2t" class="text-gray-400">15%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mS3" class="h-2.5 rounded" style="width:6%;background:#4ade80"></div></div><span id="mS3t" class="text-gray-400">6%</span></div>
+
+      <span class="text-gray-300 font-semibold">Urea</span>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mU0" class="h-2.5 rounded" style="width:100%;background:#fbbf24"></div></div><span id="mU0t" class="text-gray-400">100%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mU1" class="h-2.5 rounded" style="width:50%;background:#fbbf24"></div></div><span id="mU1t" class="text-gray-400">50%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mU2" class="h-2.5 rounded" style="width:45%;background:#fbbf24"></div></div><span id="mU2t" class="text-gray-400">45%</span></div>
+      <div><div class="h-2.5 bg-neutral-800 rounded"><div id="mU3" class="h-2.5 rounded" style="width:40%;background:#fbbf24"></div></div><span id="mU3t" class="text-gray-400">40%</span></div>
+    </div>
+  </section>
+
+  <!-- Comparison table -->
+  <aside class="bg-panel border border-neutral-800 rounded-xl p-5">
+    <h3 class="text-gold font-bold text-lg mb-3">Blood vs Filtrate vs Urine</h3>
+    <table class="cmp w-full text-xs text-center border border-neutral-800 rounded">
+      <thead>
+        <tr class="bg-card text-sky">
+          <th class="text-left font-bold">Substance</th><th class="font-bold">Blood</th><th class="font-bold">Glomerular Filtrate</th><th class="font-bold">Final Urine</th>
+        </tr>
+      </thead>
+      <tbody class="text-gray-300">
+        <tr class="border-t border-neutral-800"><td class="text-left">Blood cells</td><td class="text-green-400 font-bold">✓</td><td class="text-gray-500">—</td><td class="text-gray-500">—</td></tr>
+        <tr class="border-t border-neutral-800"><td class="text-left">Proteins</td><td class="text-green-400 font-bold">✓</td><td class="text-gray-500">—</td><td id="cProt" class="text-gray-500">—</td></tr>
+        <tr class="border-t border-neutral-800"><td class="text-left">Glucose</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td><td id="cGlu" class="text-gray-500">—</td></tr>
+        <tr class="border-t border-neutral-800"><td class="text-left">Urea</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td></tr>
+        <tr class="border-t border-neutral-800"><td class="text-left">Salts</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td></tr>
+        <tr class="border-t border-neutral-800"><td class="text-left">Water</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td><td class="text-green-400 font-bold">✓</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-3 text-[11px] text-gray-400 leading-relaxed">
+      <span class="text-gold font-semibold">Lab tip:</span> push glucose past 180 mg/dL to witness diabetic glycosuria,
+      drop hydration to see concentrated low-volume urine, or raise pressure into hypertension to drive GFR up
+      (severe hypertension may leak trace protein).
+    </p>
+  </aside>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-neutral-800 mt-6 py-6 text-center bg-panel">
+  <p class="text-[11px] text-gray-500 mb-1">The Kidney &amp; Nephron Laboratory — Interactive Biology Simulation</p>
+  <p class="text-gold font-extrabold text-xl tracking-wide">Inam Alvi</p>
+</footer>
+
+<!-- ============ SIMULATION ENGINE ============ -->
+<script>
+(function(){
+"use strict";
+var canvas=document.getElementById('sim'), ctx=canvas.getContext('2d');
+var W=880,H=880,dpr=Math.min(2,window.devicePixelRatio||1);
+canvas.width=W*dpr; canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+
+function $(id){return document.getElementById(id);}
+function lerp(a,b,t){return a+(b-a)*t;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function rand(a,b){return a+Math.random()*(b-a);}
+
+/* ---------- realistic nephron artwork (dark-bg anatomical render) ---------- */
+var IMG=new Image(), imgOK=false;
+IMG.onload=function(){imgOK=true;};
+IMG.src="https://image.qwenlm.ai/public_source/92f77e0a-25af-4740-af0e-9df92b9451a7/1bc9d97a8-eaa5-422d-b091-d3792ecea119.png";
+
+/* ---------- Catmull-Rom dense path builder ---------- */
+function buildDense(ctrl){
+  var pts=[],n=ctrl.length,i,s;
+  for(i=0;i<n-1;i++){
+    var p0=ctrl[Math.max(0,i-1)],p1=ctrl[i],p2=ctrl[i+1],p3=ctrl[Math.min(n-1,i+2)];
+    var steps=14;
+    for(s=(i===0?0:1);s<=steps;s++){
+      var t=s/14,t2=t*t,t3=t2*t;
+      pts.push([
+        0.5*((2*p1[0])+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),
+        0.5*((2*p1[1])+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)
+      ]);
+    }
+  }
+  var cum=[0];
+  for(i=1;i<pts.length;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  return {pts:pts,cum:cum,total:cum[cum.length-1]};
+}
+function nearestS(path,x,y){
+  var best=0,bd=1e18;
+  for(var i=0;i<path.pts.length;i++){
+    var d=(path.pts[i][0]-x)*(path.pts[i][0]-x)+(path.pts[i][1]-y)*(path.pts[i][1]-y);
+    if(d<bd){bd=d;best=i;}
+  }
+  return path.cum[best];
+}
+function pointAt(path,s){
+  var cum=path.cum,pts=path.pts;
+  s=clamp(s,0,cum[cum.length-1]);
+  var lo=0,hi=cum.length-1,m;
+  while(lo<hi){m=(lo+hi)>>1; if(cum[m]<s)lo=m+1; else hi=m;}
+  var i=Math.max(1,lo),s0=cum[i-1],s1=cum[i],t=(s1>s0)?(s-s0)/(s1-s0):0;
+  var x=lerp(pts[i-1][0],pts[i][0],t),y=lerp(pts[i-1][1],pts[i][1],t);
+  var dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],L=Math.hypot(dx,dy)||1;
+  return {x:x,y:y,dx:dx/L,dy:dy/L};
+}
+
+/* ---------- tubule centre-line traced over the realistic image ---------- */
+var TUB=buildDense([
+  [352,229],[396,211],[431,238],[449,282],[440,326],                       /* Bowman's exit + PCT */
+  [429,396],[427,528],[431,660],[438,748],                                 /* descending limb */
+  [449,818],[458,841],[471,818],[480,748],                                 /* U-turn */
+  [484,616],[488,484],[493,370],[497,308],                                 /* ascending limb */
+  [510,273],[540,300],[572,314],[607,290],[625,246],[616,194],[581,158],   /* DCT coils */
+  [546,132],[540,102],[566,86],[600,88],[636,102],[662,132],[673,167],     /* DCT coils → junction */
+  [695,176],[722,211],[730,282],[735,396],[737,528],[737,660],[737,792],[739,867] /* collecting duct */
+]);
+var sPCT=nearestS(TUB,440,326), sLOH=nearestS(TUB,497,308), sDCT=nearestS(TUB,673,167);
+
+/* ---------- peritubular capillary loop + glomerulus circulation for blood cells ---------- */
+var CAPLOOP=buildDense([
+  [392,330],[388,430],[386,540],[390,650],[400,740],[420,806],[452,838],[486,824],
+  [506,770],[516,680],[522,570],[526,460],[524,380],[500,320],[450,300],[410,308],[392,330]
+]);
+var GLOM={cx:196,cy:198,r:52};
+
+/* ---------- parameters & state ---------- */
+var P={H:50,BP:120,BG:100}, gfr=125, spill=false, vol=1.6, osm=700;
+var urineFill=0.2, urineColor='#e8c85a';
+var COL={water:'#38bdf8',urea:'#fbbf24',salt:'#4ade80',glucose:'#f472b6',cell:'#ef4444'};
+var SIGNS={PCT:-1,LOH:1,DCT:-1,CD:-1};
+var parts=[], cellsLoop=[], cellsGlom=[], re={water:0,urea:0,salt:0,glucose:0}, ex={water:0,urea:0,salt:0,glucose:0};
+var spawnAcc=0, running=true, tSec=0, i;
+for(i=0;i<10;i++)cellsLoop.push({s:CAPLOOP.total*i/10});
+for(i=0;i<8;i++)cellsGlom.push({a:Math.PI*2*i/8,w:rand(0.8,1.2)});
+
+function regionOf(s){return s<sPCT?'PCT':(s<sLOH?'LOH':(s<sDCT?'DCT':'CD'));}
+function rateFor(p,reg){
+  if(p.type==='water')return {PCT:0.9,LOH:0.42,DCT:0.15,CD:0.10+(1-P.H/100)*1.15}[reg];
+  if(p.type==='salt') return {PCT:0.75,LOH:0.65,DCT:0.40,CD:0.12}[reg];
+  if(p.type==='urea') return {PCT:0.30,LOH:0.06,DCT:0.05,CD:0.08}[reg];
+  if(p.type==='glucose')return (reg==='PCT'&&p.will)?2.6:0;
+  return 0;
+}
+function spawnBolus(){
+  if(parts.length>500)return;
+  function push(type,n){for(var i=0;i<n;i++)parts.push({type:type,s:rand(0,5),off:rand(-5,5),state:'flow',fade:1,t:0,dir:0,off0:0,
+    will:(type==='glucose')?(P.BG<=180||Math.random()<(180/P.BG)):true});}
+  push('water',5); push('urea',3); push('salt',3);
+  push('glucose', P.BG<110?1:(P.BG<200?2:(P.BG<300?3:4)));
+}
+
+/* ---------- physiology readouts ---------- */
+function hex2rgb(h){return [parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)];}
+function mix(a,b,t){var A=hex2rgb(a),B=hex2rgb(b);return 'rgb('+Math.round(lerp(A[0],B[0],t))+','+Math.round(lerp(A[1],B[1],t))+','+Math.round(lerp(A[2],B[2],t))+')';}
+function refresh(){
+  P.H=+$('sH').value; P.BP=+$('sBP').value; P.BG=+$('sG').value;
+  $('vH').textContent=P.H+'%'; $('vBP').textContent=P.BP+' mmHg'; $('vG').textContent=P.BG+' mg/dL';
+  gfr=clamp(Math.round(125*Math.pow(P.BP/120,1.8)),30,260);
+  spill=P.BG>180;
+  vol=clamp(0.5+(P.H/100)*4.6+(spill?1.3:0)+(gfr>=190?0.6:0),0.4,7.6);
+  osm=clamp(Math.round(lerp(1150,140,(vol-0.4)/7.2)),120,1200);
+  var conc=clamp(1.15-vol/6.5,0.12,1);
+  urineColor=mix('#f7f3d0','#8a5a10',conc);
+  urineFill=clamp((vol-0.4)/7.2,0.08,1);
+  $('roGFR').textContent=gfr+' mL/min';
+  $('roBP').textContent = P.BP<90?'Low — poor filtration':(P.BP<130?'Normal':(P.BP<160?'Elevated':'Hypertensive — high filtration'));
+  $('roVol').textContent=vol.toFixed(1)+' L/day';
+  $('roOsm').textContent=osm+' mOsm';
+  var g=$('roGlu');
+  if(spill){g.textContent='POSITIVE ('+Math.round((P.BG-180)*1.5)+' mg/dL)'; g.className='text-red-400 font-bold text-sm mt-2';}
+  else{g.textContent='Negative'; g.className='text-green-400 font-bold text-sm mt-2';}
+  $('roChip').style.background=urineColor;
+  $('roColTxt').textContent = conc<0.35?'pale / dilute':(conc<0.7?'normal':'dark / concentrated');
+  $('gNote').innerHTML = spill
+    ? '<span class="text-red-400 font-semibold">⚠ Above renal threshold!</span> Transporters saturated — glucose is spilling into urine (glycosuria).'
+    : 'Renal threshold ≈ <span class="text-gold font-semibold">180 mg/dL</span> — above this, PCT transporters saturate and glucose spills into urine.';
+  var fw=clamp(Math.round(lerp(2,16,P.H/100)+(spill?4:0)),1,24);
+  var gs=spill?Math.max(4,Math.round(100*(P.BG-180)/P.BG)):0;
+  var ss=Math.round(lerp(2,12,P.H/100));
+  var rows={W:[100,35,20,fw],G:[100,gs,gs,gs],S:[100,35,15,ss],U:[100,50,45,40]};
+  for(var k in rows){rows[k].forEach(function(v,i){$('m'+k+i).style.width=v+'%'; $('m'+k+i+'t').textContent=v+'%';});}
+  var cg=$('cGlu');
+  cg.textContent=spill?'✓':'—'; cg.className=spill?'text-red-400 font-bold':'text-gray-500';
+  var cp=$('cProt');
+  cp.textContent=P.BP>=160?'trace':'—'; cp.className=P.BP>=160?'text-yellow-400 font-bold':'text-gray-500';
+}
+
+/* ---------- simulation step ---------- */
+function step(dt){
+  tSec+=dt;
+  spawnAcc+=dt;
+  var interval=0.45/clamp(gfr/125,0.35,2.2);
+  while(spawnAcc>=interval){spawnAcc-=interval; spawnBolus();}
+  for(var i=parts.length-1;i>=0;i--){
+    var p=parts[i];
+    if(p.state==='flow'){
+      p.s+=dt*95;
+      if(p.s>=TUB.total){ex[p.type]++; parts.splice(i,1); continue;}
+      var reg=regionOf(p.s), r=rateFor(p,reg);
+      if(r>0&&Math.random()<r*dt){p.state='re'; p.t=0; p.off0=p.off; p.dir=SIGNS[reg]; re[p.type]++;}
+    }else{
+      p.t+=dt; p.s+=dt*10; p.off=p.off0+p.dir*32*(p.t/0.7); p.fade=1-p.t/0.7;
+      if(p.t>=0.7)parts.splice(i,1);
+    }
+  }
+  for(i=0;i<cellsLoop.length;i++)cellsLoop[i].s=(cellsLoop[i].s+dt*90)%CAPLOOP.total;
+  for(i=0;i<cellsGlom.length;i++)cellsGlom[i].a+=dt*1.4*cellsGlom[i].w;
+}
+
+/* ---------- labels ---------- */
+var LABELS=[
+  ['Afferent arteriole',14,40,88,78],
+  ['Efferent arteriole',14,308,76,272],
+  ['Glomerulus',140,52,196,158],
+  ["Bowman's capsule",14,180,120,205],
+  ['Proximal convoluted tubule (PCT)',296,92,430,240],
+  ['Loop of Henle',296,868,455,830],
+  ['Distal convoluted tubule (DCT)',540,52,600,118],
+  ['Collecting duct',778,470,742,470],
+  ['Peritubular capillaries',586,584,522,584],
+  ['Urine',788,856,756,856]
+];
+
+/* ---------- drawing ---------- */
+function strokePath(path,color,width,alpha){
+  ctx.save(); ctx.globalAlpha=alpha; ctx.strokeStyle=color; ctx.lineWidth=width;
+  ctx.lineJoin='round'; ctx.lineCap='round'; ctx.beginPath();
+  ctx.moveTo(path.pts[0][0],path.pts[0][1]);
+  for(var i=1;i<path.pts.length;i++)ctx.lineTo(path.pts[i][0],path.pts[i][1]);
+  ctx.stroke(); ctx.restore();
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
+  if(imgOK){ ctx.drawImage(IMG,0,0,W,H); }
+  else{ /* offline fallback: simple schematic */
+    ctx.fillStyle='#241a1e'; ctx.beginPath(); ctx.arc(196,198,70,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#8a5a44'; ctx.lineWidth=10; ctx.stroke();
+    strokePath(CAPLOOP,'#d94f4f',6,0.7);
+    strokePath(TUB,'#b0764f',20,1); strokePath(TUB,'#241a1e',12,1);
+  }
+  /* subtle lumen guide so particles read clearly on the artwork */
+  strokePath(TUB,'rgba(10,6,8,0.42)',7,1);
+
+  /* filtrate particles */
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i], pos=pointAt(TUB,p.s);
+    var px=pos.x+(-pos.dy)*p.off, py=pos.y+(pos.dx)*p.off;
+    var col=COL[p.type], a=clamp(p.fade,0,1);
+    ctx.globalAlpha=0.25*a; ctx.fillStyle=col;
+    ctx.beginPath(); ctx.arc(px,py,6,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=a;
+    ctx.beginPath(); ctx.arc(px,py,3.2,0,Math.PI*2); ctx.fill();
+    if(p.state==='re'){
+      ctx.globalAlpha=0.55*a; ctx.strokeStyle='#4ade80'; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+  /* blood cells — glomerulus circulation */
+  for(i=0;i<cellsGlom.length;i++){
+    var c=cellsGlom[i], rr=GLOM.r+Math.sin(c.a*3)*8;
+    ctx.fillStyle=COL.cell;
+    ctx.beginPath(); ctx.arc(GLOM.cx+Math.cos(c.a)*rr,GLOM.cy+Math.sin(c.a)*rr,3.6,0,Math.PI*2); ctx.fill();
+  }
+  /* blood cells — peritubular capillary loop */
+  for(i=0;i<cellsLoop.length;i++){
+    var cp=pointAt(CAPLOOP,cellsLoop[i].s);
+    ctx.fillStyle=COL.cell;
+    ctx.beginPath(); ctx.arc(cp.x,cp.y,3.4,0,Math.PI*2); ctx.fill();
+  }
+  /* labels */
+  ctx.font='600 11px Poppins, sans-serif';
+  ctx.save(); ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=4;
+  for(var L=0;L<LABELS.length;L++){
+    var lb=LABELS[L];
+    ctx.strokeStyle='rgba(255,255,255,0.45)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(lb[2],lb[3]+4); ctx.lineTo(lb[4],lb[5]); ctx.stroke();
+    ctx.fillStyle='#f2f2f2'; ctx.fillText(lb[0],lb[2],lb[3]);
+  }
+  ctx.restore();
+  /* urine test tube at collecting-duct end */
+  var tx=739,ty0=796,ty1=868,tw=24;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(tx-tw,ty0); ctx.lineTo(tx-tw,ty1-12);
+  ctx.quadraticCurveTo(tx-tw,ty1,tx,ty1);
+  ctx.quadraticCurveTo(tx+tw,ty1,tx+tw,ty1-12); ctx.lineTo(tx+tw,ty0);
+  ctx.clip();
+  var ytop=ty1-(ty1-ty0-4)*urineFill;
+  ctx.fillStyle=urineColor; ctx.globalAlpha=0.92;
+  ctx.fillRect(tx-tw,ytop,tw*2,ty1-ytop); ctx.globalAlpha=1;
+  ctx.restore();
+  ctx.strokeStyle='#9aa4ad'; ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(tx-tw,ty0); ctx.lineTo(tx-tw,ty1-12);
+  ctx.quadraticCurveTo(tx-tw,ty1,tx,ty1);
+  ctx.quadraticCurveTo(tx+tw,ty1,tx+tw,ty1-12); ctx.lineTo(tx+tw,ty0);
+  ctx.stroke();
+  var dp=(tSec%0.9)/0.9;
+  ctx.fillStyle=urineColor;
+  ctx.beginPath(); ctx.arc(tx,778+dp*Math.max(4,(ytop-778)),3,0,Math.PI*2); ctx.fill();
+}
+
+/* ---------- main loop ---------- */
+var last=performance.now();
+function loop(now){
+  var dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(running)step(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+setInterval(function(){
+  $('nWr').textContent=re.water; $('nWe').textContent=ex.water;
+  $('nUr').textContent=re.urea;  $('nUe').textContent=ex.urea;
+  $('nSr').textContent=re.salt;  $('nSe').textContent=ex.salt;
+  $('nGr').textContent=re.glucose; $('nGe').textContent=ex.glucose;
+},300);
+
+['sH','sBP','sG'].forEach(function(id){$(id).addEventListener('input',refresh);});
+$('btnPause').addEventListener('click',function(){
+  running=!running;
+  this.textContent=running?'⏸ Pause':'▶ Run';
+  this.className=running?'px-4 py-1.5 rounded-lg bg-gold text-ink font-bold text-sm hover:brightness-110 transition'
+                        :'px-4 py-1.5 rounded-lg bg-green-400 text-ink font-bold text-sm hover:brightness-110 transition';
+});
+$('btnReset').addEventListener('click',function(){
+  parts.length=0; re.water=re.urea=re.salt=re.glucose=0; ex.water=ex.urea=ex.salt=ex.glucose=0; spawnAcc=0;
+});
+
+refresh();
+})();
+</script>
+</body>
+</html>

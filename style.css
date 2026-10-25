@@ -10842,3 +10842,38 @@ body.certificate-lightbox-open {
     }
 
 }
+
+
+/*==============================================================
+  FEATURED CARD — CARDIOVASCULAR EXPLORER
+==============================================================*/
+.cardiovascular-featured{
+    position:relative; isolation:isolate;
+    border:1px solid rgba(255,215,0,.52);
+    background:linear-gradient(155deg,#202020 0%,#11151c 62%,#19150a 100%);
+    box-shadow:0 0 0 1px rgba(255,215,0,.08),0 14px 38px rgba(0,0,0,.3);
+}
+/* Bright star train. JS positions each star fully inside the clipped card border. */
+.featured-star-frame{position:absolute;inset:0;z-index:30;pointer-events:none;overflow:hidden;border-radius:18px;}
+.featured-star-frame .orbit-star{position:absolute;left:0;top:0;display:block;line-height:1;transform:translate(-50%,-50%);will-change:left,top;animation:none!important;color:#fffbd6;opacity:1;text-shadow:0 0 4px #fff,0 0 10px #fff2a0,0 0 18px #ffd700,0 0 30px rgba(255,174,0,1);}
+.featured-star-frame .orbit-star-main{font-size:23px;z-index:5;color:#fffef0;opacity:1;text-shadow:0 0 5px #fff,0 0 12px #fff3a1,0 0 22px #ffd700,0 0 34px #ffae00;}
+.featured-star-frame .orbit-star-trail{font-size:13px;opacity:1;color:#ffe45e;text-shadow:0 0 5px #fff2a0,0 0 12px #ffd700,0 0 20px #ffb700;}
+.featured-star-frame .trail-one{font-size:15px;opacity:1;}
+.featured-star-frame .trail-two{font-size:12px;opacity:.98;}
+.featured-star-frame .trail-three{font-size:10px;opacity:.95;}
+.cardiovascular-featured:hover{border-color:#ffe477;box-shadow:0 18px 42px rgba(0,0,0,.4),0 0 28px rgba(255,215,0,.17)}
+.cardiovascular-image{background:#0c1016;border-bottom:1px solid rgba(255,215,0,.25)}
+.cardiovascular-image img{object-position:center 45%;}
+.cardiovascular-featured .stem-number{background:rgba(255,215,0,.95);color:#151515;border-color:#fff0a1;font-weight:800;letter-spacing:.3px}
+.card-live-chip{position:absolute;right:12px;top:14px;z-index:16;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:20px;background:rgba(8,15,20,.86);border:1px solid rgba(76,220,194,.45);color:#a9f8e7;font-size:10px;font-weight:700;letter-spacing:.7px;backdrop-filter:blur(8px)}
+.card-live-chip span{width:7px;height:7px;border-radius:50%;background:#4de3c3;box-shadow:0 0 9px #4de3c3;animation:livePulse 1.7s ease-in-out infinite}
+@keyframes livePulse{50%{opacity:.45;box-shadow:0 0 2px #4de3c3}}
+.cardiovascular-featured .stem-title{color:#ffe06a;text-shadow:0 0 18px rgba(255,215,0,.12)}
+.cardiovascular-buttons{display:grid;grid-template-columns:1fr 1.25fr;gap:10px}
+.cardiovascular-buttons a{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;white-space:nowrap}
+.cardiovascular-buttons .demo-btn{background:linear-gradient(135deg,#ffe778,#f2b900);color:#151515;border:1px solid #ffe778;box-shadow:0 5px 18px rgba(255,190,0,.16)}
+.cardiovascular-buttons .github-btn{border:1px solid rgba(255,215,0,.42);color:#ffe06a;background:rgba(255,215,0,.06)}
+.download-note{margin-top:13px;color:#aab6c4;font-size:11px;line-height:1.6}
+.download-note i{color:#64d7b2;margin-right:5px}
+@media(prefers-reduced-motion:reduce){.cardiovascular-featured::before,.card-live-chip span{animation:none}}
+@media(max-width:650px){.cardiovascular-buttons{grid-template-columns:1fr}.card-live-chip{font-size:8px;padding:6px 7px}.cardiovascular-featured::before{animation-duration:8s}}

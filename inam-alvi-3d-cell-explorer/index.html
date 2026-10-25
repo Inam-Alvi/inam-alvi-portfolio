@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Cell Biology Explorer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<style>
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-500-normal.woff2) format('woff2');}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-600-normal.woff2) format('woff2');}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:700;font-display:swap;src:url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-700-normal.woff2) format('woff2');}
+@font-face{font-family:'Great Vibes';font-style:normal;font-weight:400;font-display:swap;src:url(https://cdn.jsdelivr.net/fontsource/fonts/great-vibes@latest/latin-400-normal.woff2) format('woff2');}
+html,body{background:#1a1a1a;color:#f5f6f7;font-family:'Poppins',system-ui,sans-serif;}
+::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:#33343a;border-radius:4px;} ::-webkit-scrollbar-track{background:transparent;}
+.sig{font-family:'Great Vibes',cursive;font-weight:400;}
+.tag{color:#2ba7e7;font-size:11px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;}
+.tag-y{color:#ffdd00;font-size:11px;font-weight:600;letter-spacing:2.2px;text-transform:uppercase;}
+#canvasHost canvas{display:block;outline:none;}
+.pwrap{animation:rise .35s ease;} @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.facts li{margin:7px 0;padding-left:18px;position:relative;color:#c4c9ce;font-size:13px;line-height:1.55;}
+.facts li::before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:50%;background:#ffdd00;}
+.orgrow:hover{background:#26272b;}
+input[type="checkbox"]{accent-color:#ffdd00;width:15px;height:15px;cursor:pointer;flex:0 0 15px;}
+.btn-yellow{background:#ffdd00;color:#141414;font-weight:600;border-radius:10px;transition:transform .15s,box-shadow .15s;}
+.btn-yellow:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(255,221,0,.25);}
+.overlay{pointer-events:none;}
+</style>
+</head>
+<body class="h-screen overflow-hidden">
+
+<main class="flex h-full flex-col lg:flex-row">
+  <!-- ============ LEFT : 3D STAGE ============ -->
+  <section class="relative h-[56vh] lg:h-full flex-1 min-w-0">
+    <div id="canvasHost" class="absolute inset-0"></div>
+    <div class="overlay absolute top-6 left-7 select-none">
+      <div class="tag" style="font-size:clamp(12px,1.4vw,17px)">Interactive 3D Simulation</div>
+      <h1 class="font-bold text-white" style="font-size:clamp(24px,3.4vw,44px);line-height:1.1;letter-spacing:-.5px;">3D Cell Biology Explorer</h1>
+      <div style="color:#ffdd00;font-weight:600;font-size:clamp(13px,1.6vw,20px);">Animal Cell &bull; Organelle Identification</div>
+    </div>
+    <div class="overlay absolute bottom-5 left-7 text-[12.5px] text-[#8b9197] select-none">
+      Drag to rotate &bull; Scroll to zoom &bull; Right-drag to pan &bull; Click an organelle to inspect
+    </div>
+  </section>
+
+  <!-- ============ RIGHT : SIDEBAR ============ -->
+  <aside class="flex w-full flex-1 min-h-0 lg:flex-none lg:w-[380px] flex-col overflow-y-auto border-t lg:border-t-0 lg:border-l border-[#2d2e32] bg-[#1f2023]">
+    <div class="p-6 pb-4">
+      <div class="tag">3D Cell Biology Explorer</div>
+      <h2 class="text-[26px] font-bold text-white mt-1">Cell Inspector</h2>
+    </div>
+
+    <div class="px-6">
+      <div id="infoCard" class="rounded-2xl border border-[#2d2e32] bg-[#17181b] p-5 min-h-[220px]"></div>
+    </div>
+
+    <div class="px-6 pt-6">
+      <div class="tag-y mb-3">Organelle Index</div>
+      <ul id="orgList" class="rounded-xl border border-[#2d2e32] overflow-hidden"></ul>
+      <p class="text-[11.5px] text-[#7d838a] mt-2 leading-relaxed">Tick a box to highlight the structure in 3D. Click a name to fly the camera to it.</p>
+    </div>
+
+    <div class="px-6 pt-5">
+      <button id="resetBtn" class="btn-yellow w-full py-3 text-[14px]">Reset View</button>
+    </div>
+
+    <div class="mt-auto pt-6 pb-5 text-center">
+      <span class="sig inline-block -rotate-3 text-[34px] text-[#dfe3e6]">Inam Alvi</span>
+    </div>
+  </aside>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ================= ORGANELLE DATA ================= */
+const ORGANELLES = [
+ {id:"nucleus", meshId:"nucleus", name:"Nucleus", css:"#7a5cff", focusPad:4.5,
+  desc:"The control center of the cell. It stores the DNA and coordinates protein synthesis, growth and reproduction; the dense nucleolus inside assembles ribosome subunits.",
+  facts:["Contains the cell's DNA (chromosomes)","Nucleolus produces ribosomal RNA","Double-membrane nuclear envelope","Nuclear pores control molecular traffic"]},
+ {id:"rough_er", meshId:"rough_er", name:"Rough Endoplasmic Reticulum", css:"#ff9f43", focusPad:4,
+  desc:"Flattened membrane sacs wrapped around the nucleus, studded with ribosomes. It folds, modifies and transports newly synthesized proteins.",
+  facts:["Ribosomes give the 'rough' surface","Folds and modifies new proteins","Continuous with the nuclear envelope"]},
+ {id:"smooth_er", meshId:"smooth_er", name:"Smooth Endoplasmic Reticulum", css:"#ff6b9d", focusPad:3.5,
+  desc:"A tubular membrane network without ribosomes. It synthesizes lipids, detoxifies chemicals and stores calcium ions.",
+  facts:["No ribosomes - smooth tubules","Synthesizes lipids & phospholipids","Detoxifies drugs (liver cells)","Stores Ca2+ in muscle cells"]},
+ {id:"golgi", meshId:"golgi", name:"Golgi Apparatus", css:"#ffdd00", focusPad:3.5,
+  desc:"A stack of curved membrane sacs that modifies, sorts and packages proteins and lipids into vesicles for delivery.",
+  facts:["Stacked flattened cisternae","Modifies proteins (glycosylation)","Forms lysosomes & secretory vesicles"]},
+ {id:"mitochondrion", meshId:"mitochondrion", name:"Mitochondrion", css:"#ff6b4a", focusPad:3.5,
+  desc:"The 'powerhouse' of the cell, generating ATP through cellular respiration. Several are scattered through the cytoplasm.",
+  facts:["Site of cellular respiration","Double-membrane structure","Inner folds (cristae) boost ATP output","Has its own DNA (mtDNA)"]},
+ {id:"lysosome", meshId:"lysosome", name:"Lysosome", css:"#ff4757", focusPad:3,
+  desc:"Membrane sacs of digestive enzymes that break down waste, worn-out organelles and pathogens for recycling.",
+  facts:["~50 hydrolytic enzymes","Acidic interior (pH ~5)","Recycles old organelles (autophagy)"]},
+ {id:"centrioles", meshId:"centrioles", name:"Centrioles", css:"#2ed8c3", focusPad:3,
+  desc:"A perpendicular pair of microtubule barrels that organize the spindle fibers during cell division.",
+  facts:["Built from microtubule triplets","Perpendicular pair in the centrosome","Organize the mitotic spindle"]},
+ {id:"ribosomes", meshId:"ribosomes", name:"Free Ribosomes", css:"#7bed9f", focusPad:5,
+  desc:"Tiny protein-building machines floating in the cytoplasm. They translate messenger RNA into polypeptide chains.",
+  facts:["Made of rRNA + protein, no membrane","Two subunits (large + small)","Translate mRNA into proteins"]}
+];
+
+/* ================= SCENE SETUP ================= */
+const host=document.getElementById("canvasHost");
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0b0e13);
+scene.fog=new THREE.FogExp2(0x0b0e13,0.016);
+const camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+const HOME_POS=new THREE.Vector3(0,5,21), HOME_TGT=new THREE.Vector3(0,0,0);
+camera.position.copy(HOME_POS);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.06;
+controls.minDistance=5; controls.maxDistance=45;
+scene.add(new THREE.AmbientLight(0x8899bb,0.8));
+const dirL=new THREE.DirectionalLight(0xffffff,1.6); dirL.position.set(6,10,7); scene.add(dirL);
+const inL=new THREE.PointLight(0x2ba7e7,14,30); inL.position.set(0,1,0); scene.add(inL);
+host.addEventListener("contextmenu",e=>e.preventDefault());
+
+/* seeded rng for reproducible layouts */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rnd=mulberry32(7);
+
+/* glow sprite backdrop */
+(function(){
+  const c=document.createElement("canvas"); c.width=c.height=256;
+  const g=c.getContext("2d"), gr=g.createRadialGradient(128,128,10,128,128,128);
+  gr.addColorStop(0,"rgba(70,150,220,0.55)"); gr.addColorStop(0.5,"rgba(40,90,160,0.18)"); gr.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle=gr; g.fillRect(0,0,256,256);
+  const tex=new THREE.CanvasTexture(c);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));
+  sp.scale.set(70,70,1); sp.position.set(0,0,-6); scene.add(sp);
+})();
+
+/* ambient dust + cytoplasm particles */
+function makePoints(n,rMin,rMax,size,op){
+  const pos=new Float32Array(n*3);
+  for(let i=0;i<n;i++){
+    const u=rnd()*2-1, th=rnd()*Math.PI*2, r=rMin+rnd()*(rMax-rMin), s=Math.sqrt(1-u*u);
+    pos[i*3]=Math.cos(th)*s*r; pos[i*3+1]=u*r; pos[i*3+2]=Math.sin(th)*s*r;
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+  return new THREE.Points(geo,new THREE.PointsMaterial({color:0x9fd4ff,size,transparent:true,opacity:op,depthWrite:false,blending:THREE.AdditiveBlending}));
+}
+const dust=makePoints(320,14,30,0.14,0.35); scene.add(dust);
+const cyto=makePoints(220,3.6,9.2,0.07,0.4); scene.add(cyto);
+
+/* ================= MATERIAL HELPER ================= */
+function M(color,opts){
+  const m=new THREE.MeshStandardMaterial(Object.assign({color,roughness:0.5,metalness:0.08},opts||{}));
+  m.userData={baseOpacity:m.opacity,baseTransparent:m.transparent,baseDepthWrite:m.depthWrite,baseEmissive:m.emissive.getHex(),baseEI:m.emissiveIntensity};
+  return m;
+}
+const pickables=[];
+const cellGroup=new THREE.Group(); scene.add(cellGroup);
+
+/* ================= ORGANELLE BUILDERS ================= */
+function buildNucleus(){
+  const g=new THREE.Group();
+  const nucMat=M(0x7a5cff,{transparent:true,opacity:0.88,depthWrite:false,roughness:0.35});
+  const nuc=new THREE.Mesh(new THREE.SphereGeometry(3,40,40),nucMat);
+  nuc.renderOrder=3; g.add(nuc);
+  const nucleo=new THREE.Mesh(new THREE.SphereGeometry(1.1,24,24),M(0xe04ba0,{roughness:0.4,emissive:0x661144,emissiveIntensity:0.35}));
+  nucleo.position.set(0.7,0.3,0.4); g.add(nucleo);
+  const poreMat=M(0x101235,{roughness:0.6});
+  const pores=new THREE.InstancedMesh(new THREE.SphereGeometry(0.15,8,8),poreMat,42);
+  const d=new THREE.Object3D(), GA=Math.PI*(3-Math.sqrt(5));
+  for(let i=0;i<42;i++){
+    const y=1-2*(i+0.5)/42, r=Math.sqrt(1-y*y), t=GA*i;
+    d.position.set(Math.cos(t)*r*3, y*3, Math.sin(t)*r*3); d.updateMatrix(); pores.setMatrixAt(i,d.matrix);
+  }
+  g.add(pores);
+  return g;
+}
+function buildRoughER(){
+  const g=new THREE.Group();
+  const arcs=[{R:3.9,arc:4.6,rot:[0.4,0.2,0]},{R:4.35,arc:4.2,rot:[-0.5,0.4,0.6]},{R:4.8,arc:3.8,rot:[0.9,-0.3,0.2]}];
+  const erMat=M(0xff9f43,{roughness:0.45});
+  const dotMat=M(0xffdd00,{roughness:0.4});
+  arcs.forEach(a=>{
+    const tor=new THREE.Mesh(new THREE.TorusGeometry(a.R,0.22,8,44,a.arc),erMat);
+    tor.rotation.set(a.rot[0],a.rot[1],a.rot[2]); g.add(tor);
+    const dots=new THREE.InstancedMesh(new THREE.SphereGeometry(0.1,6,6),dotMat,14);
+    const d=new THREE.Object3D();
+    for(let i=0;i<14;i++){
+      const u=0.25+(a.arc-0.5)*i/13;
+      d.position.set(Math.cos(u)*(a.R+0.2),Math.sin(u)*(a.R+0.2),0); d.updateMatrix(); dots.setMatrixAt(i,d.matrix);
+    }
+    tor.add(dots);
+  });
+  return g;
+}
+function buildSmoothER(){
+  const g=new THREE.Group(); g.position.set(5.4,-0.4,1.2);
+  const mat=M(0xff6b9d,{roughness:0.45});
+  const sets=[
+    [[-1.6,0.4,0],[-0.6,1.1,0.6],[0.6,0.5,-0.4],[1.6,1.2,0.3]],
+    [[-1.7,-0.5,0.2],[-0.5,-0.1,-0.6],[0.5,-0.8,0.5],[1.7,-0.2,-0.2]],
+    [[-1.4,0.0,-0.8],[-0.3,0.3,0.9],[0.8,-0.2,0.8],[1.5,0.4,-0.6]]
+  ];
+  sets.forEach(s=>{
+    const curve=new THREE.CatmullRomCurve3(s.map(p=>new THREE.Vector3(p[0],p[1],p[2])));
+    g.add(new THREE.Mesh(new THREE.TubeGeometry(curve,32,0.17,8),mat));
+  });
+  return g;
+}
+function buildGolgi(){
+  const g=new THREE.Group(); g.position.set(-5.6,1.1,-0.8); g.rotation.set(0.5,0.4,0.2);
+  const mat=M(0xffdd00,{roughness:0.4});
+  for(let i=0;i<4;i++){
+    const t=new THREE.Mesh(new THREE.TorusGeometry(1.7+i*0.38,0.17,8,36,Math.PI*0.85),mat);
+    t.rotation.z=Math.PI*0.075; g.add(t);
+  }
+  const vesMat=M(0xffdd00,{transparent:true,opacity:0.7});
+  const v1=new THREE.Mesh(new THREE.SphereGeometry(0.28,12,12),vesMat); v1.position.set(2.6,1.4,0.4); g.add(v1);
+  const v2=new THREE.Mesh(new THREE.SphereGeometry(0.22,12,12),vesMat); v2.position.set(-2.4,-1.2,0.6); g.add(v2);
+  return g;
+}
+function buildMito(){
+  const g=new THREE.Group();
+  const outMat=M(0xff6b4a,{roughness:0.42});
+  const ringMat=M(0xffd9c9,{roughness:0.5});
+  const spots=[{p:[4.6,2.6,-3.4],r:[0.5,0.9,0.2]},{p:[-4.4,-2.8,3.4],r:[0.2,0.4,0.9]},{p:[2.6,-3.4,4.4],r:[0.8,0.2,0.4]},{p:[-3.0,3.2,-4.4],r:[0.3,0.7,0.5]}];
+  spots.forEach(s=>{
+    const m=new THREE.Group();
+    const body=new THREE.Mesh(new THREE.SphereGeometry(1,22,22),outMat);
+    body.scale.set(1.5,0.75,0.75); m.add(body);
+    [-0.6,0,0.6].forEach(x=>{
+      const ry=0.75*Math.sqrt(1-Math.pow(x/1.5,2))*0.95;
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(ry,0.05,6,20),ringMat);
+      ring.rotation.y=Math.PI/2; ring.position.x=x; m.add(ring);
+    });
+    m.position.set(s.p[0],s.p[1],s.p[2]); m.rotation.set(s.r[0],s.r[1],s.r[2]);
+    g.add(m);
+  });
+  return g;
+}
+function buildLysosome(){
+  const g=new THREE.Group();
+  const mat=M(0xff4757,{roughness:0.4});
+  [[6.3,1.6,2.2],[-6.1,-2.0,-2.4],[1.6,4.8,-5.4]].forEach(p=>{
+    const s=new THREE.Mesh(new THREE.SphereGeometry(0.55,18,18),mat);
+    s.position.set(p[0],p[1],p[2]); g.add(s);
+  });
+  return g;
+}
+function buildCentrioles(){
+  const g=new THREE.Group(); g.position.set(2.8,2.4,2.2);
+  const mat=M(0x2ed8c3,{roughness:0.4,side:THREE.DoubleSide});
+  const c1=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.28,1.2,10,1,true),mat);
+  const c2=new THREE.Mesh(new THREE.CylinderGeometry(0.28,0.28,1.2,10,1,true),mat);
+  c2.rotation.z=Math.PI/2; c2.position.set(0.5,-0.6,0.2);
+  g.add(c1); g.add(c2);
+  return g;
+}
+function buildRibosomes(){
+  const mat=M(0x7bed9f,{roughness:0.4});
+  const N=90, im=new THREE.InstancedMesh(new THREE.SphereGeometry(0.12,8,8),mat,N);
+  const d=new THREE.Object3D();
+  for(let i=0;i<N;i++){
+    const u=rnd()*2-1, th=rnd()*Math.PI*2, r=4.2+rnd()*4.2, s=Math.sqrt(1-u*u);
+    d.position.set(Math.cos(th)*s*r,u*r,Math.sin(th)*s*r);
+    d.updateMatrix(); im.setMatrixAt(i,d.matrix);
+  }
+  const g=new THREE.Group(); g.add(im);
+  g.userData.bounds={center:new THREE.Vector3(0,0,0),radius:8.4};
+  return g;
+}
+const BUILDERS={nucleus:buildNucleus,rough_er:buildRoughER,smooth_er:buildSmoothER,golgi:buildGolgi,mitochondrion:buildMito,lysosome:buildLysosome,centrioles:buildCentrioles,ribosomes:buildRibosomes};
+
+/* membrane */
+const memMat=new THREE.MeshPhongMaterial({color:0x2ba7e7,transparent:true,opacity:0.12,shininess:90,specular:0x88ccff,depthWrite:false});
+memMat.userData={baseOpacity:0.12};
+const membrane=new THREE.Mesh(new THREE.SphereGeometry(10,48,48),memMat);
+membrane.renderOrder=5; cellGroup.add(membrane);
+const rimMat=new THREE.MeshBasicMaterial({color:0x2ba7e7,transparent:true,opacity:0.07,side:THREE.BackSide,blending:THREE.AdditiveBlending,depthWrite:false});
+rimMat.userData={baseOpacity:0.07};
+cellGroup.add(new THREE.Mesh(new THREE.SphereGeometry(10.15,48,48),rimMat));
+
+/* build + register entries */
+const ENTRIES=ORGANELLES.map(data=>{
+  const group=BUILDERS[data.id]();
+  cellGroup.add(group);
+  const entry=Object.assign({},data,{group,mats:new Set(),center:new THREE.Vector3(),radius:5});
+  group.traverse(o=>{
+    if(o.isMesh||o.isInstancedMesh){ o.userData.orgId=data.id; pickables.push(o); if(o.material) entry.mats.add(o.material); }
+  });
+  if(group.userData.bounds){ entry.center.copy(group.userData.bounds.center); entry.radius=group.userData.bounds.radius; }
+  else{
+    const box=new THREE.Box3().setFromObject(group), sph=new THREE.Sphere();
+    box.getBoundingSphere(sph); entry.center.copy(sph.center); entry.radius=sph.radius;
+  }
+  return entry;
+});
+const BY_ID={}; ENTRIES.forEach(e=>BY_ID[e.id]=e);
+
+/* ================= SELECTION / HIGHLIGHT ================= */
+let selectedId=null;
+function applySelection(){
+  ENTRIES.forEach(en=>{
+    en.mats.forEach(m=>{
+      const u=m.userData;
+      if(selectedId===null){
+        m.opacity=u.baseOpacity; m.transparent=u.baseTransparent; m.depthWrite=u.baseDepthWrite;
+        m.emissive.setHex(u.baseEmissive); m.emissiveIntensity=u.baseEI;
+      }else if(en.id===selectedId){
+        m.opacity=u.baseOpacity; m.transparent=u.baseTransparent; m.depthWrite=u.baseDepthWrite;
+        m.emissive.setHex(new THREE.Color(en.css).getHex()); m.emissiveIntensity=0.5;
+      }else{
+        m.transparent=true; m.opacity=u.baseOpacity*0.14; m.depthWrite=false; m.emissiveIntensity=0;
+      }
+    });
+  });
+  const fade=selectedId!==null;
+  memMat.opacity=fade?0.05:memMat.userData.baseOpacity;
+  rimMat.opacity=fade?0.03:rimMat.userData.baseOpacity;
+}
+function select(id){
+  selectedId=id;
+  applySelection(); syncChecks(); renderInfo();
+}
+
+/* ================= CAMERA ANIMATION ================= */
+let camAnim=null;
+const ease=t=>t*t*(3-2*t);
+function animateCam(toPos,toTgt,dur){
+  camAnim={t0:performance.now()/1000,dur:dur||1.1,cf:camera.position.clone(),ct:toPos,tf:controls.target.clone(),tg:toTgt};
+}
+function focusOn(id){
+  const en=BY_ID[id]; if(!en)return;
+  select(id);
+  const dir=camera.position.clone().sub(controls.target).normalize();
+  const dist=en.radius*2.0+en.focusPad;
+  animateCam(en.center.clone().add(dir.multiplyScalar(dist)),en.center.clone());
+}
+
+/* ================= RAYCAST INTERACTION ================= */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
+let downPos=null;
+function setPtr(e){
+  const r=renderer.domElement.getBoundingClientRect();
+  ptr.x=((e.clientX-r.left)/r.width)*2-1; ptr.y=-((e.clientY-r.top)/r.height)*2+1;
+}
+renderer.domElement.addEventListener("pointerdown",e=>{downPos=[e.clientX,e.clientY]; camAnim=null;});
+renderer.domElement.addEventListener("pointerup",e=>{
+  if(!downPos)return;
+  const moved=Math.hypot(e.clientX-downPos[0],e.clientY-downPos[1]); downPos=null;
+  if(moved>6)return;
+  setPtr(e); ray.setFromCamera(ptr,camera);
+  const hits=ray.intersectObjects(pickables,false);
+  select(hits.length?hits[0].object.userData.orgId:null);
+});
+renderer.domElement.addEventListener("pointermove",e=>{
+  if(e.buttons)return;
+  setPtr(e); ray.setFromCamera(ptr,camera);
+  renderer.domElement.style.cursor=ray.intersectObjects(pickables,false).length?"pointer":"default";
+});
+
+/* ================= UI : INFO CARD / INDEX ================= */
+const infoCard=document.getElementById("infoCard");
+function renderInfo(){
+  if(!selectedId){
+    infoCard.innerHTML='<div class="pwrap"><div class="tag">Welcome</div>'+
+      '<h3 class="text-[21px] font-bold text-white mt-1 mb-2">The Cell</h3>'+
+      '<p class="text-[13px] leading-relaxed text-[#a4a9ae]">Click an organelle in the 3D view &mdash; or use the Organelle Index below &mdash; to inspect its structure and function. Rotate, zoom and pan freely.</p></div>';
+    return;
+  }
+  const d=BY_ID[selectedId];
+  infoCard.innerHTML='<div class="pwrap"><div class="flex items-center gap-2">'+
+    '<span style="background:'+d.css+'" class="w-3 h-3 rounded-full"></span><span class="tag">'+d.tagline+'</span></div>'+
+    '<h3 class="text-[21px] font-bold text-white mt-2 mb-2">'+d.name+'</h3>'+
+    '<p class="text-[13px] leading-relaxed text-[#a4a9ae] mb-3">'+d.desc+'</p>'+
+    '<div class="tag-y mb-1">Key Facts</div><ul class="facts">'+d.facts.map(f=>"<li>"+f+"</li>").join("")+"</ul></div>";
+}
+const listEl=document.getElementById("orgList");
+ENTRIES.forEach((en,i)=>{
+  const li=document.createElement("li");
+  li.className="orgrow flex items-center gap-3 px-4 py-2.5 bg-[#202124]"+(i>0?" border-t border-[#2d2e32]":"");
+  li.innerHTML='<input type="checkbox" id="chk_'+en.id+'" aria-label="Highlight '+en.name+'">'+
+    '<span class="w-2.5 h-2.5 rounded-full flex-none" style="background:'+en.css+'"></span>'+
+    '<button data-focus="'+en.id+'" title="Focus camera on '+en.name+'" class="flex-1 text-left text-[13px] font-medium text-[#c9cdd2] hover:text-[#ffdd00] transition-colors">'+en.name+'</button>';
+  listEl.appendChild(li);
+  li.querySelector("input").addEventListener("change",ev=>{ select(ev.target.checked?en.id:null); });
+  li.querySelector("button").addEventListener("click",()=>focusOn(en.id));
+});
+function syncChecks(){ ENTRIES.forEach(en=>{ document.getElementById("chk_"+en.id).checked=(selectedId===en.id); }); }
+document.getElementById("resetBtn").addEventListener("click",()=>{ select(null); animateCam(HOME_POS.clone(),HOME_TGT.clone()); });
+
+/* ================= RESIZE + LOOP ================= */
+function resize(){
+  const w=host.clientWidth,h=host.clientHeight;
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+  renderer.setSize(w,h);
+}
+window.addEventListener("resize",resize); resize();
+
+let lastT=0;
+function loop(now){
+  requestAnimationFrame(loop);
+  const t=now/1000, dt=Math.min(0.05,(t-lastT)||0.016); lastT=t;
+  dust.rotation.y+=dt*0.02; cyto.rotation.y-=dt*0.03;
+  if(selectedId){ const p=0.45+0.18*Math.sin(t*3.2); BY_ID[selectedId].mats.forEach(m=>{m.emissiveIntensity=p;}); }
+  if(camAnim){
+    const k=Math.min(1,(t-camAnim.t0)/camAnim.dur), e=ease(k);
+    camera.position.lerpVectors(camAnim.cf,camAnim.ct,e);
+    controls.target.lerpVectors(camAnim.tf,camAnim.tg,e);
+    if(k>=1)camAnim=null;
+  }
+  controls.update();
+  renderer.render(scene,camera);
+}
+renderInfo();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

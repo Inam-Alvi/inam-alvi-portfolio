@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conic Sections Explorer | Inam Alvi</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0d0f12;
+            --card-bg: #161920;
+            --border-color: #242936;
+            --text-white: #ffffff;
+            --text-secondary: #94a3b8;
+            --heading-yellow: #ffd000;
+            --subheading-blue: #00aeef;
+            --accent-pink: #ff2a6d;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
+            --button-hover: #e6bb00;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            --input-bg: #1e2430;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-white: #0f172a;
+            --text-secondary: #475569;
+            --heading-yellow: #d97706;
+            --subheading-blue: #0284c7;
+            --accent-pink: #e11d48;
+            --accent-green: #059669;
+            --accent-orange: #ea580c;
+            --accent-purple: #7c3aed;
+            --accent-red: #dc2626;
+            --button-hover: #b45309;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --input-bg: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: calc(100vh - 100px);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--heading-yellow);
+            border-radius: 2px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--heading-yellow);
+        }
+
+        .sidebar-header h2 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--subheading-blue);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 4px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .conic-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .conic-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .conic-btn:hover {
+            border-color: var(--subheading-blue);
+            color: var(--text-white);
+        }
+
+        .conic-btn.active-circle {
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+            background: rgba(255, 42, 109, 0.1);
+        }
+
+        .conic-btn.active-ellipse {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .conic-btn.active-parabola {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .conic-btn.active-hyperbola {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .params-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .param-control {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .param-control label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .param-control label span {
+            color: var(--heading-yellow);
+            font-weight: 700;
+        }
+
+        .param-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--heading-yellow);
+            cursor: pointer;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border-color);
+            -webkit-appearance: none;
+        }
+
+        .param-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--heading-yellow);
+            cursor: pointer;
+        }
+
+        .param-control input[type="number"] {
+            width: 70px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        [data-theme="light"] .param-control input[type="number"] {
+            color: #0f172a;
+        }
+
+        .param-control input[type="number"]:focus {
+            border-color: var(--heading-yellow);
+            outline: none;
+        }
+
+        .param-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-row .param-control {
+            flex: 1;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--heading-yellow);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--button-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--subheading-blue);
+            color: var(--subheading-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 174, 239, 0.1);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary.active {
+            background: rgba(0, 174, 239, 0.2);
+            border-color: var(--subheading-blue);
+        }
+
+        .info-panel {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.78rem;
+            min-height: 80px;
+        }
+
+        .info-panel .label {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .info-panel .equation {
+            color: var(--heading-yellow);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            word-wrap: break-word;
+        }
+
+        .info-panel .property {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+
+        .info-panel .property .val {
+            color: var(--text-white);
+            font-weight: 600;
+        }
+
+        .info-panel .property .val.highlight {
+            color: var(--heading-yellow);
+        }
+
+        /* Main Graph Area */
+        .main-area {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .graph-header .title {
+            font-size: 0.9rem;
+            color: var(--subheading-blue);
+            font-weight: 600;
+        }
+
+        .graph-header .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .graph-header .controls .btn {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 450px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #graphCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: var(--subheading-blue);
+            font-weight: 400;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                max-height: 500px;
+            }
+            .canvas-wrapper {
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .sidebar { padding: 12px; max-height: 450px; }
+            .conic-selector { grid-template-columns: 1fr 1fr; }
+            .param-row { flex-direction: column; align-items: stretch; }
+            .canvas-wrapper { min-height: 280px; }
+            .sidebar-header h1 { font-size: 1rem; }
+            .info-panel { font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <h1>📐 Conic Sections</h1>
+                <h2>Interactive Explorer</h2>
+            </div>
+            <button class="theme-toggle" id="themeToggleBtn">
+                <span id="themeIcon">☀️</span>
+            </button>
+        </div>
+
+        <!-- Conic Selector -->
+        <div>
+            <label style="font-size:0.7rem; color:var(--text-secondary); font-weight:600;">Select Conic</label>
+            <div class="conic-selector">
+                <button class="conic-btn" data-conic="circle">⭕ Circle</button>
+                <button class="conic-btn active-ellipse" data-conic="ellipse">🔄 Ellipse</button>
+                <button class="conic-btn" data-conic="parabola">📈 Parabola</button>
+                <button class="conic-btn" data-conic="hyperbola">↗ Hyperbola</button>
+            </div>
+        </div>
+
+        <!-- Parameters -->
+        <div class="params-group" id="paramsContainer">
+            <!-- Dynamically generated -->
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <button class="btn btn-primary" id="resetBtn">🔄 Reset Defaults</button>
+            <button class="btn btn-secondary" id="toggleHelpersBtn">👁️ Helpers: <span id="helpersStatus">ON</span></button>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel" id="infoPanel">
+            <div class="label">Equation</div>
+            <div class="equation" id="equationDisplay">(x − 0)²/4 + (y − 0)²/9 = 1</div>
+            <div style="margin-top:6px; border-top:1px solid var(--border-color); padding-top:6px;">
+                <div class="property"><span>Center</span><span class="val" id="centerDisplay">(0, 0)</span></div>
+                <div class="property"><span>Eccentricity</span><span class="val highlight" id="eccentricityDisplay">0.745</span></div>
+                <div class="property"><span>Foci</span><span class="val" id="fociDisplay">(0, ±2.236)</span></div>
+                <div class="property"><span>Vertices</span><span class="val" id="verticesDisplay">(0, ±3)</span></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Graph Area -->
+    <main class="main-area">
+        <div class="graph-header">
+            <span class="title" id="graphTitle">Ellipse</span>
+            <div class="controls">
+                <button class="btn btn-secondary" id="zoomInBtn">🔍+</button>
+                <button class="btn btn-secondary" id="zoomOutBtn">🔍−</button>
+                <button class="btn btn-secondary" id="resetViewBtn">⟲ Reset View</button>
+            </div>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="graphCanvas"></canvas>
+        </div>
+    </main>
+</div>
+
+<footer>
+    Designed & Developed by <span class="signature">Inam Alvi</span>
+</footer>
+
+<script>
+    // ================================================================
+    // CONFIGURATION
+    // ================================================================
+    const CONFIGS = {
+        circle: {
+            title: 'Circle',
+            params: [
+                { id: 'h', label: 'h (Center x)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'k', label: 'k (Center y)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'r', label: 'r (Radius)', min: 0.5, max: 5, step: 0.1, default: 2 },
+            ],
+            equation: (p) => `(x − ${p.h})² + (y − ${p.k})² = ${(p.r * p.r).toFixed(2)}`,
+            properties: (p) => {
+                const e = 0;
+                return {
+                    center: `(${p.h.toFixed(1)}, ${p.k.toFixed(1)})`,
+                    eccentricity: '0 (Circle)',
+                    foci: 'Same as center',
+                    vertices: `(${p.h.toFixed(1)}, ${(p.k + p.r).toFixed(1)}), (${p.h.toFixed(1)}, ${(p.k - p.r).toFixed(1)})`,
+                };
+            },
+            defaults: { h: 0, k: 0, r: 2 }
+        },
+        ellipse: {
+            title: 'Ellipse',
+            params: [
+                { id: 'h', label: 'h (Center x)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'k', label: 'k (Center y)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'a', label: 'a (Semi-major)', min: 0.5, max: 5, step: 0.1, default: 3 },
+                { id: 'b', label: 'b (Semi-minor)', min: 0.5, max: 5, step: 0.1, default: 2 },
+            ],
+            equation: (p) => `(x − ${p.h})²/${(p.a * p.a).toFixed(2)} + (y − ${p.k})²/${(p.b * p.b).toFixed(2)} = 1`,
+            properties: (p) => {
+                const a = Math.max(p.a, p.b);
+                const b = Math.min(p.a, p.b);
+                const c = Math.sqrt(a * a - b * b);
+                const e = c / a;
+                const isHorizontal = p.a >= p.b;
+                const foci = isHorizontal ? 
+                    `(${(p.h + c).toFixed(2)}, ${p.k.toFixed(2)}), (${(p.h - c).toFixed(2)}, ${p.k.toFixed(2)})` :
+                    `(${p.h.toFixed(2)}, ${(p.k + c).toFixed(2)}), (${p.h.toFixed(2)}, ${(p.k - c).toFixed(2)})`;
+                const vertices = isHorizontal ?
+                    `(${(p.h + a).toFixed(2)}, ${p.k.toFixed(2)}), (${(p.h - a).toFixed(2)}, ${p.k.toFixed(2)})` :
+                    `(${p.h.toFixed(2)}, ${(p.k + a).toFixed(2)}), (${p.h.toFixed(2)}, ${(p.k - a).toFixed(2)})`;
+                return {
+                    center: `(${p.h.toFixed(1)}, ${p.k.toFixed(1)})`,
+                    eccentricity: e.toFixed(4),
+                    foci: foci,
+                    vertices: vertices,
+                };
+            },
+            defaults: { h: 0, k: 0, a: 3, b: 2 }
+        },
+        parabola: {
+            title: 'Parabola',
+            params: [
+                { id: 'h', label: 'h (Vertex x)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'k', label: 'k (Vertex y)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'a', label: 'a (Coefficient)', min: -2, max: 2, step: 0.05, default: 0.5 },
+            ],
+            equation: (p) => `y = ${p.a.toFixed(2)}(x − ${p.h})² + ${p.k.toFixed(2)}`,
+            properties: (p) => {
+                const pVal = 1 / (4 * Math.abs(p.a));
+                const focusY = p.a > 0 ? p.k + pVal : p.k - pVal;
+                const directrixY = p.a > 0 ? p.k - pVal : p.k + pVal;
+                return {
+                    center: `Vertex: (${p.h.toFixed(1)}, ${p.k.toFixed(1)})`,
+                    eccentricity: '1 (Parabola)',
+                    foci: `(${p.h.toFixed(2)}, ${focusY.toFixed(2)})`,
+                    vertices: `(${p.h.toFixed(2)}, ${p.k.toFixed(2)})`,
+                    directrix: `y = ${directrixY.toFixed(2)}`,
+                };
+            },
+            defaults: { h: 0, k: 0, a: 0.5 }
+        },
+        hyperbola: {
+            title: 'Hyperbola',
+            params: [
+                { id: 'h', label: 'h (Center x)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'k', label: 'k (Center y)', min: -5, max: 5, step: 0.1, default: 0 },
+                { id: 'a', label: 'a (Transverse)', min: 0.5, max: 5, step: 0.1, default: 2 },
+                { id: 'b', label: 'b (Conjugate)', min: 0.5, max: 5, step: 0.1, default: 1.5 },
+            ],
+            equation: (p) => `(x − ${p.h})²/${(p.a * p.a).toFixed(2)} − (y − ${p.k})²/${(p.b * p.b).toFixed(2)} = 1`,
+            properties: (p) => {
+                const c = Math.sqrt(p.a * p.a + p.b * p.b);
+                const e = c / p.a;
+                return {
+                    center: `(${p.h.toFixed(1)}, ${p.k.toFixed(1)})`,
+                    eccentricity: e.toFixed(4),
+                    foci: `(${(p.h + c).toFixed(2)}, ${p.k.toFixed(2)}), (${(p.h - c).toFixed(2)}, ${p.k.toFixed(2)})`,
+                    vertices: `(${(p.h + p.a).toFixed(2)}, ${p.k.toFixed(2)}), (${(p.h - p.a).toFixed(2)}, ${p.k.toFixed(2)})`,
+                };
+            },
+            defaults: { h: 0, k: 0, a: 2, b: 1.5 }
+        }
+    };
+
+    // ================================================================
+    // STATE
+    // ================================================================
+    let currentConic = 'ellipse';
+    let params = { ...CONFIGS.ellipse.defaults };
+    let showHelpers = true;
+    let zoomLevel = 1;
+    let canvasWidth, canvasHeight;
+
+    // ================================================================
+    // CANVAS SETUP
+    // ================================================================
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        const wrapper = canvas.parentElement;
+        const rect = wrapper.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvasWidth = rect.width;
+        canvasHeight = rect.height;
+        canvas.width = canvasWidth * dpr;
+        canvas.height = canvasHeight * dpr;
+        canvas.style.width = canvasWidth + 'px';
+        canvas.style.height = canvasHeight + 'px';
+        ctx.scale(dpr, dpr);
+        drawGraph();
+    }
+
+    // ================================================================
+    // DRAWING FUNCTIONS
+    // ================================================================
+    function drawGraph() {
+        const w = canvasWidth;
+        const h = canvasHeight;
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Margins
+        const margin = 50;
+        const graphW = w - 2 * margin;
+        const graphH = h - 2 * margin;
+
+        // Coordinate system
+        const range = 6 / zoomLevel;
+        const scaleX = graphW / (2 * range);
+        const scaleY = graphH / (2 * range);
+        const scale = Math.min(scaleX, scaleY);
+        const cx = w / 2;
+        const cy = h / 2;
+
+        // Grid
+        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+        ctx.lineWidth = 0.5;
+        for (let i = -Math.floor(range); i <= Math.floor(range); i++) {
+            if (i === 0) continue;
+            const x = cx + i * scale;
+            ctx.beginPath();
+            ctx.moveTo(x, margin);
+            ctx.lineTo(x, h - margin);
+            ctx.stroke();
+            const y = cy + i * scale;
+            ctx.beginPath();
+            ctx.moveTo(margin, y);
+            ctx.lineTo(w - margin, y);
+            ctx.stroke();
+        }
+
+        // Axes
+        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(margin, cy);
+        ctx.lineTo(w - margin, cy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx, margin);
+        ctx.lineTo(cx, h - margin);
+        ctx.stroke();
+
+        // Axis labels
+        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+        ctx.font = '11px Poppins';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        const step = Math.max(0.5, Math.ceil(range / 5) * 0.5);
+        for (let i = -Math.floor(range / step) * step; i <= Math.floor(range / step) * step; i += step) {
+            if (Math.abs(i) < 0.01) continue;
+            const x = cx + i * scale;
+            ctx.fillText(i.toFixed(1), x, cy + 4);
+            const y = cy - i * scale;
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(i.toFixed(1), cx - 8, y);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+        }
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('0', cx, cy + 4);
+
+        // Axis labels
+        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+        ctx.font = '12px Poppins';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('x', w - margin + 4, cy - 6);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('y', cx + 6, margin - 4);
+
+        // Get current conic data
+        const config = CONFIGS[currentConic];
+        const p = params;
+
+        // Draw the conic
+        drawConic(ctx, cx, cy, scale, range, p, config, isDark);
+
+        // Draw helpers
+        if (showHelpers) {
+            drawHelpers(ctx, cx, cy, scale, p, config, isDark);
+        }
+
+        // Draw grid border
+        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(margin, margin, graphW, graphH);
+    }
+
+    function drawConic(ctx, cx, cy, scale, range, p, config, isDark) {
+        const steps = 300;
+        const points = [];
+
+        switch (currentConic) {
+            case 'circle': {
+                const r = p.r;
+                for (let i = 0; i <= steps; i++) {
+                    const theta = (i / steps) * 2 * Math.PI;
+                    const x = p.h + r * Math.cos(theta);
+                    const y = p.k + r * Math.sin(theta);
+                    points.push({ x, y });
+                }
+                break;
+            }
+            case 'ellipse': {
+                const a = p.a;
+                const b = p.b;
+                for (let i = 0; i <= steps; i++) {
+                    const theta = (i / steps) * 2 * Math.PI;
+                    const x = p.h + a * Math.cos(theta);
+                    const y = p.k + b * Math.sin(theta);
+                    points.push({ x, y });
+                }
+                break;
+            }
+            case 'parabola': {
+                const a = p.a;
+                const h = p.h;
+                const k = p.k;
+                const xRange = Math.min(4, range * 0.8);
+                for (let i = 0; i <= steps; i++) {
+                    const x = -xRange + (i / steps) * 2 * xRange;
+                    const y = a * (x - h) * (x - h) + k;
+                    points.push({ x, y });
+                }
+                break;
+            }
+            case 'hyperbola': {
+                const a = p.a;
+                const b = p.b;
+                const h = p.h;
+                const k = p.k;
+                const xRange = Math.min(4, range * 0.8);
+                // Right branch
+                for (let i = 0; i <= steps; i++) {
+                    const x = a + (i / steps) * (xRange - a);
+                    const y = k + b * Math.sqrt((x - h) * (x - h) / (a * a) - 1);
+                    if (isFinite(y)) points.push({ x, y });
+                }
+                for (let i = steps; i >= 0; i--) {
+                    const x = a + (i / steps) * (xRange - a);
+                    const y = k - b * Math.sqrt((x - h) * (x - h) / (a * a) - 1);
+                    if (isFinite(y)) points.push({ x, y });
+                }
+                // Left branch
+                for (let i = 0; i <= steps; i++) {
+                    const x = -a - (i / steps) * (xRange - a);
+                    const y = k + b * Math.sqrt((x - h) * (x - h) / (a * a) - 1);
+                    if (isFinite(y)) points.push({ x, y });
+                }
+                for (let i = steps; i >= 0; i--) {
+                    const x = -a - (i / steps) * (xRange - a);
+                    const y = k - b * Math.sqrt((x - h) * (x - h) / (a * a) - 1);
+                    if (isFinite(y)) points.push({ x, y });
+                }
+                break;
+            }
+        }
+
+        // Draw the curve
+        if (points.length > 2) {
+            const color = currentConic === 'circle' ? '#ff2a6d' :
+                         currentConic === 'ellipse' ? '#10b981' :
+                         currentConic === 'parabola' ? '#f97316' : '#a855f7';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            let first = true;
+            for (const p of points) {
+                const screenX = cx + p.x * scale;
+                const screenY = cy - p.y * scale;
+                if (screenX < 0 || screenX > canvasWidth || screenY < 0 || screenY > canvasHeight) {
+                    first = true;
+                    continue;
+                }
+                if (first) {
+                    ctx.moveTo(screenX, screenY);
+                    first = false;
+                } else {
+                    ctx.lineTo(screenX, screenY);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    function drawHelpers(ctx, cx, cy, scale, p, config, isDark) {
+        const color = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+        const highlightColor = isDark ? 'rgba(255,208,0,0.8)' : 'rgba(217,119,6,0.8)';
+
+        // Draw center
+        const centerX = cx + p.h * scale;
+        const centerY = cy - p.k * scale;
+        ctx.fillStyle = highlightColor;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+        ctx.font = '10px Poppins';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('C', centerX + 8, centerY - 4);
+
+        switch (currentConic) {
+            case 'circle': {
+                // Draw radius line
+                const r = p.r;
+                const endX = cx + (p.h + r) * scale;
+                const endY = cy - p.k * scale;
+                ctx.strokeStyle = 'rgba(255,42,109,0.3)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                break;
+            }
+            case 'ellipse': {
+                const a = p.a;
+                const b = p.b;
+                const a2 = a * a;
+                const b2 = b * b;
+                const c = Math.sqrt(Math.abs(a2 - b2));
+                const isHorizontal = a >= b;
+
+                // Draw foci
+                const f1x = cx + (p.h + (isHorizontal ? c : 0)) * scale;
+                const f1y = cy - (p.k + (isHorizontal ? 0 : c)) * scale;
+                const f2x = cx + (p.h - (isHorizontal ? c : 0)) * scale;
+                const f2y = cy - (p.k - (isHorizontal ? 0 : c)) * scale;
+
+                ctx.fillStyle = '#ffd000';
+                ctx.beginPath();
+                ctx.arc(f1x, f1y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(f2x, f2y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+                ctx.font = '9px Poppins';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('F₁', f1x + 4, f1y - 2);
+                ctx.fillText('F₂', f2x + 4, f2y - 2);
+                break;
+            }
+            case 'parabola': {
+                const a = p.a;
+                const pVal = 1 / (4 * Math.abs(a));
+                const focusY = p.a > 0 ? p.k + pVal : p.k - pVal;
+                const directrixY = p.a > 0 ? p.k - pVal : p.k + pVal;
+
+                // Draw focus
+                const fx = cx + p.h * scale;
+                const fy = cy - focusY * scale;
+                ctx.fillStyle = '#ffd000';
+                ctx.beginPath();
+                ctx.arc(fx, fy, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+                ctx.font = '9px Poppins';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('F', fx + 4, fy - 2);
+
+                // Draw directrix
+                const dY = cy - directrixY * scale;
+                ctx.strokeStyle = 'rgba(239,68,68,0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 6]);
+                ctx.beginPath();
+                ctx.moveTo(0, dY);
+                ctx.lineTo(canvasWidth, dY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
+                ctx.font = '9px Poppins';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('Directrix', canvasWidth - 10, dY - 4);
+                break;
+            }
+            case 'hyperbola': {
+                const a = p.a;
+                const b = p.b;
+                const c = Math.sqrt(a * a + b * b);
+
+                // Draw foci
+                const f1x = cx + (p.h + c) * scale;
+                const f1y = cy - p.k * scale;
+                const f2x = cx + (p.h - c) * scale;
+                const f2y = cy - p.k * scale;
+                ctx.fillStyle = '#ffd000';
+                ctx.beginPath();
+                ctx.arc(f1x, f1y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(f2x, f2y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
+                ctx.font = '9px Poppins';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText('F₁', f1x + 4, f1y - 2);
+                ctx.fillText('F₂', f2x + 4, f2y - 2);
+
+                // Draw asymptotes
+                const slope = b / a;
+                const xRange = 6 / zoomLevel;
+                ctx.strokeStyle = 'rgba(168,85,247,0.3)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 6]);
+                for (const sign of [1, -1]) {
+                    const y1 = cy - (p.k + sign * slope * (-xRange - p.h)) * scale;
+                    const y2 = cy - (p.k + sign * slope * (xRange - p.h)) * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + (-xRange - p.h) * scale, y1);
+                    ctx.lineTo(cx + (xRange - p.h) * scale, y2);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+                break;
+            }
+        }
+    }
+
+    // ================================================================
+    // PARAMETER CONTROLS
+    // ================================================================
+    function buildParams() {
+        const container = document.getElementById('paramsContainer');
+        const config = CONFIGS[currentConic];
+        let html = '';
+
+        for (const param of config.params) {
+            const val = params[param.id] !== undefined ? params[param.id] : param.default;
+            html += `
+                <div class="param-control">
+                    <label>
+                        ${param.label}
+                        <span id="${param.id}Val">${val.toFixed(param.step < 0.1 ? 2 : 1)}</span>
+                    </label>
+                    <div class="param-row">
+                        <input type="range" id="${param.id}Slider" 
+                               min="${param.min}" max="${param.max}" step="${param.step}" 
+                               value="${val}">
+                        <input type="number" id="${param.id}Input" 
+                               min="${param.min}" max="${param.max}" step="${param.step}" 
+                               value="${val}">
+                    </div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+
+        // Add event listeners
+        for (const param of config.params) {
+            const slider = document.getElementById(`${param.id}Slider`);
+            const input = document.getElementById(`${param.id}Input`);
+            const display = document.getElementById(`${param.id}Val`);
+
+            const update = () => {
+                const val = parseFloat(slider.value);
+                params[param.id] = val;
+                input.value = val.toFixed(param.step < 0.1 ? 2 : 1);
+                display.textContent = val.toFixed(param.step < 0.1 ? 2 : 1);
+                updateInfo();
+                drawGraph();
+            };
+
+            slider.addEventListener('input', update);
+            input.addEventListener('change', () => {
+                let val = parseFloat(input.value);
+                if (isNaN(val)) val = param.default;
+                val = Math.max(param.min, Math.min(param.max, val));
+                slider.value = val;
+                params[param.id] = val;
+                display.textContent = val.toFixed(param.step < 0.1 ? 2 : 1);
+                updateInfo();
+                drawGraph();
+            });
+        }
+    }
+
+    // ================================================================
+    // INFO PANEL UPDATE
+    // ================================================================
+    function updateInfo() {
+        const config = CONFIGS[currentConic];
+        const props = config.properties(params);
+
+        document.getElementById('equationDisplay').textContent = config.equation(params);
+        document.getElementById('centerDisplay').textContent = props.center;
+        document.getElementById('eccentricityDisplay').textContent = props.eccentricity;
+        document.getElementById('fociDisplay').textContent = props.foci || '—';
+        document.getElementById('verticesDisplay').textContent = props.vertices || '—';
+
+        // Update title
+        document.getElementById('graphTitle').textContent = config.title;
+    }
+
+    // ================================================================
+    // CONIC SWITCHING
+    // ================================================================
+    function switchConic(conic) {
+        currentConic = conic;
+        const config = CONFIGS[conic];
+        params = { ...config.defaults };
+
+        // Update buttons
+        document.querySelectorAll('.conic-btn').forEach(btn => {
+            btn.className = 'conic-btn';
+            if (btn.dataset.conic === conic) {
+                btn.classList.add(`active-${conic}`);
+            }
+        });
+
+        buildParams();
+        updateInfo();
+        drawGraph();
+    }
+
+    // ================================================================
+    // RESET
+    // ================================================================
+    function resetDefaults() {
+        const config = CONFIGS[currentConic];
+        params = { ...config.defaults };
+        buildParams();
+        updateInfo();
+        drawGraph();
+    }
+
+    // ================================================================
+    // ZOOM
+    // ================================================================
+    function zoomIn() {
+        zoomLevel = Math.min(zoomLevel * 1.3, 10);
+        drawGraph();
+    }
+
+    function zoomOut() {
+        zoomLevel = Math.max(zoomLevel / 1.3, 0.3);
+        drawGraph();
+    }
+
+    function resetView() {
+        zoomLevel = 1;
+        drawGraph();
+    }
+
+    // ================================================================
+    // THEME TOGGLE
+    // ================================================================
+    document.getElementById('themeToggleBtn').addEventListener('click', function() {
+        const body = document.body;
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            body.setAttribute('data-theme', 'light');
+            document.getElementById('themeIcon').textContent = '🌙';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+        drawGraph();
+    });
+
+    // ================================================================
+    // EVENT LISTENERS
+    // ================================================================
+    document.querySelectorAll('.conic-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchConic(this.dataset.conic);
+        });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', resetDefaults);
+
+    document.getElementById('toggleHelpersBtn').addEventListener('click', function() {
+        showHelpers = !showHelpers;
+        document.getElementById('helpersStatus').textContent = showHelpers ? 'ON' : 'OFF';
+        drawGraph();
+    });
+
+    document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+    document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+    document.getElementById('resetViewBtn').addEventListener('click', resetView);
+
+    // ================================================================
+    // RESIZE
+    // ================================================================
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+    });
+
+    // ================================================================
+    // INIT
+    // ================================================================
+    window.onload = function() {
+        resizeCanvas();
+        switchConic('ellipse');
+    };
+</script>
+</body>
+</html>
